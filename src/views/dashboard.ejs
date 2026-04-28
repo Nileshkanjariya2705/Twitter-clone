@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user dashboard</title>
+    <style>
+        .nav{
+            width: 100%;
+            height: 100px;
+            border: 1px solid black;
+        }
+        .nav img{
+            width: 100px;
+            height: 100px;
+        }
+
+
+        .home-container {
+    display: grid;
+    grid-template-columns: 275px 600px 350px;
+    gap: 0;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* 1. Left Navigation */
+.nav-column {
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    border-right: 1px solid #eff3f4;
+}
+
+.nav-item {
+    display: block;
+    padding: 12px;
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
+    border-radius: 999px;
+}
+
+.nav-item:hover { background: #e7e7e8; }
+.post-btn {
+    width: 90%;
+    background: #1d9bf0;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 999px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* 2. Center Feed */
+.feed-column {
+    border-right: 1px solid #eff3f4;
+}
+
+.feed-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #eff3f4;
+}
+
+.feed-tabs {
+    display: flex;
+    text-align: center;
+}
+
+.tab {
+    flex: 1;
+    padding: 15px;
+    cursor: pointer;
+}
+
+.tab.active { font-weight: bold; border-bottom: 4px solid #1d9bf0; }
+
+/* 3. Composer & Tweets */
+.composer {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.mini-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.composer-input { flex: 1; }
+.composer-input input {
+    width: 100%;
+    border: none;
+    font-size: 20px;
+    outline: none;
+    padding: 10px 0;
+}
+
+.tweet {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.tweet-actions {
+    display: flex;
+    justify-content: space-between;
+    color: #536471;
+    margin-top: 10px;
+    max-width: 400px;
+}
+
+/* 4. Right Sidebar */
+.trends-column {
+    padding: 10px 20px;
+}
+
+.trends-box {
+    background: #f7f9f9;
+    border-radius: 16px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.trend-item { padding: 10px 0; cursor: pointer; }
+
+    </style>
+</head>
+<body>
+  <!-- <div class="nav">
+    <img id="profile" onclick="window.location.href='/user/profile'" src="/photos/images.webp" alt="no image found">
+  </div> -->
+  <div class="home-container">
+    <!-- Left Sidebar: Navigation -->
+    <aside class="nav-column">
+        <div class="logo">𝕏</div>
+        <nav>
+            <a href="#" class="nav-item active"> Home</a>
+            <a href="#" class="nav-item"> Explore</a>
+            <a href="#" class="nav-item"> Notifications</a>
+            <a href="#" class="nav-item">Messages</a>
+            <a href="/user/profile" class="nav-item"> Profile</a>
+            <button onclick="window.location.href='/user/postTweet'" class="post-btn">Post</button>
+        </nav>
+    </aside>
+
+    <!-- Center Column: The Feed -->
+    <main class="feed-column">
+        <header class="feed-header">
+            <h3>Home</h3>
+            <div class="feed-tabs">
+                <div class="tab active">For you</div>
+                <div class="tab">Following</div>
+            </div>
+        </header>
+
+        <!-- Tweet Composer -->
+        <div class="composer">
+            <img src="avatar.jpg" class="mini-avatar">
+            <div class="composer-input">
+                <input type="text" placeholder="What is happening?!">
+                <div class="composer-actions">
+                    <div class="icons">🖼️ 📊 😀 📍</div>
+                    <button class="small-post-btn" disabled>Post</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Tweet -->
+        <article class="tweet">
+            <img src="avatar2.jpg" class="mini-avatar">
+            <div class="tweet-content">
+                <div class="tweet-info"><strong>Dev Guru</strong> @devguru · 2h</div>
+                <p>Building a UI clone with CSS Grid is surprisingly satisfying! 💻✨</p>
+                <div class="tweet-actions">
+                    <span>💬 12</span> <span>🔁 5</span> <span>❤️ 45</span> <span>📊 1.2K</span>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Right Sidebar: Trends & Search -->
+    <aside class="trends-column">
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+        </div>
+        <section class="trends-box">
+            <h4>Trends for you</h4>
+            <div class="trend-item">
+                <small>Trending in Tech</small>
+                <div>#WebDesign</div>
+                <small>5,234 posts</small>
+            </div>
+            <div class="trend-item">
+                <small>Trending in India</small>
+                <div>#Javascript</div>
+                <small>10.1K posts</small>
+            </div>
+        </section>
+    </aside>
+</div>
+
+</body>
+</html>

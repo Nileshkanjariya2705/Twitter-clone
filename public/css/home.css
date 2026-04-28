@@ -1,0 +1,87 @@
+
+            
+        *{
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+            
+        }
+        .container{
+            width: 100%;
+            /* height: 100%; */
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 20px;
+        }
+        .column{
+            /* width: 100%; */
+            /* height: 100vh; */
+            /* text-align: center; */
+        }
+        .btn{
+            width: 300px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: white;
+            border: 0.5px solid black;
+            /* border: none; */
+           
+            margin-top: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .btn:hover{
+            background-color: rgb(245, 244, 244);
+        }
+        .twitter{
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .twitter img{
+            height: 60%;
+            width:  80%;
+        }
+        #top-logo{
+            display: none;
+        }
+        @media screen and (max-width:767px) {
+            #twitter{
+                display: none;
+            }
+            #top-logo{
+                display: block;
+               
+            }
+             #top-logo img{
+                    height: 50px;
+                    width: 100px;
+                }
+        }
+
+        /* .model{
+
+            display: none;
+            position: fixed;
+            z-index: 1000;
+             width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); 
+        }
+        .model-content {
+ 
+            
+             background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            text-align: center;
+
+
+        } */
+        #cross{
+            float: right;
+            cursor: pointer; 
+        }

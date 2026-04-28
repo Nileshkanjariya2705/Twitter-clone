@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>choose password</title>
+
+<style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#fff;
+}
+
+/* OPEN BUTTON PAGE */
+.container{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.open-btn{
+  padding:12px 20px;
+  border-radius:30px;
+  border:none;
+  background:#0f1419;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(91,112,131,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal{
+  width:600px;
+  background:#fff;
+  border-radius:16px;
+  padding:20px 30px;
+}
+
+/* HEADER */
+.modal-header{
+  display:flex;
+  justify-content:center;
+  position:relative;
+}
+
+.close-btn{
+  position:absolute;
+  left:0;
+  font-size:24px;
+  cursor:pointer;
+}
+
+/* TITLE */
+.modal-content h2{
+  font-size:28px;
+  margin:20px 0;
+}
+
+/* INPUT */
+.input-group{
+  position:relative;
+  margin-bottom:20px;
+}
+
+.input-group input{
+  width:100%;
+  height:56px;
+  border:1px solid #cfd9de;
+  border-radius:6px;
+  padding:18px 12px 6px;
+  font-size:16px;
+  outline:none;
+}
+
+.input-group label{
+  position:absolute;
+  top:18px;
+  left:12px;
+  color:#536471;
+  font-size:14px;
+  transition:0.2s;
+}
+
+.input-group input:focus{
+  border:2px solid #1d9bf0;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label{
+  top:6px;
+  font-size:12px;
+  color:#1d9bf0;
+}
+
+/* CHAR COUNT */
+.char-count{
+  position:absolute;
+  right:10px;
+  top:8px;
+  font-size:12px;
+  color:#536471;
+}
+
+/* DOB */
+.dob-section h4{
+  margin-top:10px;
+}
+
+.dob-section p{
+  font-size:13px;
+  color:#536471;
+  margin:5px 0 10px;
+}
+
+.dob-fields{
+  display:flex;
+  gap:10px;
+}
+
+.dob-fields select{
+  flex:1;
+  height:50px;
+  border-radius:6px;
+  border:1px solid #cfd9de;
+  padding:0 10px;
+  font-size:14px;
+}
+
+/* BUTTON */
+.next-btn{
+  margin-top:30px;
+  width:100%;
+  height:50px;
+  border-radius:30px;
+  border:none;
+  background:#1d4356;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <button class="open-btn" onclick="openModal()">Create account</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+    <form id="myform" >
+    <div class="modal-content">
+      <h2> user name</h2>
+
+      <!-- NAME -->
+      <div class="input-group">
+        <input type="text" id="userName" name="userName" placeholder=" " maxlength="50">
+        <label>Name</label>
+      </div>
+
+      <!-- EMAIL -->
+      <!-- <div class="input-group">
+        <input type="email" id="email" placeholder=" ">
+        <label>Email</label>
+      </div> -->
+
+      <!-- DOB -->
+      <!-- <div class="dob-section">
+        <h4>Date of birth</h4>
+        <p>
+          This will not be shown publicly. Confirm your own age.
+        </p>
+
+        <input type="date" name="" id="">
+      </div> -->
+
+      <input  type="submit"  class="next-btn" value="submit" id="nextBtn">
+</form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form=document.getElementById('myform');
+  form.addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    const userName=document.getElementById('userName').value.trim();
+    const sessionData= sessionStorage.getItem('user');
+
+    
+    const user=new Map(JSON.parse(sessionData ));
+    console.log(user);
+    
+    user.set("userName",userName);
+   
+
+    const res=await fetch("http://localhost:8080/auth/addUser",{
+      method:'post',
+      body:new URLSearchParams(user)
+    })
+    const data=await res.json();
+    if(res.status!='201'){
+      throw new Error("data not inserted")
+    }else{
+      sessionStorage.removeItem('user')
+      window.location.href='/user/dashboard'
+      
+    }
+    
+  })
+</script>
+
+</body>
+</html>

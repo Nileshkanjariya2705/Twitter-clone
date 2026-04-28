@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post tweet</title>
+    <style>
+        .post-modal {
+    background: white;
+    width: 600px;
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.post-flex {
+    display: flex;
+    gap: 12px;
+}
+
+.post-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.content-area {
+    flex: 1;
+}
+
+.audience-btn {
+    color: #1d9bf0;
+    border: 1px solid #cfd9de;
+    background: none;
+    border-radius: 999px;
+    padding: 2px 12px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    font-size: 20px;
+    outline: none;
+    font-family: inherit;
+}
+
+.reply-settings {
+    color: #1d9bf0;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+}
+
+.toolbar-icons button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.toolbar-icons button:hover {
+    background-color: #e8f5fd;
+}
+
+.submit-post-btn {
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-weight: bold;
+    opacity: 0.5; /* Becomes 1 when text is typed */
+}
+
+    </style>
+</head>
+<body>
+    <div class="post-modal-overlay">
+    <div class="post-modal">
+        <!-- Modal Header -->
+        <header class="post-header">
+            <button class="close-btn">✕</button>
+            <button class="drafts-link">Drafts</button>
+        </header>
+
+        <div class="post-body">
+            <div class="post-flex">
+                <img src="avatar.jpg" class="post-avatar">
+                <div class="content-area">
+                    <!-- Visibility Selector -->
+                    <button class="audience-btn">Everyone ▾</button>
+                    
+                    <!-- Main Textarea -->
+                    <textarea placeholder="What is happening?!" rows="4"></textarea>
+                    
+                    <!-- Interactive Settings -->
+                    <div class="reply-settings">
+                        <span>🌍 Everyone can reply</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar & Submit -->
+        <footer class="post-footer">
+            <div class="toolbar-icons">
+                <button title="Media">🖼️</button>
+                <button title="GIF">🎞️</button>
+                <button title="Poll">📊</button>
+                <button title="Emoji">😀</button>
+                <button title="Schedule">📅</button>
+                <button title="Location">📍</button>
+            </div>
+            <div class="post-actions">
+                <div class="progress-ring"></div>
+                <button class="submit-post-btn" disabled>Post</button>
+            </div>
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>

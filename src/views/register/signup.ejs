@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signup page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="/css/home.css">
+   <style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#fff;
+}
+
+/* OPEN BUTTON PAGE */
+.container{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.open-btn{
+  padding:12px 20px;
+  border-radius:30px;
+  border:none;
+  background:#0f1419;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(91,112,131,0.4);
+  /* display:flex; */
+  align-items:center;
+  justify-content:center;
+}
+
+.modal{
+  width:600px;
+  background:#fff;
+  border-radius:16px;
+  padding:20px 30px;
+}
+
+/* HEADER */
+.modal-header{
+  /* display:flex; */
+  justify-content:center;
+  position:relative;
+}
+
+.close-btn{
+  position:absolute;
+  left:0;
+  font-size:24px;
+  cursor:pointer;
+}
+
+/* TITLE */
+.modal-content h2{
+  font-size:28px;
+  margin:20px 0;
+}
+
+/* INPUT */
+.input-group{
+  position:relative;
+  margin-bottom:20px;
+}
+
+.input-group input{
+  width:100%;
+  height:56px;
+  border:1px solid #cfd9de;
+  border-radius:6px;
+  padding:18px 12px 6px;
+  font-size:16px;
+  outline:none;
+}
+
+.input-group label{
+  position:absolute;
+  top:18px;
+  left:12px;
+  color:#536471;
+  font-size:14px;
+  transition:0.2s;
+}
+
+.input-group input:focus{
+  border:2px solid #1d9bf0;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label{
+  top:6px;
+  font-size:12px;
+  color:#1d9bf0;
+}
+
+/* CHAR COUNT */
+.char-count{
+  position:absolute;
+  right:10px;
+  top:8px;
+  font-size:12px;
+  color:#536471;
+}
+
+/* DOB */
+.dob-section h4{
+  margin-top:10px;
+}
+
+.dob-section p{
+  font-size:13px;
+  color:#536471;
+  margin:5px 0 10px;
+}
+
+.dob-fields{
+  display:flex;
+  gap:10px;
+}
+
+.dob-fields select{
+  flex:1;
+  height:50px;
+  border-radius:6px;
+  border:1px solid #cfd9de;
+  padding:0 10px;
+  font-size:14px;
+}
+
+/* BUTTON */
+.next-btn{
+  margin-top:30px;
+  width:100%;
+  height:50px;
+  border-radius:30px;
+  border:none;
+  background:#1d4356;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+
+#basicInfo ,#otp,#choosePassword,#profilePic,#userName{
+    display: none;
+    
+}
+
+
+
+</style>
+</head>
+<body>
+    <div id="container" class="container">
+        <div id="twitter" class="column">
+            <!-- twitter logo -->
+            <picture  class="twitter">
+                <img   src="/photos/twitter_Logo.png" alt="no image found">
+            </picture>
+        </div>
+        <div class="column">
+             <picture id="top-logo">
+                <img   src="/photos/twitter_Logo.png" alt="no image found">
+            </picture>
+            <!-- twitter content -->
+             <h1><strong style="font-size: 80px;">Happening now</strong></h1>
+             <h2><strong style="font-size: 30px;">joining today</strong></h2>
+
+             <div >
+                <button onclick="window.location.href='/auth/google'" class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with google</span></sup></strong></button>
+             </div>
+
+               <div >
+                <button class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=95294&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with Apple</span></sup></strong></button>
+             </div>
+             <div>-------------------------------OR-----------------------------</div>
+              <div >
+                <button id="createAccount" style="background-color: black;" class="btn" ><strong style="font-size: 15px; color:white;">Create Account</strong></button>
+             </div>
+             
+             <h4 style="margin-top: 50px;">Already have an account?</h4>
+
+             <div>
+                <button onclick="window.location.href='/login'" class="btn" ><strong style="font-size: 15px;">Sign in</strong></button>
+             </div>
+
+        </div>
+        
+    </div>
+
+<form id="myform">
+
+    <!-- name email and phone -->
+     <div id="basicInfo">
+          <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+
+    <div class="modal-content">
+      <h2>Create your account</h2>
+
+      <!-- NAME -->
+      <div class="input-group">
+        <input type="text" id="name" name="userFullName" placeholder=" " maxlength="50">
+        <label>Name</label>
+        <span class="char-count" id="counter">0 / 50</span>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="input-group" id="email">
+        <input type="email" id="userEmail" name="identifier" placeholder=" ">
+        <label>Email</label>
+      </div>
+      <div class="input-group" id="phoneNumber" style="display: none;">
+        <input type="text" id="userPhoneNumber"   placeholder="">
+        <label>phoneNumber</label>
+      </div>
+      <p style="float: right; cursor: pointer;" id="change">use email instead</p>
+
+
+      <!-- DOB -->
+      <div class="dob-section">
+        <h4>Date of birth</h4>
+        <p>
+          This will not be shown publicly. Confirm your own age.
+        </p>
+
+        <input type="date" name="userDateOfBirth" name="" id="">
+      </div>
+
+      <input type="button"  class="next-btn" id="submitBasicInfo" value="next">
+           <!-- <button     class="next-btn" id="nextBtn">Next</button> -->
+    </div>
+     </div>
+     </div>
+
+
+     <!-- verification code -->
+     <div id="otp" >
+    <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+
+    <div class="modal-content">
+      <h2> otpVerification</h2>
+      <p id="msg"></p>
+         <div style="display: none;" class="input-group">
+        <input type="text" id="otpId" name="otpId" placeholder=" " maxlength="50">
+        <label>OTP</label>
+      </div>
+
+      <!-- NAME -->
+      <div class="input-group">
+        <input type="text" id="name" name="otp_hash" placeholder=" " maxlength="50">
+        <label>OTP</label>
+        <p id="resend"  style="float: right; cursor: pointer;" >resend</p>
+      </div>
+            <input type="button" class="next-btn" id="submitOtp"value="next">
+
+
+    </div>
+     </div>
+    </div>
+
+
+
+
+     <!-- password -->
+      <div id="choosePassword" style="display: none">
+        <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+
+    <div class="modal-content">
+      <h2> password</h2>
+
+      <!-- NAME -->
+      <div class="input-group">
+        <input type="text" id="userPassword" name="userPassword" placeholder=" " maxlength="50">
+        <label>choose password</label>
+      </div>
+              <input type="button" class="next-btn" id="submitPassword" value="next">
+
+    </div>
+      </div>
+      </div>
+
+      <!-- profilePic -->
+       <div id="profilePic">
+       <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+    <div class="modal-content">
+      <h2> choose profilePic</h2>
+
+      <!-- NAME -->
+      <div class="input-group">
+        <input type="file" id="name" name="userProfilePic" placeholder=" " maxlength="50">
+        <label>Name</label>
+      </div>
+
+  <input type="button" class="next-btn" id="submitProfilePic" value="next">
+
+    </div>
+
+       </div>
+       </div>
+
+       <!-- username -->
+        <div id="userName">
+              <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+    <div class="modal-content">
+      <h2> user name</h2>
+
+   <!-- NAME -->
+      <div class="input-group">
+        <input type="text" name="userName" placeholder=" " maxlength="50">
+        <label>Name</label>
+      </div>
+    </div>
+    <input  type="submit" class="next-btn" value="submit" >
+        </div>
+        </div>
+</form>
+
+
+    <script src="/js/home.js"></script>
+
+    <script>
+           const container= document.getElementById('container')
+           const basicInfo= document.getElementById('basicInfo')
+           const otp= document.getElementById('otp')
+           const choosePassword= document.getElementById('choosePassword')
+           const profilePic= document.getElementById('profilePic')
+           const userName= document.getElementById('userName')
+
+
+        //   open basic info popup
+        document.getElementById('createAccount').addEventListener('click',(e)=>{
+            e.preventDefault();
+            container.style.display='none'
+            basicInfo.style.display='block'
+        })
+
+
+        // open otp popup
+        document.getElementById('submitBasicInfo').addEventListener('click',async(e)=>{
+            e.preventDefault();
+            basicInfo.style.display='none'
+            otp.style.display='block'
+            
+            const identifier=document.getElementsByName('identifier')[0].value.trim();
+            console.log(identifier);
+            
+                try {
+                    const res=await fetch("http://localhost:8080/auth/sendOtp",{
+                        method:'post',
+                        body: new URLSearchParams({identifier:`${identifier}`})
+                    })
+                    const otpId=await res.json();
+                    
+                    if(res.ok){
+                        document.getElementsByName('otpId')[0].value= otpId.otpId;
+                    }
+                    } catch (error) {
+                    throw new Error("email not found");
+                    }
+        })
+
+
+        // open password popup
+        document.getElementById('submitOtp').addEventListener('click',async(e)=>{
+            e.preventDefault();
+
+                const otpId=document.getElementsByName('otpId')[0].value.trim();
+                const otp_hash=document.getElementsByName('otp_hash')[0].value.trim();
+
+                
+
+                  const res=await fetch('http://localhost:8080/auth/otpVerification',{
+                method:'post',
+                body:new URLSearchParams({otpId:otpId,otp_hash:otp_hash})
+                })
+
+                const data=await res.json();
+                if(!res.ok){
+                document.getElementById('msg').innerHTML=`${data}`
+                 document.getElementById('msg').style.color='red';
+                 return;
+                }
+
+            otp.style.display='none'
+            choosePassword.style.display='block'
+        })
+
+
+
+        // open profilePic popup
+        document.getElementById('submitPassword').addEventListener('click',(e)=>{
+            e.preventDefault();
+            choosePassword.style.display='none'
+            profilePic.style.display='block'
+        })
+
+
+          // open username popup
+        document.getElementById('submitPassword').addEventListener('click',(e)=>{
+            e.preventDefault();
+            profilePic.style.display='none'
+            userName.style.display='block'
+        })
+
+
+        // submit data
+        const form =document.getElementById('myform');
+        form.addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const formData=new URLSearchParams(new FormData(form));
+            formData.delete('otp_hash')
+            formData.delete('otpId')
+            
+             const res=await fetch("http://localhost:8080/auth/addUser",{
+                method:'post',
+                body:new URLSearchParams(formData)
+                })
+                const data=await res.json();
+                if(res.status!='201'){
+                throw new Error("data not inserted")
+                }else{
+
+                window.location.href='/user/dashboard'
+                
+                }
+
+        })
+
+
+
+        let flag=true;
+  const userEmail= document.getElementById('userEmail')
+  const userPhoneNumber= document.getElementById('userPhoneNumber')
+  
+  let email=document.getElementById('email');
+  let phoneNumber=document.getElementById('phoneNumber');
+  document.getElementById('change').addEventListener('click',(e)=>{
+    if(flag){
+      email.style.display='none'
+      phoneNumber.style.display='block'
+      e.target.innerHTML='use phone instead'
+      userEmail.removeAttribute("name")
+      userPhoneNumber.setAttribute("name","identifier")
+      flag=false;
+    }else{
+        email.style.display='block'
+      phoneNumber.style.display='none'
+      e.target.innerHTML='use Email instead'
+      userEmail.setAttribute('name','identifier')
+      userPhoneNumber.removeAttribute('name')
+
+      flag=true;
+
+    }
+  })
+
+
+    document.getElementById('resend').addEventListener('click',async(e)=>{
+             const identifier=document.getElementsByName('identifier')[0].value.trim();
+            console.log(identifier);
+            
+                try {
+                    const res=await fetch("http://localhost:8080/auth/sendOtp",{
+                        method:'post',
+                        body: new URLSearchParams({identifier:`${identifier}`})
+                    })
+                    const otpId=await res.json();
+                    
+                    if(res.ok){
+                        document.getElementsByName('otpId')[0].value= otpId.otpId;
+                    }
+                    } catch (error) {
+                    throw new Error("email not found");
+                    }
+  })
+
+    </script>
+</body>
+</html>

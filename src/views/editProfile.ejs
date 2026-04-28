@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+    <style>
+        /* 1. Base Styles & Variables */
+        .userProfile{
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60%;
+            border: 1px solid black;
+
+        }
+        .form-group
+        {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        input{
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+  <div class="userProfile">
+            <!-- Profile Picture
+            Cover Image
+            Full Name
+            Unique Username
+            Bio
+            Email
+            Joined Date -->
+
+    <form  id="myForm">
+        <div class="form-group">
+            <label for="">userCoverImage</label>
+            <input type="file" name="userCoverImage">
+        </div>
+
+        <div class="form-group">
+            <label for="">userProfilePic</label>
+            <input type="file" name="userProfilePic">
+        </div>
+
+         <div class="form-group">
+            <label for="">userFullName</label>
+            <input type="text" name="userFullName">
+        </div>
+
+         <div class="form-group">
+            <label for="">userName</label>
+            <input type="text" name="userName">
+        </div>
+
+
+         <div class="form-group">
+            <label for="">Bio</label>
+            <input type="text" name="userBio">
+        </div>
+
+
+         <div class="form-group">
+            <label for="">userEmail</label>
+            <input type="text" name="userEmail">
+        </div>
+
+
+         <div class="form-group">
+            <label for="">joinde date</label>
+            <input type="text" readonly disabled  name="joinDate">
+        </div>
+
+
+         <div class="form-group">
+          
+            <input type="submit" value="submit">
+        </div>
+    </form>
+  </div>
+
+  <script>
+         async function getData() {
+        try {
+            const res=await fetch("http://localhost:8080/user/getUserProfile");
+            // if(!res.ok){
+            //     throw new Error("can not find data")
+            // }
+            const data=await res.json();
+
+            document.getElementsByName('userFullName')[0].value=data.user[0].userFullName
+            document.getElementsByName('userName')[0].value=data.user[0].userName
+            document.getElementsByName('userBio')[0].value=data.userProfile[0]?.userBio ||''
+            document.getElementsByName('userEmail')[0].value=data.user[0].userEmail
+            document.getElementsByName('joinDate')[0].value=data.user[0].created_at
+        } catch (error) {
+            throw new Error("can not data");
+            
+        }
+    }
+    getData()
+
+
+    const form =document.getElementById('myForm');
+    form.addEventListener('submit',async(e)=>{
+        e.preventDefault();
+        const formData=(new FormData(form));
+        console.log(formData);
+        
+        const res=await fetch("http://localhost:8080/user/saveUserProfile",{
+            method:'post',
+            body:formData
+        });
+
+        
+        console.log(await res.json());
+        
+        
+    })
+  </script>
+</body>
+</html>

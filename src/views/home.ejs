@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+    <div id="container" class="container">
+        <div id="twitter" class="column">
+            <!-- twitter logo -->
+            <picture  class="twitter">
+                <img   src="/photos/twitter_Logo.png" alt="no image found">
+            </picture>
+        </div>
+        <div class="column">
+             <picture id="top-logo">
+                <img   src="/photos/twitter_Logo.png" alt="no image found">
+            </picture>
+            <!-- twitter content -->
+             <h1><strong style="font-size: 80px;">Happening now</strong></h1>
+             <h2><strong style="font-size: 30px;">joining today</strong></h2>
+
+             <div >
+                <button onclick="window.location.href='/auth/google'" class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with google</span></sup></strong></button>
+             </div>
+
+               <div >
+                <button class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=95294&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with Apple</span></sup></strong></button>
+             </div>
+             <div>-------------------------------OR-----------------------------</div>
+              <div >
+                <button onclick="window.location.href='/register/basicInfo'" style="background-color: black;" class="btn" ><strong style="font-size: 15px; color:white;">Create Account</strong></button>
+             </div>
+             
+             <h4 style="margin-top: 50px;">Already have an account?</h4>
+
+             <div>
+                <button onclick="window.location.href='/login'" class="btn" ><strong style="font-size: 15px;">Sign in</strong></button>
+             </div>
+
+        </div>
+        
+    </div>
+    <div id="model" class="model">
+          <div class="model-content">
+            <div id="cross">&cross;</div>
+            <h1>this is login page</h1>
+          </div>
+    </div>
+    <script src="/js/home.js"></script>
+</body>
+</html>

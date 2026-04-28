@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>basic Into</title>
+</head>
+<body>
+    <h1>basic info</h1>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X Clone</title>
+
+<style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#fff;
+}
+
+/* OPEN BUTTON PAGE */
+.container{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.open-btn{
+  padding:12px 20px;
+  border-radius:30px;
+  border:none;
+  background:#0f1419;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(91,112,131,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal{
+  width:600px;
+  background:#fff;
+  border-radius:16px;
+  padding:20px 30px;
+}
+
+/* HEADER */
+.modal-header{
+  display:flex;
+  justify-content:center;
+  position:relative;
+}
+
+.close-btn{
+  position:absolute;
+  left:0;
+  font-size:24px;
+  cursor:pointer;
+}
+
+/* TITLE */
+.modal-content h2{
+  font-size:28px;
+  margin:20px 0;
+}
+
+/* INPUT */
+.input-group{
+  position:relative;
+  margin-bottom:20px;
+}
+
+.input-group input{
+  width:100%;
+  height:56px;
+  border:1px solid #cfd9de;
+  border-radius:6px;
+  padding:18px 12px 6px;
+  font-size:16px;
+  outline:none;
+}
+
+.input-group label{
+  position:absolute;
+  top:18px;
+  left:12px;
+  color:#536471;
+  font-size:14px;
+  transition:0.2s;
+}
+
+.input-group input:focus{
+  border:2px solid #1d9bf0;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label{
+  top:6px;
+  font-size:12px;
+  color:#1d9bf0;
+}
+
+/* CHAR COUNT */
+.char-count{
+  position:absolute;
+  right:10px;
+  top:8px;
+  font-size:12px;
+  color:#536471;
+}
+
+/* DOB */
+.dob-section h4{
+  margin-top:10px;
+}
+
+.dob-section p{
+  font-size:13px;
+  color:#536471;
+  margin:5px 0 10px;
+}
+
+.dob-fields{
+  display:flex;
+  gap:10px;
+}
+
+.dob-fields select{
+  flex:1;
+  height:50px;
+  border-radius:6px;
+  border:1px solid #cfd9de;
+  padding:0 10px;
+  font-size:14px;
+}
+
+/* BUTTON */
+.next-btn{
+  margin-top:30px;
+  width:100%;
+  height:50px;
+  border-radius:30px;
+  border:none;
+  background:#1d4356;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <button class="open-btn" onclick="openModal()">Create account</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+
+    <div class="modal-header">
+      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
+      <b>X</b>
+    </div>
+    <form id="myform" >
+    <div class="modal-content">
+      <h2>Create your account</h2>
+
+      <!-- NAME -->
+      <div class="input-group">
+        <input type="text" id="name" name="userFullName" placeholder=" " maxlength="50">
+        <label>Name</label>
+        <span class="char-count" id="counter">0 / 50</span>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="input-group" id="email">
+        <input type="email" id="userEmail" name="identifier" placeholder=" ">
+        <label>Email</label>
+      </div>
+      <div class="input-group" id="phoneNumber" style="display: none;">
+        <input type="text" id="userPhoneNumber"   placeholder="">
+        <label>phoneNumber</label>
+      </div>
+      <p style="float: right; cursor: pointer;" id="change">use email instead</p>
+
+
+      <!-- DOB -->
+      <div class="dob-section">
+        <h4>Date of birth</h4>
+        <p>
+          This will not be shown publicly. Confirm your own age.
+        </p>
+
+        <input type="date" name="userDateOfBirth" name="" id="">
+      </div>
+
+      <input   type="submit" class="next-btn" value="Next" id="nextBtn">
+</form>
+    </div>
+  </div>
+</div>
+
+<script>
+  let flag=true;
+  const userEmail= document.getElementById('userEmail')
+  const userPhoneNumber= document.getElementById('userPhoneNumber')
+  
+  let email=document.getElementById('email');
+  let phoneNumber=document.getElementById('phoneNumber');
+  document.getElementById('change').addEventListener('click',(e)=>{
+    if(flag){
+      email.style.display='none'
+      phoneNumber.style.display='block'
+      e.target.innerHTML='use phone instead'
+      userEmail.removeAttribute("name")
+      userPhoneNumber.setAttribute("name","identifier")
+      flag=false;
+    }else{
+        email.style.display='block'
+      phoneNumber.style.display='none'
+      e.target.innerHTML='use Email instead'
+      userEmail.setAttribute('name','identifier')
+      userPhoneNumber.removeAttribute('name')
+
+      flag=true;
+
+    }
+  })
+
+
+  // let nextBtn=document.getElementById("nextBtn");
+  let form=document.getElementById('myform');
+
+  form.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    
+    const formData=new URLSearchParams(new FormData(form));
+    console.log(formData);
+    
+    sessionStorage.setItem("user",JSON.stringify([...formData]));
+    sendOtp(formData.identifier)
+    window.location.href='/register/otpVerification' 
+    
+  })
+
+async function sendOtp(value) {
+    console.log(value);
+    
+    try {
+      const res=await fetch("http://localhost:8080/auth/sendOtp",{
+        method:'post',
+        body: new URLSearchParams({identifier:`${value}`})
+      })
+
+    } catch (error) {
+      throw new Error("email not found");
+      
+    }
+  }
+
+
+</script>
+
+</body>
+</html>
+</body>
+</html>
