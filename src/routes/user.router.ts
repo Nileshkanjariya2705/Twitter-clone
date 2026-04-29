@@ -8,9 +8,10 @@ import upload from '../config/multer';
 const userRouter =Router();
 
 
-userRouter.post("/addTweet",tweetController.addTweet)
+userRouter.post("/addTweet",upload.array('photos',2),tweetController.addTweet)
 userRouter.get("/getAllTweets",tweetController.getAllTweets)
-userRouter.get("/getAllTweets/:userId",tweetController.getAllOfUser)
+
+userRouter.get("/getAllTweetsOfUser",tweetController.getAllOfUser)
 userRouter.get("/getOneTweet/:tweetId",tweetController.getTweetByTweetId)
 userRouter.delete("/deleteTweet/:tweetId",tweetController.deleteTweetByTweetId)
 userRouter.put("/updateTweet/:tweetId",tweetController.updateTweet)
@@ -31,6 +32,6 @@ userRouter.post("/updateProfile",userController.userProfile)
 
 userRouter.get('/getUserProfile',userController.findUserProfileByUserId)
 
-userRouter.post('/saveUserProfile',upload.any(),userController.saveUserProfile)
+userRouter.post('/saveUserProfile',upload.array('photos', 2),userController.saveUserProfile)
 
 export default userRouter;

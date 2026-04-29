@@ -3,9 +3,562 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>userProfile</title>
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #fff;
+    color: #0f1419;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 600px;
+    border-left: 1px solid #eff3f4;
+    border-right: 1px solid #eff3f4;
+    min-height: 100vh;
+}
+
+/* Banner & Avatar */
+.banner {
+    position: relative;
+    height: 200px;
+    background-color: #cfd9de;
+}
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-container {
+    position: absolute;
+    bottom: -50px;
+    left: 15px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    background-color: #fff;
+}
+
+/* Edit Button */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 16px;
+    height: 65px; /* Space for the overlapping avatar */
+}
+
+.btn-edit {
+    background: transparent;
+    border: 1px solid #cfd9de;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #e6e6e6;
+}
+
+/* User Text */
+.user-info {
+    padding: 0 16px;
+}
+
+.full-name {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.username {
+    color: #536471;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.bio {
+    font-size: 15px;
+    line-height: 20px;
+    margin-bottom: 12px;
+}
+
+.meta-data, .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: #536471;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.meta-data a {
+    color: #1d9bf0;
+    text-decoration: none;
+}
+
+.stats strong {
+    color: #0f1419;
+}
+
+/* Tab Navigation */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #eff3f4;
+    margin-top: 16px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 16px 0;
+    color: #536471;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tab:hover {
+    background-color: rgba(15, 20, 25, 0.1);
+}
+
+.tab.active {
+    color: #0f1419;
+    font-weight: bold;
+    position: relative;
+}
+
+.tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 4px;
+    background-color: #1d9bf0;
+    border-radius: 99px;
+}
+
+
+#tweets-container {
+    width: 100%;
+}
+
+.tweet {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eff3f4;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tweet:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* --- Missing Tweet Styles --- */
+.mini-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.tweet-main {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.tweet-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.display-name {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.username, .separator, .timestamp {
+    color: #536471;
+    font-size: 15px;
+}
+
+.tweet-body p {
+    font-size: 15px;
+    line-height: 20px;
+    white-space: pre-wrap; /* Preserves line breaks in tweets */
+}
+
+.tweet-media {
+    margin-top: 12px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #eff3f4;
+}
+
+.media-attachment {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+/* --- Enhanced Action Bar --- */
+.tweet-actions {
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+    margin-top: 12px;
+    color: #536471;
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    font-size: 13px;
+}
+
+.action:hover { color: #1d9bf0; }
+.action.like.liked { color: #f91880; }
+.action.like:hover { color: #f91880; }
+
+.icon {
+    padding: 8px;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.action:hover .icon {
+    background-color: rgba(29, 155, 240, 0.1);
+}
+
+.action.like:hover .icon {
+    background-color: rgba(249, 24, 128, 0.1);
+}
+
+
+.more-options-container {
+    position: relative;
+}
+
+.more-options {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 50%;
+    color: #536471;
+}
+
+.more-options:hover {
+    background-color: rgba(29, 155, 240, 0.1);
+    color: #1d9bf0;
+}
+
+.delete-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    z-index: 10;
+    overflow: hidden;
+    min-width: 120px;
+}
+
+.hidden { display: none; }
+
+.delete-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: white;
+    color: #f4212e; /* Twitter delete red */
+    font-weight: bold;
+    cursor: pointer;
+    text-align: left;
+}
+
+.delete-btn:hover {
+    background-color: rgba(244, 33, 46, 0.1);
+}
+
+
+
+
+    </style>
 </head>
 <body>
-    <h1>userProfile</h1>
+
+    <main class="profile-container">
+        <!-- Banner Area -->
+        <header class="banner">
+            <img id="userCoverImage" src="https://placeholder.com" alt="Banner" class="banner-img">
+            <div class="avatar-container" >
+                <img id="userProfilePic"  src="https://placeholder.com" alt="Avatar" class="avatar">
+            </div>
+        </header>
+
+        <!-- Action Area -->
+        <div id="action" class="actions">
+            <!-- <button class="btn-edit" onclick="window.location.href='/user/editProfile'">Edit profile</button> -->
+        </div>
+
+        <!-- Info Area -->
+        <section class="user-info">
+            <h1 class="full-name" id="userFullName"></h1>
+            <p class="username" id="userName">@username</p>
+            
+            <p class="bio" id="userBio">
+                
+            </p>
+
+            <div class="meta-data">
+                <span>📍 San Francisco, CA</span>
+                <span>🔗 <a href="#">portfolio.dev</a></span>
+                <span id="createdAt"></span>
+            </div>
+
+            <div class="stats">
+                <span><strong id="following"></strong> Following</span>
+                <span><strong id="follower"></strong> Followers</span>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <nav class="tabs">
+    <div class="tab active" onclick="showTab('posts')">Posts</div>
+    <div class="tab" onclick="showTab('replies')">Replies</div>
+    <div class="tab" onclick="showTab('media')">Media</div>
+    <div class="tab" onclick="showTab('likes')">Likes</div>
+</nav>
+
+<!-- This is where your tweets will appear -->
+<div id="tweets-container"></div>
+
+    </main>
+
+    
+
+
+    <script>
+
+        const action= document.getElementById('action');
+        const url=new URLSearchParams(window.location.search);
+        const userId=url.get('userId')
+        async function getUserProfile() {
+            try {
+                const res=await fetch(`http://localhost:8080/user/getUserProfile?userId=${userId}`)
+                if(!res.ok){
+                    throw new Error("can not found userProfile");
+                    
+                }
+                const data=await res.json();
+                console.log(data);
+                
+                if(data.loggedInUserId===data.user[0].userId){
+                    console.log("equal-------------------------------");
+                    
+                    action.innerHTML=`
+            <button class="btn-edit" onclick="window.location.href='/user/editProfile'">Edit profile</button>
+                    `
+                }else{
+                    console.log("not equla-------------------------------");
+
+                    action.innerHTML=`
+                        <button class="btn-edit" onclick="follow(${data.user[0].userId})" >
+                             follow
+                        </button>
+                    `
+
+                }
+
+                document.getElementById("userFullName").innerHTML=data.user[0].userFullName
+                document.getElementById("userName").innerHTML=data.user[0].userName
+                document.getElementById("userBio").innerHTML=data.userProfile[0].userBio
+                document.getElementById("createdAt").innerHTML=data.user[0].created_at
+                document.getElementById("follower").innerHTML=data.userProfile[0].followerCount
+                document.getElementById("following").innerHTML=data.userProfile[0].followingCount
+                document.getElementById("userCoverImage").src=`${data.userProfile[0].userCoverImageUrl}`
+                document.getElementById("userProfilePic").src=`${data.userProfile[0].userProfilePicUrl}`
+                
+            } catch (error) {
+                console.log("can not found userPofile");
+                
+            }
+        }
+        getUserProfile()
+
+
+
+
+
+        const container = document.getElementById('tweets-container');
+
+
+function renderTweets(tweets) {
+    const container = document.getElementById('tweets-container');
+    container.innerHTML = ''; 
+
+    tweets.forEach(t => {
+        const heartIcon = t.isLikedByMe ? '❤️' : '♡';
+        const heartClass = t.isLikedByMe ? 'liked' : '';
+        
+        // Path Cleanup
+        const profilePic = t.userProfilePicUrl ? `/${t.userProfilePicUrl.replace('public/', '')}` : 'https://placeholder.com';
+        const tweetMedia = t.mediaUrl ? `/${t.mediaUrl.replace('public/', '')}` : null;
+
+        const article = document.createElement("article");
+        article.className = 'tweet';
+
+        
+          article.innerHTML = `
+        <img src="${t.userProfilePicUrl}" class="mini-avatar">
+        <div class="tweet-main">
+            <div class="tweet-header">
+                <div class="user-meta">
+                    <span class="display-name">${t.userFullName}</span>
+                    <span class="username">@${t.userName}</span>
+                    <span class="separator">·</span>
+                    <span class="timestamp">${Math.floor((new Date()-new Date(t.created_at))/(1000*60*60))} hr ago</span>
+                </div>
+                <!-- Cleaned up: only one more-options-container -->
+                <div class="more-options-container">
+                    <div class="more-options" onclick="toggleDeleteMenu(event, ${t.tweetId})">···</div>
+                    <div id="menu-${t.tweetId}" class="delete-menu hidden">
+                        <button onclick="deleteTweet(${t.tweetId})" class="delete-btn">
+                            <span class="icon">🗑️</span> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="tweet-body">
+                <p>${t.tweetText}</p>
+                ${tweetMedia ? `<div class="tweet-media"><img src="${tweetMedia}" class="media-attachment"></div>` : ''}
+            </div>
+            <div class="tweet-actions">
+                <div class="action"><span class="icon">💬</span><span>0</span></div>
+                <div class="action"><span class="icon">🔁</span><span>0</span></div>
+                <div class="action like ${heartClass}"><span class="icon">${heartIcon}</span><span>${t.likeCount || 0}</span></div>
+                <div class="action"><span class="icon">📊</span><span>0</span></div>
+            </div>
+        </div>
+    `;
+    container.appendChild(article);
+});
+}
+
+// Call this function with your fetched data
+
+async function getTweet() {
+    try {
+        const res=await fetch(`http://localhost:8080/user/getAllTweetsOfUser?userId=${userId}`);
+        const data=await res.json();
+      console.log(data);
+      
+        
+       renderTweets(data);
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+} 
+getTweet()
+
+
+
+
+
+
+// Toggle menu visibility
+function toggleDeleteMenu(event, tweetId) {
+    event.stopPropagation(); // Prevents clicking the tweet itself
+    
+    // Close any other open menus first
+    document.querySelectorAll('.delete-menu').forEach(menu => {
+        if (menu.id !== `menu-${tweetId}`) menu.classList.add('hidden');
+    });
+
+    const menu = document.getElementById(`menu-${tweetId}`);
+    menu.classList.toggle('hidden');
+}
+
+// Close menu if user clicks anywhere else
+document.addEventListener('click', () => {
+    document.querySelectorAll('.delete-menu').forEach(menu => menu.classList.add('hidden'));
+});
+
+
+
+async function deleteTweet(tweetId) {
+    if (!confirm("Are you sure?")) return;
+
+    try {
+        const res = await fetch(`http://localhost:8080/user/deleteTweet/${tweetId}`, {
+            method: 'DELETE'
+        });
+
+        if (res.ok) {
+            // --- The Modern Way: Update UI without refresh ---
+            const tweetElement = document.getElementById(`tweet-row-${tweetId}`);
+            
+            if (tweetElement) {
+                // Add a simple fade-out effect
+                tweetElement.style.transition = "0.3s";
+                tweetElement.style.opacity = "0";
+                tweetElement.style.transform = "translateX(20px)";
+
+                // Remove it from the DOM after the animation finishes
+                setTimeout(() => {
+                    tweetElement.remove();
+                }, 300);
+            }
+        }
+    } catch (err) {
+        console.error("Delete failed:", err);
+    }
+}
+
+async function follow(userId) {
+    const res=await fetch(`http://localhost:8080/user/follow/${userId}`);
+    
+    if(res.ok){
+        location.reload();
+    }
+    
+}
+
+
+
+    </script>
 </body>
 </html>
+
+
+
+
+
+<!-- 
+userRouter.get("/follow/:userId",userController.follow)
+userRouter.get("/unFollow/:userId",userController.unFollow) -->

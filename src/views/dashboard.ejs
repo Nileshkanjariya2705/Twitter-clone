@@ -131,6 +131,15 @@
 
 .trend-item { padding: 10px 0; cursor: pointer; }
 
+.mini-avatar {
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.mini-avatar:hover {
+    filter: brightness(90%); /* Slight darken effect on hover */
+}
+
     </style>
 </head>
 <body>
@@ -173,8 +182,9 @@
             </div>
         </div>
 
-        <!-- Sample Tweet -->
-        <article class="tweet">
+        <div id="tweets" style="cursor: pointer;">
+              <!-- Sample Tweet -->
+        <!-- <article class="tweet">
             <img src="avatar2.jpg" class="mini-avatar">
             <div class="tweet-content">
                 <div class="tweet-info"><strong>Dev Guru</strong> @devguru · 2h</div>
@@ -183,7 +193,9 @@
                     <span>💬 12</span> <span>🔁 5</span> <span>❤️ 45</span> <span>📊 1.2K</span>
                 </div>
             </div>
-        </article>
+        </article> -->
+        </div>
+      
     </main>
 
     <!-- Right Sidebar: Trends & Search -->
@@ -206,6 +218,97 @@
         </section>
     </aside>
 </div>
+
+<script>
+    async function getTweets() {
+        try {
+            const res=await fetch("http://localhost:8080/user/getAllTweets");
+            if(!res.ok){
+                throw new  Error("not found")
+            }
+            const data=await res.json();
+            console.log(data);
+            
+            const tweetsContainer = document.getElementById('tweets');
+
+// Use lowercase .forEach
+if (data.tweets && Array.isArray(data.tweets)) {
+    data.tweets.forEach(t => {
+        const article = document.createElement("article");
+        article.setAttribute('class', 'tweet');
+        article.innerHTML = `
+    <img onclick='window.location.href="/user/profile?userId=${t.userId}"' src="${t.userProfilePicUrl||''}" class="mini-avatar">
+    <div class="tweet-main">
+        <div class="tweet-header">
+            <div class="user-meta">
+                <span class="display-name" >${t.userFullName}</span>
+                <span class="username">@${t.userName}</span>
+                <span class="separator">·</span>
+                <span class="timestamp">${Math.floor((new Date()-new Date(t.created_at))/(60*60*1000))} hr ago</span>
+            </div>
+            <div class="more-options">···</div>
+        </div>
+
+        <div class="tweet-body">
+            <p>${t.tweetText||'no text found'}</p>
+        </div>
+
+        <!-- ADD IMAGE HERE -->
+        ${t.mediaUrl ? `
+        <div class="tweet-media">
+            <img src="/${t.mediaUrl}"  style='width:200px' class="media-attachment">
+        </div>
+        ` : ''}
+
+        <div class="tweet-actions">
+            <div class="action">💬 <span>12</span></div>
+            <div class="action"  onclick='retweet(${t.tweetId})' >🔁 <span>${t.reTweet}</span></div>
+            <div class="action"  onclick='like(${t.tweetId})'>${t.likeMe===1?'❤️':'🤍'}  <span>${t.likeCount}</span></div>
+            <div class="action">📊 <span>1.2K</span></div>
+        </div>
+    </div>
+`;
+
+        
+        tweetsContainer.appendChild(article);          
+    });
+}
+
+            
+        } catch (error) {
+            console.log("error",error);
+            
+        }
+    }
+    getTweets()
+
+
+    async function like(id){
+        try {
+            const res=await fetch(`http://localhost:8080/user/likeTweet/${id}`)
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
+    }
+
+
+        async function retweet(id){
+            console.log(id);
+            
+        try {
+
+            // const res=await fetch(`http://localhost:8080/user/addTweet/${id}`)
+           
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
+    }
+</script>
 
 </body>
 </html>

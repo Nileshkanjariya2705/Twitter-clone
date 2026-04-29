@@ -44,6 +44,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findUserProfileByUserId = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserName = exports.getAllUser = exports.findByUserId = exports.updateUser = exports.createUser = void 0;
 exports.unFollow = unFollow;
+exports.updateUserProfile = updateUserProfile;
+exports.isFollow = isFollow;
 const userRepository = __importStar(require("../repositories/user.repository"));
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     return yield userRepository.createUser(user);
@@ -86,4 +88,21 @@ const findUserProfileByUserId = (userId) => __awaiter(void 0, void 0, void 0, fu
     return yield userRepository.findUserProfile(userId);
 });
 exports.findUserProfileByUserId = findUserProfileByUserId;
+function updateUserProfile(userProfile) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("update userProile");
+        return yield userRepository.updateUserProfile(userProfile);
+    });
+}
+function isFollow(followerId, followingId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const res = yield userRepository.isFollow(followerId, followingId);
+        if (res[0].count > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
+}
 //# sourceMappingURL=user.service.js.map

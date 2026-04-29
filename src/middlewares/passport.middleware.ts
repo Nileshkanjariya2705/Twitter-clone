@@ -5,6 +5,7 @@ import  Jwt  from "jsonwebtoken";
 import {ExtractJwt, Strategy as JWTStrategy} from 'passport-jwt'
 import { IPayload, IUser } from "../models/user.mode";
 import * as userService from '../services/user.service'
+import * as authService from '../services/auth.service'
 import { addTweet } from '../services/tweet.service';
 import * as helper from '../common/helper.common'
 import { Response } from "express";
@@ -36,9 +37,10 @@ passport.use(new GoogleStratergy({
           const user:IUser[]=  await userService.findUserEmail(userEmail);
          
           if(user.length>0){
-            done(null,user[0])
-          }else{
-           const result =await  userService.createUser(googleUser)
+              done(null,user[0]);
+            }else{
+                const result =await  userService.createUser(googleUser)
+                await authService.createUserProfile((user[0] as IUser).userId as number)
            googleUser.userId=result.insertId;
 
            const payload:IPayload={
@@ -70,13 +72,10 @@ const options = {
 passport.use(new JWTStrategy(options,async function(payload:any,done:any){
     console.log("Passport middleware reached!");
     try {
-        
-        // 1. Verify payload exists
-        console.log(payload);
         const user:IUser[]=await userService.findByUserId(payload.userId);
     
         if(user.length>0){
-            console.log("middleware finish");
+            
             
             return done(null,user[0]);
         }else{

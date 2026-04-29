@@ -151,6 +151,7 @@ const saveUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         user.provider = 'EMAIL';
         const databaseResponse = yield userService.createUser(user);
         const lastInsertedId = databaseResponse.insertId;
+        yield authService.createUserProfile(lastInsertedId);
         // const databaseUser:IUser[]=await userService.findByUserId(lastInsertedId);
         const payload = {
             userId: lastInsertedId,

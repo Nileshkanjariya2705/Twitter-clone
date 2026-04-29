@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setRefreshToken = exports.findOtpById = exports.addOtp = void 0;
+exports.createUserProfile = exports.setRefreshToken = exports.findOtpById = exports.addOtp = void 0;
 const db_1 = __importDefault(require("../config/db"));
 const addOtp = (otp) => __awaiter(void 0, void 0, void 0, function* () {
     const [resultSet] = yield (yield db_1.default).query(`insert into otp
@@ -35,4 +35,8 @@ const setRefreshToken = (userId, refereshToken) => __awaiter(void 0, void 0, voi
     return resultSet;
 });
 exports.setRefreshToken = setRefreshToken;
+const createUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const [result] = yield (yield db_1.default).query(`insert into userProfile (userId) values(?)`, [userId]);
+});
+exports.createUserProfile = createUserProfile;
 //# sourceMappingURL=auth.repository.js.map

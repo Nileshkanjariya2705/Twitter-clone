@@ -28,3 +28,9 @@ export const setRefreshToken=async(userId:number,refereshToken:string):Promise<R
     const [resultSet]=await (await connection).query<ResultSetHeader>(`update users set refreshToken=? where userId=?`,[refereshToken,userId])
     return resultSet;
 }
+
+
+
+export const createUserProfile=async(userId:number)=>{
+    const [result]=await (await connection).query(`insert into userProfile (userId) values(?)`,[userId])
+}

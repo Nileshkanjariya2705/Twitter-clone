@@ -42,20 +42,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
+exports.isLike = exports.getTweetLikeByTweetLike = exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
 exports.unLikeTweet = unLikeTweet;
 const tweetRepository = __importStar(require("../repositories/tweet.repository"));
 const addTweet = (tweet) => __awaiter(void 0, void 0, void 0, function* () {
     return yield tweetRepository.save(tweet);
 });
 exports.addTweet = addTweet;
-const getAllTweets = () => __awaiter(void 0, void 0, void 0, function* () {
-    const tweets = yield tweetRepository.getAll();
-    const media = yield tweetRepository.getAllTweetMedia();
-    const result = tweets.map(tweet => {
-        return Object.assign(Object.assign({}, tweet), { media: media.filter(m => m.tweetId === tweet.tweetId) });
-    });
-    return result;
+const getAllTweets = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const tweets = yield tweetRepository.getAll(userId);
+    // const media=await tweetRepository.getAllTweetMedia();
+    //     const result = tweets.map(tweet => {
+    //     return {
+    //         ...tweet,
+    //         media: media.filter(m => m.tweetId === tweet.tweetId)
+    //     };
+    //     });
+    return tweets;
 });
 exports.getAllTweets = getAllTweets;
 const findTweetByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -83,4 +86,19 @@ function unLikeTweet(like) {
         return yield tweetRepository.unLikeTweet(like);
     });
 }
+const getTweetLikeByTweetLike = (tweetId) => __awaiter(void 0, void 0, void 0, function* () {
+    return tweetRepository.getTweetLikeByTweetId(tweetId);
+});
+exports.getTweetLikeByTweetLike = getTweetLikeByTweetLike;
+const isLike = (userId, tweetId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield tweetRepository.isLikeExist(userId, tweetId);
+    console.log(result);
+    if (result[0].c === 1) {
+        return true;
+    }
+    else {
+        return false;
+    }
+});
+exports.isLike = isLike;
 //# sourceMappingURL=tweet.service.js.map

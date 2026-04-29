@@ -41,9 +41,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveUserProfile = exports.findUserProfileByUserId = exports.userProfile = exports.getAllUser = exports.unFollow = exports.follow = void 0;
+exports.userProfile = exports.saveUserProfile = exports.findUserProfileByUserId = exports.getAllUser = exports.unFollow = exports.follow = void 0;
 const userService = __importStar(require("../services/user.service"));
+const db_1 = __importDefault(require("../config/db"));
 const follow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("follw opration start");
     const followingId = parseInt(req.params.userId);
@@ -94,19 +98,22 @@ const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getAllUser = getAllUser;
-const userProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("update user profile");
-});
-exports.userProfile = userProfile;
 const findUserProfileByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("getting userProfile");
     try {
-        const userId = req.user.userId;
+        let userId = parseInt(req.query.userId);
+        let isFollow = false;
+        if (!userId) {
+            userId = req.user.userId;
+        }
+        else {
+            isFollow = yield userService.isFollow(userId, req.user.userId);
+        }
         const user = yield userService.findByUserId(userId);
         const userProfile = yield userService.findUserProfileByUserId(userId);
         console.log(user);
         console.log(userProfile);
-        res.status(200).json({ user: user, userProfile: userProfile });
+        res.status(200).json({ user: user, userProfile: userProfile, loggedInUserId: req.user.userId, isFollow: isFollow });
     }
     catch (error) {
         console.log("error during userprofile", error);
@@ -117,12 +124,58 @@ exports.findUserProfileByUserId = findUserProfileByUserId;
 const saveUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("save userProfile");
     try {
+        (yield db_1.default).beginTransaction();
         const body = req.body;
-        console.log(body.userFullName);
+        const file = req.files;
+        // console.log(file[0].path);
+        // console.log(file[1].path);
+        const userProfile = {
+            userId: req.user.userId,
+            userCoverImageUrl: `/upload/${file[0].originalname}`,
+            userProfilePicUrl: `/upload/${file[1].originalname}`,
+            userBio: body.userBio
+        };
+        const user = {
+            userFullName: body.userFullName,
+            userName: body.userName,
+            userEmail: body.userEmail,
+            userId: req.user.userId
+        };
+        yield userService.updateUser(user);
+        yield userService.updateUserProfile(userProfile);
+        //    const userProfile:IUserProfile={
+        //      userProfilePicUrl :
+        //    }
+        (yield db_1.default).commit();
+        res.status(200).json("profile udate success fully");
     }
     catch (error) {
-        console.log("error during save userProfile");
+        console.log("error during save userProfile", error);
+        (yield db_1.default).rollback();
+        res.status(500).json("profile not updated");
     }
 });
 exports.saveUserProfile = saveUserProfile;
+const userProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("getiing userProfile");
+    try {
+        let userId = parseInt(req.query.userId);
+        if (!userId) {
+            userId = req.user.userId;
+        }
+        if (!userId) {
+            res.status(404).json("user not found");
+        }
+        const userProfile = yield userService.findUserProfileByUserId(userId);
+        res.status(200).json({
+            user: req.user,
+            userProfile: userProfile
+        });
+    }
+    catch (error) {
+        console.log("can not get userProfile");
+        res.status(500).json("can not found user profile");
+    }
+});
+exports.userProfile = userProfile;
 //# sourceMappingURL=user.controller.js.map

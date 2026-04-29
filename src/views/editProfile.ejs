@@ -39,12 +39,12 @@
     <form  id="myForm">
         <div class="form-group">
             <label for="">userCoverImage</label>
-            <input type="file" name="userCoverImage">
+            <input type="file" name="photos">
         </div>
 
         <div class="form-group">
             <label for="">userProfilePic</label>
-            <input type="file" name="userProfilePic">
+            <input type="file" name="photos">
         </div>
 
          <div class="form-group">
@@ -116,8 +116,15 @@
             body:formData
         });
 
-        
-        console.log(await res.json());
+        if(!res.ok){
+            console.log("eroor");
+                return
+        }else{
+            const data=await res.json();
+            console.log(data);
+            window.location.href='/user/dashboard'
+        }
+
         
         
     })

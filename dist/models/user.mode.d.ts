@@ -7,7 +7,7 @@ export interface IUser {
     userEmail?: string;
     userPhoneNumber?: string;
     userPassword?: string;
-    provider: 'EMAIL' | 'GOOGLE' | 'PHONE';
+    provider?: 'EMAIL' | 'GOOGLE' | 'PHONE';
     providerId?: string;
     userDateOfBirth?: string;
     userProfilePicUrl?: string;
@@ -46,8 +46,8 @@ export interface ILogin {
 export interface IMedia extends RowDataPacket {
     mediaId?: number;
     tweetId: number;
-    mediaUrl: string;
-    mediaType: string;
+    mediaUrl: any;
+    mediaType?: string;
     created_at?: string;
 }
 export interface IFollow {
@@ -63,14 +63,14 @@ export interface ILike {
     created_at?: string;
 }
 export interface IUserProfile {
-    userProfileId: number;
-    userId: number;
-    userBio: string;
-    userCoverImageUrl: string;
-    userProfilePicUrl: string;
-    followerCount: number;
-    followingCount: number;
-    created_at: string;
-    updated_at: string;
+    userProfileId?: number;
+    userId?: number;
+    userBio?: string;
+    userCoverImageUrl?: string;
+    userProfilePicUrl?: string;
+    followerCount?: number;
+    followingCount?: number;
+    created_at?: string;
+    updated_at?: string;
 }
 //# sourceMappingURL=user.mode.d.ts.map

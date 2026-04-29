@@ -49,6 +49,7 @@ const passport_1 = __importDefault(require("passport"));
 const passport_google_oauth20_1 = require("passport-google-oauth20");
 const passport_jwt_1 = require("passport-jwt");
 const userService = __importStar(require("../services/user.service"));
+const authService = __importStar(require("../services/auth.service"));
 const helper = __importStar(require("../common/helper.common"));
 passport_1.default.use(new passport_google_oauth20_1.Strategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -77,6 +78,7 @@ passport_1.default.use(new passport_google_oauth20_1.Strategy({
         }
         else {
             const result = yield userService.createUser(googleUser);
+            yield authService.createUserProfile(user[0].userId);
             googleUser.userId = result.insertId;
             const payload = {
                 userId: result.insertId,
@@ -105,11 +107,8 @@ passport_1.default.use(new passport_jwt_1.Strategy(options, function (payload, d
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Passport middleware reached!");
         try {
-            // 1. Verify payload exists
-            console.log(payload);
             const user = yield userService.findByUserId(payload.userId);
             if (user.length > 0) {
-                console.log("middleware finish");
                 return done(null, user[0]);
             }
             else {

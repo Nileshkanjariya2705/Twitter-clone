@@ -69,8 +69,8 @@ export interface ILogin{
 export interface IMedia extends RowDataPacket{
       mediaId?:number
     tweetId:number,
-    mediaUrl :string
-    mediaType :string
+    mediaUrl :any
+    mediaType ?:string
     created_at ?:string
 }
 
@@ -90,13 +90,13 @@ export interface ILike{
 }
 
 export interface IUserProfile{
-    userProfileId :number
-    userId :number
-    userBio :string
-    userCoverImageUrl :string
-    userProfilePicUrl :string
-    followerCount :number
-    followingCount :number,
-    created_at :string,
-    updated_at :string
+    userProfileId ?:number
+    userId ?:number
+    userBio ?:string
+    userCoverImageUrl ?:string
+    userProfilePicUrl ?:string
+    followerCount ?:number
+    followingCount ?:number,
+    created_at ?:string,
+    updated_at ?:string
 }

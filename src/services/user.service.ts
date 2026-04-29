@@ -1,6 +1,7 @@
 import { ResultSetHeader } from 'mysql2';
-import { IFollow, IOtp, IUser } from '../models/user.mode'
+import { IFollow, IOtp, IUser, IUserProfile } from '../models/user.mode'
 import * as userRepository from '../repositories/user.repository'
+
 
 
 
@@ -49,4 +50,19 @@ export async function unFollow(follow: IFollow):Promise<ResultSetHeader> {
 
 export const findUserProfileByUserId=async(userId:number)=>{
     return await userRepository.findUserProfile(userId);
+}
+
+export async function updateUserProfile(userProfile: IUserProfile) {
+    console.log("update userProile");
+    
+    return await userRepository.updateUserProfile(userProfile);
+}
+
+export async function isFollow(followerId: number, followingId: number) {
+    const res:any=await userRepository.isFollow(followerId,followingId);
+    if((res[0] as any).count>0){
+        return true
+    }else{
+        return false
+    }
 }

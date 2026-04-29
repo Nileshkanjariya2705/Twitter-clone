@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findOtpById = exports.addOtpTODatabase = exports.saveRefreshTokenInDB = void 0;
+exports.createUserProfile = exports.findOtpById = exports.addOtpTODatabase = exports.saveRefreshTokenInDB = void 0;
 const authRepository = __importStar(require("../repositories/auth.repository"));
 const saveRefreshTokenInDB = (userId, refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
     return yield authRepository.setRefreshToken(userId, refreshToken);
@@ -56,4 +56,8 @@ const findOtpById = (otpId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield authRepository.findOtpById(otpId);
 });
 exports.findOtpById = findOtpById;
+const createUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield authRepository.createUserProfile(userId);
+});
+exports.createUserProfile = createUserProfile;
 //# sourceMappingURL=auth.service.js.map

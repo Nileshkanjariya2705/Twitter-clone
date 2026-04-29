@@ -10,4 +10,6 @@ export declare const findUserPhoneNumber: (userPhoneNumber: string) => Promise<I
 export declare const follow: (follow: IFollow) => Promise<ResultSetHeader>;
 export declare function unFollow(follow: IFollow): Promise<ResultSetHeader>;
 export declare const findUserProfile: (userId: number) => Promise<IUserProfile[]>;
+export declare function updateUserProfile(userProfile: IUserProfile): Promise<import("mysql2").QueryResult>;
+export declare function isFollow(followerId: number, followingId: number): Promise<import("mysql2").QueryResult>;
 //# sourceMappingURL=user.repository.d.ts.map

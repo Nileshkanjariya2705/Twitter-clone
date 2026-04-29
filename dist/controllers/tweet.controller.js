@@ -49,25 +49,35 @@ exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTw
 const db_1 = __importDefault(require("../config/db"));
 const tweetService = __importStar(require("../services/tweet.service"));
 const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     console.log("add tweet");
     try {
         (yield db_1.default).beginTransaction();
         const tweetBody = req.body;
+        console.log(tweetBody.tweetText);
         const userId = req.user.userId;
         tweetBody.userId = userId;
+        console.log(tweetBody);
+        // const tweet={
+        //     userId:userId,
+        //     tweetText:tweetBody.tweetText
+        // }
         const resultSet = yield tweetService.addTweet(tweetBody);
+        console.log("tweet added success full");
         const tweetId = resultSet.insertId;
-        if (tweetBody.media && tweetBody.media.length > 0) {
-            const length = (_a = tweetBody.media) === null || _a === void 0 ? void 0 : _a.length;
+        const files = req.files;
+        if (files && files.length > 0) {
+            console.log("medida contines");
+            const length = files.length;
             for (let i = 0; i < length; i++) {
-                const media = tweetBody.media[i];
-                media.tweetId = tweetId;
+                const media = {
+                    tweetId: tweetId,
+                    mediaUrl: `upload/${files[i].originalname}`
+                };
                 yield tweetService.addMedia(media);
             }
         }
         (yield db_1.default).commit();
-        res.status(201).json("tweet added successfull");
+        res.redirect('/user/dashboard');
     }
     catch (error) {
         console.log("error during adding tweet:", error);
@@ -78,9 +88,13 @@ const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addTweet = addTweet;
 const getAllTweets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("getting all tweets");
+    // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
+    const userId = req.user.userId;
     try {
-        const tweets = yield tweetService.getAllTweets();
-        res.status(200).json(tweets);
+        const tweets = yield tweetService.getAllTweets(userId);
+        res.status(200).json({
+            tweets: tweets
+        });
     }
     catch (error) {
         console.log("errror during getting all tweets", error);
@@ -90,7 +104,10 @@ const getAllTweets = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getAllTweets = getAllTweets;
 const getAllOfUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("getting all tweets of userId");
-    const userId = parseInt(req.params.userId);
+    let userId = parseInt(req.query.userId);
+    if (!userId) {
+        userId = req.user.userId;
+    }
     try {
         const tweets = yield tweetService.findTweetByUserId(userId);
         res.status(200).json(tweets);
@@ -144,12 +161,19 @@ const likeTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tweetId = parseInt(req.params.tweetId);
         const userId = req.user.userId;
+        const isLike = yield tweetService.isLike(userId, tweetId);
         const like = {
             tweetId: tweetId,
             userId: userId
         };
-        yield tweetService.likeTweet(like);
-        res.status(200).json("like success fully");
+        if (isLike) {
+            yield tweetService.unLikeTweet(like);
+            res.status(200).json("unlike success fully");
+        }
+        else {
+            yield tweetService.likeTweet(like);
+            res.status(200).json("like success fully");
+        }
     }
     catch (error) {
         console.log("error during like tweet", error);

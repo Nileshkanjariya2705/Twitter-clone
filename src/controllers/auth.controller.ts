@@ -137,7 +137,7 @@ export const saveUser=async(req:Request,res:Response)=>{
 
         const lastInsertedId:number=databaseResponse.insertId;
 
-
+        await authService.createUserProfile(lastInsertedId)
         // const databaseUser:IUser[]=await userService.findByUserId(lastInsertedId);
 
         const payload:IPayload={

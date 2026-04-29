@@ -23,12 +23,12 @@ export const createUser=async(user:IUser):Promise<ResultSetHeader>=>{
 }
 
 export const updateUser=async(user:IUser):Promise<ResultSetHeader>=>{
-    const [resultSet]=await (await connection).query<ResultSetHeader>(`
-        set userBio=?,
-        userCoverImageUrl=?,
-        userProfilePicUrl=?,
+    const [resultSet]=await (await connection).query<ResultSetHeader>(`update users
+        set userName=?,
+        userEmail=?,
+        userFullName=?
         where userId=?
-        `,[])
+        `,[user.userName,user.userEmail,user.userFullName,user.userId])
     return resultSet;
 }
 
@@ -71,4 +71,20 @@ export async function unFollow(follow: IFollow):Promise<ResultSetHeader> {
 export const findUserProfile=async(userId:number):Promise<IUserProfile[]>=>{
     const [result]=await (await connection).query<IUserProfile[] & RowDataPacket[][]>(`select * from userProfile where userId=?`,[userId])
     return result;
+}
+
+export async function updateUserProfile(userProfile: IUserProfile) {
+    const [result]=await (await connection).query(`update userProfile 
+        set userCoverImageUrl=?,
+        userProfilePicUrl=?,
+        userBio=?
+        where userId=?
+        `,[userProfile.userCoverImageUrl,userProfile.userProfilePicUrl,userProfile.userBio,userProfile.userId])
+        return result;
+}
+
+
+export async function isFollow(followerId: number, followingId: number) {
+    const [result]=await (await connection).query(`select count(*) as count where followerId=? and followingId=?`,[followerId,followingId])
+    return result
 }

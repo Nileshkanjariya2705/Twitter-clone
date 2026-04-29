@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findUserProfile = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserByUserName = exports.updateUser = exports.createUser = exports.getAllUser = exports.findByUserId = void 0;
 exports.unFollow = unFollow;
+exports.updateUserProfile = updateUserProfile;
+exports.isFollow = isFollow;
 const db_1 = __importDefault(require("../config/db"));
 const findByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const [resultSet] = yield (yield db_1.default).query('select * from users where userId=?', [userId]);
@@ -34,12 +36,12 @@ const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createUser = createUser;
 const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    const [resultSet] = yield (yield db_1.default).query(`update userProfile 
-        set userBio=?,
-        userCoverImageUrl=?,
-        userProfilePicUrl=?
+    const [resultSet] = yield (yield db_1.default).query(`update users
+        set userName=?,
+        userEmail=?,
+        userFullName=?
         where userId=?
-        `, []);
+        `, [user.userName, user.userEmail, user.userFullName, user.userId]);
     return resultSet;
 });
 exports.updateUser = updateUser;
@@ -74,4 +76,21 @@ const findUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* 
     return result;
 });
 exports.findUserProfile = findUserProfile;
+function updateUserProfile(userProfile) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield (yield db_1.default).query(`update userProfile 
+        set userCoverImageUrl=?,
+        userProfilePicUrl=?,
+        userBio=?
+        where userId=?
+        `, [userProfile.userCoverImageUrl, userProfile.userProfilePicUrl, userProfile.userBio, userProfile.userId]);
+        return result;
+    });
+}
+function isFollow(followerId, followingId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield (yield db_1.default).query(`select count(*) as count where followerId=? and followingId=?`, [followerId, followingId]);
+        return result;
+    });
+}
 //# sourceMappingURL=user.repository.js.map

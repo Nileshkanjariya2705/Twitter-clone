@@ -15,3 +15,8 @@ export const addOtpTODatabase=async(opt:IOtp):Promise<ResultSetHeader>=>{
 export const findOtpById=async(otpId:number):Promise<IOtp[]>=>{
     return await authRepository.findOtpById(otpId)
 }
+
+
+export const createUserProfile=async(userId:number)=>{
+    return await authRepository.createUserProfile(userId);
+}
