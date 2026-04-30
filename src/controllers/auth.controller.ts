@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import e, { Request, Response } from 'express'
 import * as userService from '../services/user.service'
 import { IMedia, IOtp, IPayload, ITweet, IUser } from '../models/user.mode';
 import * as helper from '../common/helper.common';
@@ -8,6 +8,9 @@ import * as authService from '../services/auth.service'
 import * as tweetService from '../services/tweet.service'
 import connection from '../config/db';
 import path from 'path';
+import  {getOtp}  from '../common/otpManage';
+import { identifier } from './view.controller';
+
 
 
 export const sendOtp=async(req:Request,res:Response)=>{
@@ -20,21 +23,24 @@ export const sendOtp=async(req:Request,res:Response)=>{
         // }
 
         
-        const optBody:IOtp=req.body;
+        const optBody=req.body;
         console.log(optBody);
         
         // genrate otp
         const otp:number=helper.createOtp();
 
         // create hash
-        const otpHash:string=await helper.genrateHash(otp.toString() )
+        // const otpHash:string=await helper.genrateHash(otp.toString() )
 
-        console.log(otpHash);
-        optBody.otp_hash=otpHash;
-        console.log(optBody);
+        // console.log(otpHash);
+        // optBody.otp_hash=otpHash;
+        // console.log(optBody);
 
         // save otp in database
-        const result:ResultSetHeader = await  authService.addOtpTODatabase(optBody);
+        const result:ResultSetHeader = await  authService.addOtpTODatabase({
+            identifier:optBody.userEmail,
+            otp_hash:otp.toString()
+        } as IOtp);
 
         // last inserted id
         const otpId:number=result.insertId;
@@ -43,7 +49,7 @@ export const sendOtp=async(req:Request,res:Response)=>{
         
 
         // otp send to user 
-        helper.sendOptViaMail(otp,otp)
+        helper.sendOptViaMail(otpId,otp)
 
         res.status(201).json({
             msg:"otp sent success fully",
@@ -69,8 +75,9 @@ export const optVerification=async(req:Request,res:Response)=>{
         const otpBody:IOtp=req.body;
         console.log(otpBody);
         const databaseOtp:IOtp[]=await authService.findOtpById(otpBody.otpId);
+        
         console.log(databaseOtp);
-
+        
         const isOtpExpire :boolean = helper.checkValidity(databaseOtp[0]?.genrateTime as string)
 
         if(!isOtpExpire){
@@ -78,9 +85,11 @@ export const optVerification=async(req:Request,res:Response)=>{
             return;
         }
         
-        const isOtpValid:boolean=await helper.compareHash(otpBody.otp_hash,databaseOtp[0]?.otp as string);
-
-        if(isOtpValid){
+     
+       
+        if(otpBody.otp_hash==databaseOtp[0]?.otp ){
+            console.log("otp is correct");
+            
             res.status(200).json("otp is valid")
         }else{
             res.status(404).json("invalid otp")
@@ -277,4 +286,87 @@ export async function googleCallBack(req:Request,res:Response) {
     console.log("google callback",error);
     res.status(500).json("can not redirect in dashboard")
    }
+}
+
+
+export async function sendOtpToUi(req:Request,res:Response) {
+    console.log("get otp=");
+    const otpId=parseInt(req.query.otpId as string)
+
+    console.log(otpId);
+
+    const otp:IOtp[]= await authService.findOtpById(otpId );
+    
+    
+  
+    res.status(200).json((otp[0] as any).otp)
+}
+
+export async function updatePassword(req:Request,res:Response) {
+    console.log("updating password");
+    try {
+        const body=req.body;
+        console.log(body);
+        const token=req.cookies.resetToken
+
+        const payload:any= helper.decodeToken(token);
+        console.log(payload);
+        
+        
+        const password_hash=await helper.genrateHash(body.newPassword)
+
+        await userService.updatePassword(payload.userId,password_hash)
+
+        res.status(200).json(" passsword updated successfully")
+        
+    } catch (error) {
+        console.log("errro during update password",error);
+        res.status(500).json('password not updated')
+        
+    }
+    
+}
+export async function forgotPassword(req:Request,res:Response) {
+    console.log("fotgot password");
+    try {
+        const body=req.body;
+        const userEmail=body.userEmail;
+
+        const user:IUser[]=await userService.findUserEmail(userEmail);
+
+        if(user && user.length>0){
+            const otp= helper.createOtp();
+            const otp_hash=await helper.genrateHash(otp.toString())
+            const result= await authService.addOtpTODatabase({
+                identifier:user[0]?.userEmail,
+                otp_hash:otp_hash ,
+            } as IOtp)
+          helper.sendOptViaMail(otp,result.insertId)  
+
+          const {accessToken,refereshToken}=helper.genrateJwtToken({
+              userId: user[0]?.userId as number,
+              identifier: user[0]?.userEmail as string
+          } as any)
+
+
+          console.log(result.insertId);
+          
+          res.cookie('resetToken',accessToken,{
+            httpOnly:true,
+            secure:true,
+            maxAge:60*1000*15
+          })
+          res.status(200).json(result.insertId)
+            
+        }else{
+            res.status(404).json("email not found")
+        }
+
+        
+    } catch (error) {
+        console.log("error to forgot password");
+        res.status(500).json("some thing went worong");
+        
+    }
+    
 }

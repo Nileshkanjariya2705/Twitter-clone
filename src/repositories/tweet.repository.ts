@@ -3,6 +3,7 @@ import connection from "../config/db";
 import { ILike, IMedia, ITweet } from "../models/user.mode";
 import { realpathSync } from "node:fs";
 import { resolveTlsa } from "node:dns";
+import { ExtractJwt } from "passport-jwt";
 
 export const save = async (tweet: ITweet): Promise<ResultSetHeader> => {
      const [result] = await (await connection).query<ResultSetHeader>(`
@@ -14,7 +15,8 @@ export const save = async (tweet: ITweet): Promise<ResultSetHeader> => {
 }
 
 
-export const getAll = async (userId:number): Promise<ITweet[]> => {
+export const getAll = async (userId:number,search:string): Promise<ITweet[]> => {
+         const searchPattern = search ? `%${search}%` : null;
      const [result] = await (await connection).query<ITweet[]>(`
                select u.userName,u.userFullName,up.userProfilePicUrl,u.userId,t.tweetId,m.mediaUrl,m.mediaType,
           t.tweetText, 
@@ -24,8 +26,7 @@ export const getAll = async (userId:number): Promise<ITweet[]> => {
           m.mediaUrl,
           (select count(*) from tweetLike where tweetId=t.tweetId) as likeCount,
           (select count(*) from tweetLike where tweetId=t.tweetId and userId=? ) as likeMe,
-          (select count(*) from tweets where tweetType='RETWEET') as reTweet
-          
+          (select count(*) from tweets where  parentTweetId=t.tweetId) as reTweet
                from tweets as t
                join users as u
                on t.userId=u.userId	
@@ -33,8 +34,9 @@ export const getAll = async (userId:number): Promise<ITweet[]> => {
                on up.userId=u.userId
                left join tweetMedia as m 
                on m.tweetId=t.tweetId
+               where u.userName like ?
                order by t.created_at desc
-          `,[userId])
+          `,[userId,search ])
      return result;
 }
 
@@ -48,7 +50,7 @@ export const findByUserId = async (userId: number): Promise<ITweet[]> => {
           m.mediaUrl,
           (select count(*) from tweetLike where tweetId=t.tweetId) as likeCount,
           (select count(*) from tweetLike where tweetId=t.tweetId and userId=? ) as likeMe,
-          (select count(*) from tweets where tweetType='RETWEET') as reTweet
+          (select count(*) from tweets where  parentTweetId=t.tweetId) as reTweet
                from tweets as t
                join users as u
                on t.userId=u.userId	
@@ -132,4 +134,12 @@ export const isLikeExist = async (userId: number, tweetId: number) => {
      const [result] = await (await connection).query('select count(*) as c from tweetLike where userId=? and tweetId=?', [userId, tweetId])
      return result;
 }
+
+export async function isRetweetByUser(userId: number, tweetId: number) {
+     const [result] = await (await connection).query(`select tweetId , count(*) as count from tweets where userId=? and parentTweetId=? and tweetType='RETWEET'`, [userId, tweetId])
+     return result;
+}
+
+
+
 

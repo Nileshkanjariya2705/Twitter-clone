@@ -8,7 +8,7 @@ import * as userService from '../services/user.service'
 import * as authService from '../services/auth.service'
 import { addTweet } from '../services/tweet.service';
 import * as helper from '../common/helper.common'
-import { Response } from "express";
+import { response, Response } from "express";
 
 
 passport.use(new GoogleStratergy({
@@ -80,6 +80,7 @@ passport.use(new JWTStrategy(options,async function(payload:any,done:any){
             return done(null,user[0]);
         }else{
             console.log("middleware fail");
+            // response.redirect('/signin')
             return done(null,false)
         }
     } catch (error) {

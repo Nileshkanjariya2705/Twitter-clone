@@ -54,6 +54,8 @@ userRouter.get("/unFollow/:userId", userController.unFollow);
 userRouter.get("/getAllUsers", userController.getAllUser);
 userRouter.post("/updateProfile", userController.userProfile);
 userRouter.get('/getUserProfile', userController.findUserProfileByUserId);
+userRouter.get('/reTweet/:tweetId', tweetController.reTweet);
 userRouter.post('/saveUserProfile', multer_1.default.array('photos', 2), userController.saveUserProfile);
+userRouter.get('/logout', userController.logout);
 exports.default = userRouter;
 //# sourceMappingURL=user.router.js.map

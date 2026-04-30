@@ -15,7 +15,12 @@ authRouter.post("/addUser",authController.saveUser);
 authRouter.post("/login",authController.login);
 authRouter.get("/upload",authController.uploadImage)
 
+authRouter.post("/forgotPassword",authController.forgotPassword)
 
+
+authRouter.get('/getOtp',authController.sendOtpToUi)
+
+authRouter.post('/updatePassword',authController.updatePassword)
 
 authRouter.get('/google',passport.authenticate('google'))
 authRouter.get('/google/callback',passport.authenticate('google',{session:false}),authController.googleCallBack)

@@ -139,6 +139,211 @@
 .mini-avatar:hover {
     filter: brightness(90%); /* Slight darken effect on hover */
 }
+/* Container Spacing & Borders */
+.home-container {
+    background-color: #ffffff;
+    color: #0f1419;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Nav Column Enhancements */
+.nav-column {
+    padding: 0 12px;
+}
+
+.logo {
+    font-size: 30px;
+    padding: 12px;
+    margin-bottom: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    font-size: 20px;
+    text-decoration: none;
+    color: #0f1419;
+    border-radius: 9999px;
+    transition: background 0.2s;
+    margin-bottom: 4px;
+}
+
+.nav-item:hover {
+    background-color: rgba(15, 20, 25, 0.1);
+}
+
+.nav-item.active {
+    font-weight: 800;
+}
+
+/* Feed Header Styling */
+.feed-header {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.85);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.feed-header h3 {
+    padding: 12px 16px;
+    margin: 0;
+}
+
+.feed-tabs {
+    display: flex;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 16px;
+    font-weight: 600;
+    color: #536471;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tab:hover {
+    background-color: rgba(15, 20, 25, 0.1);
+}
+
+.tab.active {
+    color: #0f1419;
+    position: relative;
+}
+
+.tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 4px;
+    background-color: #1d9bf0;
+    border-radius: 9999px;
+}
+
+/* Composer Fixes */
+.composer {
+    padding: 16px;
+    display: flex;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.mini-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.composer-input {
+    flex: 1;
+}
+
+.composer-input input {
+    width: 100%;
+    border: none;
+    font-size: 20px;
+    outline: none;
+    padding: 12px 0;
+}
+
+.composer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid #eff3f4;
+}
+
+.icons {
+    color: #1d9bf0;
+    cursor: pointer;
+    font-size: 18px;
+    gap: 15px;
+    display: flex;
+}
+
+/* Search Bar & Trends */
+.search-bar {
+    padding: 6px 16px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+}
+
+#myForm {
+    background-color: #eff3f4;
+    border-radius: 9999px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+}
+
+#search {
+    background: transparent;
+    border: none;
+    outline: none;
+    flex: 1;
+}
+
+.trends-box {
+    background-color: #f7f9f9;
+    border-radius: 16px;
+    margin: 16px;
+    padding: 1px 0; /* Prevents margin collapse */
+}
+
+.trends-box h4 {
+    padding: 12px 16px;
+    margin: 0;
+}
+
+.trend-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.trend-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Buttons */
+.post-btn, .small-post-btn {
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.post-btn {
+    width: 90%;
+    padding: 14px;
+    border-radius: 9999px;
+    margin-top: 16px;
+    font-size: 17px;
+}
+
+.small-post-btn {
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 15px;
+}
+
+.small-post-btn:disabled {
+    opacity: 0.5;
+}
+
 
     </style>
 </head>
@@ -156,7 +361,7 @@
             <a href="#" class="nav-item"> Notifications</a>
             <a href="#" class="nav-item">Messages</a>
             <a href="/user/profile" class="nav-item"> Profile</a>
-            <button onclick="window.location.href='/user/postTweet'" class="post-btn">Post</button>
+            <button  class="post-btn">Post</button>
         </nav>
     </aside>
 
@@ -172,14 +377,16 @@
 
         <!-- Tweet Composer -->
         <div class="composer">
+            <form action="/user/addTweet" enctype="multipart/form-data" method="post">
             <img src="avatar.jpg" class="mini-avatar">
             <div class="composer-input">
-                <input type="text" placeholder="What is happening?!">
+                <input type="text" name="tweetText"  placeholder="What is happening?!">
                 <div class="composer-actions">
-                    <div class="icons">🖼️ 📊 😀 📍</div>
-                    <button class="small-post-btn" disabled>Post</button>
+                    <div class="icons"><input name="photos" type="file"></div>
+                    <button class="small-post-btn" >Post</button>
                 </div>
             </div>
+            </form>
         </div>
 
         <div id="tweets" style="cursor: pointer;">
@@ -201,7 +408,10 @@
     <!-- Right Sidebar: Trends & Search -->
     <aside class="trends-column">
         <div class="search-bar">
-            <input type="text" placeholder="Search">
+            <form id="myForm">
+
+                <input id="search" type="text" placeholder="Search"><input type="submit">
+            </form>
         </div>
         <section class="trends-box">
             <h4>Trends for you</h4>
@@ -220,9 +430,12 @@
 </div>
 
 <script>
-    async function getTweets() {
+    async function getTweets(value) {
+        if(!value){
+            value='%'
+        }
         try {
-            const res=await fetch("http://localhost:8080/user/getAllTweets");
+            const res=await fetch(`http://localhost:8080/user/getAllTweets?search=${value}`);
             if(!res.ok){
                 throw new  Error("not found")
             }
@@ -230,9 +443,11 @@
             console.log(data);
             
             const tweetsContainer = document.getElementById('tweets');
+            tweetsContainer.innerHTML=''
 
 // Use lowercase .forEach
 if (data.tweets && Array.isArray(data.tweets)) {
+    
     data.tweets.forEach(t => {
         const article = document.createElement("article");
         article.setAttribute('class', 'tweet');
@@ -264,7 +479,7 @@ if (data.tweets && Array.isArray(data.tweets)) {
             <div class="action">💬 <span>12</span></div>
             <div class="action"  onclick='retweet(${t.tweetId})' >🔁 <span>${t.reTweet}</span></div>
             <div class="action"  onclick='like(${t.tweetId})'>${t.likeMe===1?'❤️':'🤍'}  <span>${t.likeCount}</span></div>
-            <div class="action">📊 <span>1.2K</span></div>
+  
         </div>
     </div>
 `;
@@ -300,7 +515,11 @@ if (data.tweets && Array.isArray(data.tweets)) {
             
         try {
 
-            // const res=await fetch(`http://localhost:8080/user/addTweet/${id}`)
+            const res=await fetch(`http://localhost:8080/user/reTweet/${id}`);
+            const data=await res.json()
+            console.log(data);
+            
+            location.reload();
            
         } catch (error) {
             console.log(error);
@@ -308,6 +527,23 @@ if (data.tweets && Array.isArray(data.tweets)) {
         }
         
     }
+
+
+
+    const form=document.getElementById('myForm');
+    form.addEventListener('submit',async(e)=>{
+        e.preventDefault();
+        const input=document.getElementById('search').value.trim();
+
+        console.log(input);
+        
+        if(!input){
+            return;
+        }
+
+        getTweets(input)
+
+    })
 </script>
 
 </body>

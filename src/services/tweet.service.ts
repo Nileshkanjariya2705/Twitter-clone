@@ -7,9 +7,9 @@ export const addTweet=async(tweet:ITweet)=>{
     return await tweetRepository.save(tweet);
 }
 
-export const getAllTweets=async(userId:number):Promise<ITweet[]>=>{
+export const getAllTweets=async(userId:number,search:string):Promise<ITweet[]>=>{
 
-    const tweets=await tweetRepository.getAll(userId);
+    const tweets=await tweetRepository.getAll(userId,search);
     // const media=await tweetRepository.getAllTweetMedia();
 
     //     const result = tweets.map(tweet => {
@@ -62,4 +62,9 @@ export  const isLike=async(userId:number,tweetId:number)=>{
     }else{
         return false
     }
+}
+
+export async function isRetweetByUser(userId:number,tweetId:number) {
+    return await tweetRepository.isRetweetByUser(userId,tweetId)
+    
 }

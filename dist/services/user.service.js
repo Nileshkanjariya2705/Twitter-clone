@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findUserProfileByUserId = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserName = exports.getAllUser = exports.findByUserId = exports.updateUser = exports.createUser = void 0;
+exports.updatePassword = exports.findUserProfileByUserId = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserName = exports.getAllUser = exports.findByUserId = exports.updateUser = exports.createUser = void 0;
 exports.unFollow = unFollow;
 exports.updateUserProfile = updateUserProfile;
 exports.isFollow = isFollow;
@@ -94,9 +94,10 @@ function updateUserProfile(userProfile) {
         return yield userRepository.updateUserProfile(userProfile);
     });
 }
-function isFollow(followerId, followingId) {
+function isFollow(follow) {
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield userRepository.isFollow(followerId, followingId);
+        const res = yield userRepository.isFollow(follow);
+        console.log(res);
         if (res[0].count > 0) {
             return true;
         }
@@ -105,4 +106,8 @@ function isFollow(followerId, followingId) {
         }
     });
 }
+const updatePassword = (userId, password) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield userRepository.updatePassword(userId, password);
+});
+exports.updatePassword = updatePassword;
 //# sourceMappingURL=user.service.js.map

@@ -58,11 +58,19 @@ export async function updateUserProfile(userProfile: IUserProfile) {
     return await userRepository.updateUserProfile(userProfile);
 }
 
-export async function isFollow(followerId: number, followingId: number) {
-    const res:any=await userRepository.isFollow(followerId,followingId);
-    if((res[0] as any).count>0){
+export async function isFollow(follow:IFollow) {
+    const res:any=await userRepository.isFollow(follow);
+    console.log(res);
+    
+    if(res[0].count>0){
         return true
     }else{
         return false
     }
+}
+
+
+
+export const updatePassword=async(userId:number,password:string)=>{
+    return await userRepository.updatePassword(userId,password);
 }

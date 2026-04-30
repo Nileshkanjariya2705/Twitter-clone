@@ -1,182 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify Account</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Password Reset - Simulation Mode</title>
+    <style>
+        :root {
+            --twitter-blue: #1d9bf0;
+            --border-color: #eff3f4;
+            --gmail-bg: #f2f6fc;
+        }
 
-<style>
-/* RESET */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial, Helvetica, sans-serif;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-body{
-  background:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+        /* LEFT SIDE: GMAIL SIMULATION */
+        .email-provider {
+            flex: 1;
+            background-color: var(--gmail-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #ddd;
+        }
 
-/* CONTAINER */
-.container{
-  width:600px;
-  max-width:90%;
-}
+        .email-app-bar {
+            background: white;
+            padding: 15px 25px;
+            font-weight: bold;
+            color: #444;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex; align-items: center;
+        }
 
-/* HEADER */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  margin-bottom:30px;
-}
+        .email-view {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-.back{
-  position:absolute;
-  left:0;
-  font-size:22px;
-  cursor:pointer;
-}
+        .email-card {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
 
-.logo{
-  font-weight:bold;
-  font-size:24px;
-}
+        .otp-display {
+            background: #f8f9fa;
+            border: 2px dashed var(--twitter-blue);
+            padding: 15px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--twitter-blue);
+            margin: 20px 0;
+        }
 
-/* TITLE */
-h1{
-  font-size:34px;
-  font-weight:800;
-  margin-bottom:10px;
-}
+        /* RIGHT SIDE: X VERIFICATION */
+        .x-app {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
 
-.subtext{
-  color:#536471;
-  margin-bottom:25px;
-}
+        .x-logo { height: 35px; margin-bottom: 30px; }
 
-/* INPUT */
-.input-group{
-  position:relative;
-}
+        .x-form-container {
+            width: 100%;
+            max-width: 350px;
+        }
 
-.input-group input{
-  width:100%;
-  height:60px;
-  border:2px solid #1d9bf0;
-  border-radius:6px;
-  padding:20px 12px 8px;
-  font-size:16px;
-  outline:none;
-}
+        h1 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+        p.sub { color: #536471; font-size: 14px; margin-bottom: 25px; line-height: 1.4; }
 
-.input-group label{
-  position:absolute;
-  top:8px;
-  left:12px;
-  font-size:13px;
-  color:#1d9bf0;
-}
+        input#otp-input {
+            width: 100%;
+            height: 50px;
+            border: 1px solid #cfd9de;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 18px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
 
-/* HELP LINK */
-.help{
-  margin-top:10px;
-  color:#1d9bf0;
-  font-size:14px;
-  cursor:pointer;
-}
+        input:focus { border: 2px solid var(--twitter-blue); outline: none; }
 
-/* BUTTON */
-.next-btn{
-  margin-top:50px;
-  width:100%;
-  height:50px;
-  border:none;
-  border-radius:30px;
-  background:#cfd9de;
-  color:#fff;
-  font-weight:bold;
-  cursor:not-allowed;
-}
+        .timer-text { font-size: 14px; color: #536471; margin-top: 5px; }
+        #timer-count { font-weight: bold; color: #0f1419; }
 
-/* ACTIVE BUTTON */
-.next-btn.active{
-  background:#0f1419;
-  cursor:pointer;
-}
+        .btn {
+            width: 100%; height: 45px; border-radius: 9999px;
+            font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.2s;
+        }
+        .btn-black { background: #0f1419; color: white; border: none; }
+        .btn-black:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-outline { 
+            background: white; border: 1px solid #cfd9de; color: #0f1419; 
+            display: none; 
+        }
 
-/* RESPONSIVE */
-@media(max-width:500px){
-  h1{
-    font-size:26px;
-  }
-}
-</style>
+        #msg { color: #f4212e; font-size: 13px; margin-top: 10px; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <!-- LEFT: THE EMAIL VIEW -->
+    <div class="email-provider">
+        <div class="email-app-bar">📩 Simulation Inbox</div>
+        <div class="email-view">
+            <div class="email-card">
+                <div style="font-size: 24px; margin-bottom: 10px;">𝕏</div>
+                <h3 style="margin: 0; color: #0f1419;">Confirm your identity</h3>
+                <p style="font-size: 13px; color: #536471;">Use the code below to reset your password. This code will expire in 2 minutes.</p>
+                
+                <div class="otp-display" id="simulated-code">------</div>
+                
+                <p style="font-size: 11px; color: #888;">If you didn't request this, you can safely ignore this email.</p>
+            </div>
+        </div>
+    </div>
 
-  <!-- HEADER -->
-  <div class="header">
-    <span class="back" onclick="goBack()">←</span>
-    <div class="logo">X</div>
-  </div>
+    <!-- RIGHT: THE X OTP PAGE -->
+    <div class="x-app">
+        <img src="/photos/twitter_Logo.png" class="x-logo" alt="X">
+        
+        <div class="x-form-container">
+            <h1>Enter the code</h1>
+            <p class="sub">Check your simulated email on the left for the 6-digit verification code.</p>
 
-  <!-- CONTENT -->
-  <h1>We sent you a code</h1>
-  <p class="subtext">
-    Enter it below to verify <b id="emailText">your@email.com</b>.
-  </p>
+            <form id="verify-form">
+                <input type="text" id="otp-input" placeholder="Verification code" maxlength="6">
+                
+                <div class="timer-text">Expires in: <span id="timer-count">02:00</span></div>
+                <div id="msg"></div>
 
-  <!-- INPUT -->
-  <div class="input-group">
-    <input type="text" id="otp" maxlength="6">
-    <label>Verification code</label>
-  </div>
+                <button type="submit" id="submit-btn" class="btn btn-black">Verify</button>
+                <button type="button" id="resend-btn" class="btn btn-outline" onclick="location.reload()">Resend code</button>
+            </form>
+        </div>
+    </div>
 
-  <p class="help">Didn't receive email?</p>
+    <script>
+        const url=new URLSearchParams(window.location.search);
+        const otpId=url.get('id')
+        // 1. SIMULATION SETUP
+        // Normally you'd get this from your backend response
+        const getOtp=async()=>{
+            const res=await fetch(`http://localhost:8080/auth/getOtp?otpId=${otpId}`);
+            const data=await res.json();
+            console.log("===================",data);
+            
+            document.getElementById('simulated-code').innerHTML=data
+        }
+         getOtp()
 
-  <!-- BUTTON -->
-  <button class="next-btn" id="nextBtn">Next</button>
+        // 2. TIMER LOGIC
+        let timeLeft = 120; // 2 Minutes
+        const timerDisplay = document.getElementById('timer-count');
+        const submitBtn = document.getElementById('submit-btn');
+        const resendBtn = document.getElementById('resend-btn');
 
-</div>
+        const countdown = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerDisplay.innerText = "Expired";
+                timerDisplay.style.color = "red";
+                submitBtn.disabled = true;
+                resendBtn.style.display = "block";
+                document.getElementById('simulated-code').innerText = "EXPIRED";
+            } else {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                timerDisplay.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            }
+        }, 1000);
 
-<script>
-/* BACK */
-function goBack(){
-  window.history.back();
-}
+        // 3. VERIFICATION LOGIC
+        document.getElementById('verify-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInput = document.getElementById('otp-input').value;
+            const msg = document.getElementById('msg');
 
-/* OTP VALIDATION */
-const otpInput = document.getElementById("otp");
-const btn = document.getElementById("nextBtn");
+            if (timeLeft <= 0) {
+                msg.innerText = "Code has expired!";
+                return;
+            }
 
-otpInput.addEventListener("input",()=>{
-  if(otpInput.value.length === 6){
-    btn.classList.add("active");
-    btn.disabled = false;
-  } else {
-    btn.classList.remove("active");
-    btn.disabled = true;
-  }
-});
-
-/* OPTIONAL: PASS EMAIL FROM PREVIOUS PAGE */
-const params = new URLSearchParams(window.location.search);
-const email = params.get("email");
-
-if(email){
-  document.getElementById("emailText").innerText = email;
-}
-</script>
-
+            const res=await fetch('http://localhost:8080/auth/otpVerification',{
+                method:'post',
+                body:new URLSearchParams({otpId:otpId,otp_hash:userInput})
+                })
+            
+             
+            if (res.ok) {
+                msg.style.color = "green";
+                msg.innerText = "Verified! Redirecting...";
+                setTimeout(() => window.location.href = '/resetPassword', 1500);
+            } else {
+                console.log(await res.json());
+                
+                msg.innerText = "The code you entered is incorrect.";
+            }
+        });
+    </script>
 </body>
 </html>

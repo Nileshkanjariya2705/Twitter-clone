@@ -1,7 +1,7 @@
 import { ResultSetHeader } from "mysql2";
 import { ILike, IMedia, ITweet } from "../models/user.mode";
 export declare const save: (tweet: ITweet) => Promise<ResultSetHeader>;
-export declare const getAll: (userId: number) => Promise<ITweet[]>;
+export declare const getAll: (userId: number, search: string) => Promise<ITweet[]>;
 export declare const findByUserId: (userId: number) => Promise<ITweet[]>;
 export declare const deleteByTeetId: (tweetId: number) => Promise<ResultSetHeader>;
 export declare const findByTweetId: (tweetId: number) => Promise<ITweet[]>;
@@ -14,4 +14,5 @@ export declare const likeTweet: (like: ILike) => Promise<ResultSetHeader>;
 export declare const getTweetLikeByTweetId: (tweetId: number) => Promise<ResultSetHeader>;
 export declare function unLikeTweet(like: ILike): Promise<ResultSetHeader>;
 export declare const isLikeExist: (userId: number, tweetId: number) => Promise<import("mysql2").QueryResult>;
+export declare function isRetweetByUser(userId: number, tweetId: number): Promise<import("mysql2").QueryResult>;
 //# sourceMappingURL=tweet.repository.d.ts.map

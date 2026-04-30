@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postTweet = exports.editProfile = exports.userProfile = exports.singIn = exports.signup = exports.loginPassword = exports.dashboard = exports.identifier = exports.username = exports.password = exports.profilePic = exports.otpVerification = exports.basicInfo = exports.otpPage = exports.login = exports.home = void 0;
+exports.resetPassword = exports.forgotPassword = exports.postTweet = exports.editProfile = exports.userProfile = exports.singIn = exports.signup = exports.loginPassword = exports.dashboard = exports.identifier = exports.username = exports.password = exports.profilePic = exports.otpVerification = exports.basicInfo = exports.otpPage = exports.login = exports.home = void 0;
 const home = (req, res) => {
     res.render("home");
 };
@@ -65,4 +65,12 @@ const postTweet = (req, res) => {
     res.render("postTweet");
 };
 exports.postTweet = postTweet;
+const forgotPassword = (req, res) => {
+    res.render("forgotPassword");
+};
+exports.forgotPassword = forgotPassword;
+const resetPassword = (req, res) => {
+    res.render('resetPassword');
+};
+exports.resetPassword = resetPassword;
 //# sourceMappingURL=view.controller.js.map

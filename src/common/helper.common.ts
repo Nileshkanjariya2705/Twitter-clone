@@ -28,7 +28,9 @@ export const compareHash=async(plainText:string,hashText:string)=>{
 
 
 export const sendOptViaMail=async(otp:number,otpId:number)=>{
-    console.log("--sending opt--");
+    console.log("otp sending");
+    
+    setOtp(otpId,otp)
 }
 
 export const checkValidity=(time:string)=>{
@@ -63,6 +65,7 @@ export const verifyJwtToken=(token:string)=>{
 
 
 import fs from 'fs';
+import { setOtp } from './otpManage';
 
 export const uploadImage = async (path: string) => {
    return await cloudinary.uploader.upload(path);
@@ -75,3 +78,6 @@ export const genrateUserName=(name:string)=>{
 }
 
 
+export const decodeToken=(token:string)=>{
+    return jwt.decode(token)
+}

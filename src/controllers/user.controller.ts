@@ -3,6 +3,7 @@ import * as userService from '../services/user.service'
 import { IFollow, IUser, IUserProfile } from '../models/user.mode';
 import { log } from 'console';
 import connection from '../config/db';
+// import { follow } from './user.controller';
 
 
 
@@ -17,9 +18,17 @@ export const follow=async(req:Request,res:Response)=>{
             followingId:followingId
         }
 
+        if(await userService.isFollow(follow)){
+            await userService.unFollow(follow)
+
+            res.status(200).json("unfollow success fully")
+        }else{
+            
         await userService.follow(follow);;
 
         res.status(200).json("follw success fully")
+        }
+
 
     } catch (error) {
         console.log("errror during folloow ",error);
@@ -70,14 +79,20 @@ export const getAllUser=async(req:Request,res:Response)=>{
 
 
 export const findUserProfileByUserId=async(req:Request,res:Response)=>{
-    console.log("getting userProfile");
+    console.log("getting userProfile-------------------------------------");
     try {
         let userId:number=parseInt(req.query.userId as string);
         let isFollow=false;
         if(!userId){
                 userId=(req.user as IUser).userId as number
         }else{
-            isFollow=await userService.isFollow(userId as number,(req.user as IUser).userId as number)
+            const follow:IFollow={
+                followerId:(req.user as IUser).userId as number,
+                followingId:userId
+            }
+            isFollow=await userService.isFollow(follow)
+            console.log("userFollow",isFollow);
+            
         }
 
         const user=await userService.findByUserId(userId as number);
@@ -103,18 +118,33 @@ export const saveUserProfile=async(req:Request,res:Response)=>{
     try {
         (await connection).beginTransaction();
         const body=req.body;
+        
+        const userProfile:IUserProfile[]=await userService.findUserProfileByUserId((req.user as IUser).userId as number)
+        
 
-        const file:any=req.files;
+       const files = (req.files as Express.Multer.File[]) || [];
 
-        // console.log(file[0].path);
-        // console.log(file[1].path);
+         const userCoverImageUrl = (files && files[0]) 
+            ? `/upload/${files[0].filename}` 
+            : (userProfile[0] as IUserProfile).userCoverImageUrl;
 
-        const userProfile:IUserProfile={
+        const userProfilePicUrl = (files && files[1]) 
+            ? `/upload/${files[1].filename}` 
+            : (userProfile[0] as IUserProfile).userProfilePicUrl;
+
+        const newUserProfile={
             userId:(req.user as IUser).userId as number,
-            userCoverImageUrl: `/upload/${file[0].originalname}`,
-            userProfilePicUrl:`/upload/${file[1].originalname}`,
+            userCoverImageUrl: userCoverImageUrl,
+            userProfilePicUrl:userProfilePicUrl,
             userBio:body.userBio
         }
+
+
+console.log("-----------------------------------------");
+
+        console.log(userCoverImageUrl);
+        console.log(userProfilePicUrl);
+        
                 
        const user:IUser={
         userFullName:body.userFullName,
@@ -124,7 +154,7 @@ export const saveUserProfile=async(req:Request,res:Response)=>{
        }
 
             await userService.updateUser(user);
-        await userService.updateUserProfile(userProfile);
+        await userService.updateUserProfile(newUserProfile as IUserProfile);
         
 
 
@@ -172,4 +202,10 @@ export const userProfile=async(req:Request,res:Response)=>{
             
         }
         
+}
+
+export async function logout(req:Request,res:Response) {
+    res.clearCookie('accessToken', { path: '/'});
+
+    res.redirect('/signin')
 }

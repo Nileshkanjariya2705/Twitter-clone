@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTweetByTweetId = exports.getTweetByTweetId = exports.getAllOfUser = exports.getAllTweets = exports.addTweet = void 0;
+exports.reTweet = exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTweetByTweetId = exports.getTweetByTweetId = exports.getAllOfUser = exports.getAllTweets = exports.addTweet = void 0;
 const db_1 = __importDefault(require("../config/db"));
 const tweetService = __importStar(require("../services/tweet.service"));
 const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -64,16 +64,19 @@ const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const resultSet = yield tweetService.addTweet(tweetBody);
         console.log("tweet added success full");
         const tweetId = resultSet.insertId;
-        const files = req.files;
-        if (files && files.length > 0) {
+        const files = req.files || [];
+        console.log(files);
+        if (Array.isArray(files) && files.length > 0) {
             console.log("medida contines");
             const length = files.length;
             for (let i = 0; i < length; i++) {
-                const media = {
-                    tweetId: tweetId,
-                    mediaUrl: `upload/${files[i].originalname}`
-                };
-                yield tweetService.addMedia(media);
+                if (files[i]) {
+                    const media = {
+                        tweetId: tweetId,
+                        mediaUrl: `upload/${files[i].originalname}`
+                    };
+                    yield tweetService.addMedia(media);
+                }
             }
         }
         (yield db_1.default).commit();
@@ -88,10 +91,16 @@ const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addTweet = addTweet;
 const getAllTweets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("getting all tweets");
-    // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
+    const value = req.query.search;
     const userId = req.user.userId;
+    let search = '%';
+    if (value != '%') {
+        search = `%${value}%`;
+    }
+    console.log(search);
+    // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
     try {
-        const tweets = yield tweetService.getAllTweets(userId);
+        const tweets = yield tweetService.getAllTweets(userId, search);
         res.status(200).json({
             tweets: tweets
         });
@@ -199,4 +208,38 @@ const unLikeTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.unLikeTweet = unLikeTweet;
+const reTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
+    console.log("retweet post");
+    try {
+        const tweetId = parseInt(req.params.tweetId);
+        const tweet = yield tweetService.findTweetByTweetId(tweetId);
+        console.log(tweet);
+        const postedTweet = yield tweetService.isRetweetByUser(req.user.userId, (_a = tweet[0]) === null || _a === void 0 ? void 0 : _a.tweetId);
+        console.log(postedTweet);
+        if (((_b = tweet[0]) === null || _b === void 0 ? void 0 : _b.userId) === req.user.userId) {
+            res.status(404).json("user can not retweet your own tweet");
+        }
+        else if (postedTweet[0].count > 0) {
+            yield tweetService.deleteTweetByTweetId(postedTweet[0].tweetId);
+            res.status(200).json("un post success");
+        }
+        else {
+            const newTweet = {
+                userId: req.user.userId,
+                tweetText: (_c = tweet[0]) === null || _c === void 0 ? void 0 : _c.tweetText,
+                tweetType: 'RETWEET',
+                parentTweetId: (_d = tweet[0]) === null || _d === void 0 ? void 0 : _d.tweetId
+            };
+            yield tweetService.addTweet(newTweet);
+            console.log("retweet suceess---------------------");
+            res.status(200).json("retweet success fully");
+        }
+    }
+    catch (error) {
+        console.log("error to repost", error);
+        res.status(500).json("tweet not found");
+    }
+});
+exports.reTweet = reTweet;
 //# sourceMappingURL=tweet.controller.js.map

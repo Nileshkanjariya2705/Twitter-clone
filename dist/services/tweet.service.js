@@ -44,13 +44,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLike = exports.getTweetLikeByTweetLike = exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
 exports.unLikeTweet = unLikeTweet;
+exports.isRetweetByUser = isRetweetByUser;
 const tweetRepository = __importStar(require("../repositories/tweet.repository"));
 const addTweet = (tweet) => __awaiter(void 0, void 0, void 0, function* () {
     return yield tweetRepository.save(tweet);
 });
 exports.addTweet = addTweet;
-const getAllTweets = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const tweets = yield tweetRepository.getAll(userId);
+const getAllTweets = (userId, search) => __awaiter(void 0, void 0, void 0, function* () {
+    const tweets = yield tweetRepository.getAll(userId, search);
     // const media=await tweetRepository.getAllTweetMedia();
     //     const result = tweets.map(tweet => {
     //     return {
@@ -101,4 +102,9 @@ const isLike = (userId, tweetId) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.isLike = isLike;
+function isRetweetByUser(userId, tweetId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield tweetRepository.isRetweetByUser(userId, tweetId);
+    });
+}
 //# sourceMappingURL=tweet.service.js.map

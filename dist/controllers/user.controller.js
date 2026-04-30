@@ -46,8 +46,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userProfile = exports.saveUserProfile = exports.findUserProfileByUserId = exports.getAllUser = exports.unFollow = exports.follow = void 0;
+exports.logout = logout;
 const userService = __importStar(require("../services/user.service"));
 const db_1 = __importDefault(require("../config/db"));
+// import { follow } from './user.controller';
 const follow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("follw opration start");
     const followingId = parseInt(req.params.userId);
@@ -57,9 +59,15 @@ const follow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             followerId: followerId,
             followingId: followingId
         };
-        yield userService.follow(follow);
-        ;
-        res.status(200).json("follw success fully");
+        if (yield userService.isFollow(follow)) {
+            yield userService.unFollow(follow);
+            res.status(200).json("unfollow success fully");
+        }
+        else {
+            yield userService.follow(follow);
+            ;
+            res.status(200).json("follw success fully");
+        }
     }
     catch (error) {
         console.log("errror during folloow ", error);
@@ -99,7 +107,7 @@ const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.getAllUser = getAllUser;
 const findUserProfileByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("getting userProfile");
+    console.log("getting userProfile-------------------------------------");
     try {
         let userId = parseInt(req.query.userId);
         let isFollow = false;
@@ -107,7 +115,12 @@ const findUserProfileByUserId = (req, res) => __awaiter(void 0, void 0, void 0, 
             userId = req.user.userId;
         }
         else {
-            isFollow = yield userService.isFollow(userId, req.user.userId);
+            const follow = {
+                followerId: req.user.userId,
+                followingId: userId
+            };
+            isFollow = yield userService.isFollow(follow);
+            console.log("userFollow", isFollow);
         }
         const user = yield userService.findByUserId(userId);
         const userProfile = yield userService.findUserProfileByUserId(userId);
@@ -126,15 +139,23 @@ const saveUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         (yield db_1.default).beginTransaction();
         const body = req.body;
-        const file = req.files;
-        // console.log(file[0].path);
-        // console.log(file[1].path);
-        const userProfile = {
+        const userProfile = yield userService.findUserProfileByUserId(req.user.userId);
+        const files = req.files || [];
+        const userCoverImageUrl = (files && files[0])
+            ? `/upload/${files[0].filename}`
+            : userProfile[0].userCoverImageUrl;
+        const userProfilePicUrl = (files && files[1])
+            ? `/upload/${files[1].filename}`
+            : userProfile[0].userProfilePicUrl;
+        const newUserProfile = {
             userId: req.user.userId,
-            userCoverImageUrl: `/upload/${file[0].originalname}`,
-            userProfilePicUrl: `/upload/${file[1].originalname}`,
+            userCoverImageUrl: userCoverImageUrl,
+            userProfilePicUrl: userProfilePicUrl,
             userBio: body.userBio
         };
+        console.log("-----------------------------------------");
+        console.log(userCoverImageUrl);
+        console.log(userProfilePicUrl);
         const user = {
             userFullName: body.userFullName,
             userName: body.userName,
@@ -142,7 +163,7 @@ const saveUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
             userId: req.user.userId
         };
         yield userService.updateUser(user);
-        yield userService.updateUserProfile(userProfile);
+        yield userService.updateUserProfile(newUserProfile);
         //    const userProfile:IUserProfile={
         //      userProfilePicUrl :
         //    }
@@ -178,4 +199,10 @@ const userProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.userProfile = userProfile;
+function logout(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        res.clearCookie('accessToken', { path: '/' });
+        res.redirect('/signin');
+    });
+}
 //# sourceMappingURL=user.controller.js.map

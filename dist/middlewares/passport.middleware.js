@@ -113,6 +113,7 @@ passport_1.default.use(new passport_jwt_1.Strategy(options, function (payload, d
             }
             else {
                 console.log("middleware fail");
+                // response.redirect('/signin')
                 return done(null, false);
             }
         }

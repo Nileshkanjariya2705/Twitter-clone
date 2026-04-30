@@ -6,94 +6,159 @@
     <title>login</title>
     <link rel="stylesheet" href="/css/home.css">
     <style>
-         .column{
-            /* width: 100%; */
-            /* height: 100vh; */
-            text-align: center;
-        }
 
-         input{
-            width: 22%;
-            height: 50px;
-        }
-        p{
-            color: red;
-        }
+    :root {
+        --twitter-blue: #1d9bf0;
+        --border-color: #eff3f4;
+        --text-secondary: #536471;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: #757575; /* Dim background to simulate modal */
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    #myform {
+        background-color: white;
+        width: 100%;
+        max-width: 600px;
+        min-height: 600px;
+        border-radius: 16px;
+        padding: 20px 80px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+
+    #top-logo img {
+        height: 32px;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 31px;
+        font-weight: 700;
+        margin: 20px 0 32px 0;
+        letter-spacing: -0.5px;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        height: 40px;
+        border-radius: 9999px;
+        border: 1px solid #cfd9de;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        transition: background 0.2s;
+    }
+
+    .btn:hover { background-color: #e6e6e6; }
+
+    .btn-black {
+        background-color: #0f1419;
+        color: white;
+        border: none;
+    }
+
+    .btn-black:hover { background-color: #272c30; }
+
+    .divider {
+        margin: 12px 0;
+        color: #0f1419;
+        display: flex;
+        align-items: center;
+        width: 300px;
+    }
+
+    .divider::before, .divider::after {
+        content: ""; flex: 1; height: 1px; background: #eff3f4; margin: 0 8px;
+    }
+
+    input {
+        width: 300px;
+        height: 50px;
+        border: 1px solid #cfd9de;
+        border-radius: 4px;
+        padding: 12px;
+        font-size: 17px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        border: 2px solid var(--twitter-blue);
+        outline: none;
+    }
+
+    input:disabled { background-color: #f7f9f9; color: #536471; cursor: not-allowed; }
+
+    p { font-size: 15px; color: var(--text-secondary); margin-top: 40px; }
+    a { color: var(--twitter-blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    #msg { color: #f4212e; font-size: 13px; margin: -10px 0 10px 0; }
+
     </style>
 </head>
 <body>
-   
+
 <form id="myform">
+    <picture id="top-logo">
+        <img src="/photos/twitter_Logo.png" alt="X logo">
+    </picture>
 
-<div id="c1">
-             <picture id="top-logo">
-                <img   src="/photos/twitter_Logo.png" alt="no image found">
-            </picture>
-            <!-- twitter content -->
-             <h1><strong style="font-size: 80px;">Sign in to X</strong></h1>
+    <!-- STEP 1: IDENTIFIER -->
+    <div id="c1" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <h1>Sign in to X</h1>
 
+        <button type="button" class="btn" onclick="window.location.href='/auth/google'">
+            <img style="height: 20px;" src="https://img.icons8.com/?size=100&id=17949&format=png" alt="Google">
+            Sign in with Google
+        </button>
 
-             <div >
-                <button class="btn" onclick="window.location.href='/auth/google'"><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with google</span></sup></strong></button>
-             </div>
+        <button type="button" class="btn">
+            <img style="height: 20px;" src="https://img.icons8.com/?size=100&id=95294&format=png" alt="Apple">
+            Sign in with Apple
+        </button>
 
-               <div >
-                <button class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=95294&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with Apple</span></sup></strong></button>
-             </div>
-             <div>-------------------------------OR-----------------------------</div>
-             <div >
-                <input type="text" id="identifier" name="identifier" placeholder="phone ,email address or username">
-             </div>
+        <div class="divider">or</div>
 
-              <div  >
-                <button id="next" style="background-color: black;" class="btn" ><strong style="font-size: 15px; color:white;">Next</strong></button>
-             </div>
+        <input type="text" id="identifier" name="identifier" placeholder="Phone, email, or username">
+        
+        <button type="button" id="next" class="btn btn-black">Next</button>
+        <button type="button" onclick="window.location.href='/forgotPassword'" class="btn">Forgot password?</button>
 
-             <div>
-                <button  class="btn" ><strong style="font-size: 15px;">Forgot password</strong></button>
-             </div>
+        <p>Don’t have an account? <a href="/">Sign up</a></p>
+    </div>
 
+    <!-- STEP 2: PASSWORD -->
+    <div id="c2" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <h1>Enter your password</h1>
+        <p id="msg"></p>
 
-             <div>
-                <p>Don’t have an account? <a href="/">Sign up</a></p>
-             </div>
-        </div>
+        <input disabled type="text" id="userInput">
+        <input type="password" name="userPassword" placeholder="Password" autofocus>
 
- <div id="c2" style="display: none;">
-
-
-<div class="column">
-             <picture id="top-logo" style="display: block;">
-                <img   src="/photos/twitter_Logo.png" alt="no image found">
-            </picture>
-            <!-- twitter content -->
-             <h1 ><strong style="font-size: 80px;" >Sign in to X</strong></h1>
-            <p id="msg"></p>
-
-             <div >
-                <input disabled type="text" id="userInput" placeholder="phone ,email address or username">
-             </div>
-
-             <div id="password">
-                <input type="text" name="userPassword" placeholder="password">
-             </div>
-
-              <div >
-                <button   style="background-color: black;" class="btn" ><strong style="font-size: 15px; color:white;">Next</strong></button>
-             </div>
-          
-             <div>
-                <button  class="btn" ><strong style="font-size: 15px;">Forgot password</strong></button>
-             </div>
-
-
-             <div>
-                <p>Don’t have an account? <a href="/">Sign up</a></p>
-             </div>
-        </div>
-
-</div>
- </div>       
+        <button type="submit" class="btn btn-black" style="margin-top: 20px;">Log in</button>
+        
+        <p style="margin-top: 20px;">Don’t have an account? <a href="/">Sign up</a></p>
+    </div>
+</form>   
 
         <script>
            

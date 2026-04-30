@@ -366,6 +366,8 @@ body {
         const action= document.getElementById('action');
         const url=new URLSearchParams(window.location.search);
         const userId=url.get('userId')
+        // console.log(userId);
+        
         async function getUserProfile() {
             try {
                 const res=await fetch(`http://localhost:8080/user/getUserProfile?userId=${userId}`)
@@ -380,14 +382,14 @@ body {
                     console.log("equal-------------------------------");
                     
                     action.innerHTML=`
-            <button class="btn-edit" onclick="window.location.href='/user/editProfile'">Edit profile</button>
+                     <button class="btn-edit" onclick="window.location.href='/user/editProfile'">Edit profile</button>
                     `
                 }else{
                     console.log("not equla-------------------------------");
 
                     action.innerHTML=`
                         <button class="btn-edit" onclick="follow(${data.user[0].userId})" >
-                             follow
+                            ${data.isFollow?'Following':'Follow'}
                         </button>
                     `
 
@@ -396,7 +398,7 @@ body {
                 document.getElementById("userFullName").innerHTML=data.user[0].userFullName
                 document.getElementById("userName").innerHTML=data.user[0].userName
                 document.getElementById("userBio").innerHTML=data.userProfile[0].userBio
-                document.getElementById("createdAt").innerHTML=data.user[0].created_at
+                document.getElementById("createdAt").innerHTML=new Date(data.user[0].created_at).toLocaleString()
                 document.getElementById("follower").innerHTML=data.userProfile[0].followerCount
                 document.getElementById("following").innerHTML=data.userProfile[0].followingCount
                 document.getElementById("userCoverImage").src=`${data.userProfile[0].userCoverImageUrl}`
@@ -444,7 +446,8 @@ function renderTweets(tweets) {
                 </div>
                 <!-- Cleaned up: only one more-options-container -->
                 <div class="more-options-container">
-                    <div class="more-options" onclick="toggleDeleteMenu(event, ${t.tweetId})">···</div>
+                    ${userId==null?`<div  class="more-options" onclick="toggleDeleteMenu(event, ${t.tweetId})">···</div>`:''}
+                    
                     <div id="menu-${t.tweetId}" class="delete-menu hidden">
                         <button onclick="deleteTweet(${t.tweetId})" class="delete-btn">
                             <span class="icon">🗑️</span> Delete
@@ -458,9 +461,8 @@ function renderTweets(tweets) {
             </div>
             <div class="tweet-actions">
                 <div class="action"><span class="icon">💬</span><span>0</span></div>
-                <div class="action"><span class="icon">🔁</span><span>0</span></div>
+                <div class="action" ><span class="icon">🔁</span><span>${t.reTweet}</span></div>
                 <div class="action like ${heartClass}"><span class="icon">${heartIcon}</span><span>${t.likeCount || 0}</span></div>
-                <div class="action"><span class="icon">📊</span><span>0</span></div>
             </div>
         </div>
     `;
@@ -521,19 +523,20 @@ async function deleteTweet(tweetId) {
 
         if (res.ok) {
             // --- The Modern Way: Update UI without refresh ---
-            const tweetElement = document.getElementById(`tweet-row-${tweetId}`);
+            // const tweetElement = document.getElementById(`tweet-row-${tweetId}`);
             
-            if (tweetElement) {
-                // Add a simple fade-out effect
-                tweetElement.style.transition = "0.3s";
-                tweetElement.style.opacity = "0";
-                tweetElement.style.transform = "translateX(20px)";
+            // if (tweetElement) {
+            //     // Add a simple fade-out effect
+            //     tweetElement.style.transition = "0.3s";
+            //     tweetElement.style.opacity = "0";
+            //     tweetElement.style.transform = "translateX(20px)";
 
-                // Remove it from the DOM after the animation finishes
-                setTimeout(() => {
-                    tweetElement.remove();
-                }, 300);
-            }
+            //     // Remove it from the DOM after the animation finishes
+            //     setTimeout(() => {
+            //         tweetElement.remove();
+            //     }, 300);
+            // }
+            location.reload()
         }
     } catch (err) {
         console.error("Delete failed:", err);

@@ -69,7 +69,11 @@ export async function unFollow(follow: IFollow):Promise<ResultSetHeader> {
 }
 
 export const findUserProfile=async(userId:number):Promise<IUserProfile[]>=>{
-    const [result]=await (await connection).query<IUserProfile[] & RowDataPacket[][]>(`select * from userProfile where userId=?`,[userId])
+    const [result]=await (await connection).query<IUserProfile[] & RowDataPacket[][]>(`select * ,
+        (select count(*) from userFollows where followerId=up.userId) as followingCount,
+        (select count(*) from userFollows where followingId=up.userId) as followerCount
+        from userProfile as up
+         where up.userId=?`,[userId])
     return result;
 }
 
@@ -84,7 +88,15 @@ export async function updateUserProfile(userProfile: IUserProfile) {
 }
 
 
-export async function isFollow(followerId: number, followingId: number) {
-    const [result]=await (await connection).query(`select count(*) as count where followerId=? and followingId=?`,[followerId,followingId])
+export async function isFollow(follow:IFollow) {
+    const [result]=await (await connection).query(`select count(*) as count from userFollows where followerId=? and followingId=?`,[follow.followerId,follow.followingId])
+    return result
+}
+
+
+export const updatePassword=async(userId:number,password:string)=>{
+     const [result]=await (await connection).query(`
+        update users set userPassword=? where userId=?
+        `,[password,userId])
     return result
 }

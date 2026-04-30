@@ -5,7 +5,8 @@ const storage=multer.diskStorage({
         done(null,'./public/upload')
     },
     filename:function(req,file,done){
-        done(null,file.originalname)
+         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+          done(null, uniqueSuffix + '-' + file.originalname);
     }
 })
 

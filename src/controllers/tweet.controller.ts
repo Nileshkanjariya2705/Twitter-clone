@@ -28,19 +28,24 @@ export const addTweet=async(req:Request,res:Response)=>{
     console.log("tweet added success full");
         
     const tweetId:number=resultSet.insertId;
-    const files= req.files as Express.Multer.File[];
+    const files= (req.files as Express.Multer.File[]) || [];
+        console.log(files);
         
-    if( files && files.length>0){
+    if( Array.isArray(files) && files.length > 0){
         console.log("medida contines");
         
         const length:number=files.length as number
         for(let i=0; i<length; i++){
-            const media={
+            if(files[i]){
+                 const media={
                 tweetId:tweetId as number,
                 mediaUrl: `upload/${(files[i] as any).originalname}` 
             }
 
             await tweetService.addMedia(media as IMedia)
+            }
+            
+           
         }
     }
     (await connection).commit();
@@ -56,11 +61,19 @@ export const addTweet=async(req:Request,res:Response)=>{
 export const getAllTweets=async(req:Request,res:Response)=>{
     console.log("getting all tweets");
 
-
-    // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
+    const value=req.query.search  as string;
     const userId=(req.user as IUser).userId as number
+    
+  
+    let search='%'
+    if(value!='%'){
+        search=`%${value}%`
+    }
+    console.log(search);
+    
+    // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
     try {
-        const tweets=await tweetService.getAllTweets(userId)
+        const tweets=await tweetService.getAllTweets(userId,search as string)
          res.status(200).json({
             tweets:tweets
         });
@@ -187,6 +200,46 @@ export const unLikeTweet=async(req:Request,res:Response)=>{
     } catch (error) {
         console.log("error during dislike tweet",error);
         res.status(500).json("tweet not dis like")
+        
+    }
+    
+}
+
+
+export const reTweet=async(req:Request,res:Response)=>{
+    console.log("retweet post");
+    try {
+        const tweetId:number=parseInt(req.params.tweetId as string)
+        const tweet:ITweet[]=await tweetService.findTweetByTweetId(tweetId);
+        console.log(tweet);
+        const postedTweet:any= await tweetService.isRetweetByUser((req.user as IUser).userId as number,tweet[0]?.tweetId as number);
+
+        console.log(postedTweet);
+        
+
+        if(tweet[0]?.userId===(req.user as IUser).userId as number){
+            res.status(404).json("user can not retweet your own tweet")
+        }else if(postedTweet[0].count>0){
+            await tweetService.deleteTweetByTweetId(postedTweet[0].tweetId);
+            res.status(200).json("un post success")
+        } else{
+            const newTweet={
+                userId:(req.user as IUser).userId as number,
+                tweetText:tweet[0]?.tweetText,
+                tweetType:'RETWEET',
+                parentTweetId:tweet[0]?.tweetId
+            }
+             await tweetService.addTweet(newTweet as ITweet);
+             console.log("retweet suceess---------------------");
+             
+            res.status(200).json("retweet success fully")
+        }
+        
+
+    } catch (error) {
+        console.log("error to repost",error);
+        res.status(500).json("tweet not found")
+        
         
     }
     

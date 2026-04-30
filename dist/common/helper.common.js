@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genrateUserName = exports.uploadImage = exports.verifyJwtToken = exports.genrateJwtToken = exports.checkValidity = exports.sendOptViaMail = exports.compareHash = exports.genrateHash = exports.createOtp = void 0;
+exports.decodeToken = exports.genrateUserName = exports.uploadImage = exports.verifyJwtToken = exports.genrateJwtToken = exports.checkValidity = exports.sendOptViaMail = exports.compareHash = exports.genrateHash = exports.createOtp = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
@@ -33,7 +33,8 @@ const compareHash = (plainText, hashText) => __awaiter(void 0, void 0, void 0, f
 });
 exports.compareHash = compareHash;
 const sendOptViaMail = (otp, otpId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("--sending opt--");
+    console.log("otp sending");
+    (0, otpManage_1.setOtp)(otpId, otp);
 });
 exports.sendOptViaMail = sendOptViaMail;
 const checkValidity = (time) => {
@@ -56,6 +57,7 @@ const verifyJwtToken = (token) => {
     return jsonwebtoken_1.default.verify(token, jwtSecretKey);
 };
 exports.verifyJwtToken = verifyJwtToken;
+const otpManage_1 = require("./otpManage");
 const uploadImage = (path) => __awaiter(void 0, void 0, void 0, function* () {
     return yield cloudinary_1.default.uploader.upload(path);
 });
@@ -64,4 +66,8 @@ const genrateUserName = (name) => {
     return `${name}+123`;
 };
 exports.genrateUserName = genrateUserName;
+const decodeToken = (token) => {
+    return jsonwebtoken_1.default.decode(token);
+};
+exports.decodeToken = decodeToken;
 //# sourceMappingURL=helper.common.js.map

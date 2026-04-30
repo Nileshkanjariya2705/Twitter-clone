@@ -67,3 +67,10 @@ export const editProfile=(req:Request,res:Response)=>{
 export const postTweet=(req:Request,res:Response)=>{
     res.render("postTweet")
 }
+
+export const forgotPassword=(req:Request,res:Response)=>{
+    res.render("forgotPassword")
+}
+export const resetPassword=(req:Request,res:Response)=>{
+    res.render('resetPassword')
+}

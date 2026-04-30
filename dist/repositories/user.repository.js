@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findUserProfile = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserByUserName = exports.updateUser = exports.createUser = exports.getAllUser = exports.findByUserId = void 0;
+exports.updatePassword = exports.findUserProfile = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserByUserName = exports.updateUser = exports.createUser = exports.getAllUser = exports.findByUserId = void 0;
 exports.unFollow = unFollow;
 exports.updateUserProfile = updateUserProfile;
 exports.isFollow = isFollow;
@@ -72,7 +72,11 @@ function unFollow(follow) {
     });
 }
 const findUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const [result] = yield (yield db_1.default).query(`select * from userProfile where userId=?`, [userId]);
+    const [result] = yield (yield db_1.default).query(`select * ,
+        (select count(*) from userFollows where followerId=up.userId) as followingCount,
+        (select count(*) from userFollows where followingId=up.userId) as followerCount
+        from userProfile as up
+         where up.userId=?`, [userId]);
     return result;
 });
 exports.findUserProfile = findUserProfile;
@@ -87,10 +91,17 @@ function updateUserProfile(userProfile) {
         return result;
     });
 }
-function isFollow(followerId, followingId) {
+function isFollow(follow) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield (yield db_1.default).query(`select count(*) as count where followerId=? and followingId=?`, [followerId, followingId]);
+        const [result] = yield (yield db_1.default).query(`select count(*) as count from userFollows where followerId=? and followingId=?`, [follow.followerId, follow.followingId]);
         return result;
     });
 }
+const updatePassword = (userId, password) => __awaiter(void 0, void 0, void 0, function* () {
+    const [result] = yield (yield db_1.default).query(`
+        update users set userPassword=? where userId=?
+        `, [password, userId]);
+    return result;
+});
+exports.updatePassword = updatePassword;
 //# sourceMappingURL=user.repository.js.map

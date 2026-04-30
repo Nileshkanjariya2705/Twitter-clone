@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLikeExist = exports.getTweetLikeByTweetId = exports.likeTweet = exports.getAllTweetMedia = exports.findMediaByTweetId = exports.updateMedia = exports.saveMedia = exports.updateTweet = exports.findByTweetId = exports.deleteByTeetId = exports.findByUserId = exports.getAll = exports.save = void 0;
 exports.unLikeTweet = unLikeTweet;
+exports.isRetweetByUser = isRetweetByUser;
 const db_1 = __importDefault(require("../config/db"));
 const save = (tweet) => __awaiter(void 0, void 0, void 0, function* () {
     const [result] = yield (yield db_1.default).query(`
@@ -24,7 +25,8 @@ const save = (tweet) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 exports.save = save;
-const getAll = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getAll = (userId, search) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchPattern = search ? `%${search}%` : null;
     const [result] = yield (yield db_1.default).query(`
                select u.userName,u.userFullName,up.userProfilePicUrl,u.userId,t.tweetId,m.mediaUrl,m.mediaType,
           t.tweetText, 
@@ -34,8 +36,7 @@ const getAll = (userId) => __awaiter(void 0, void 0, void 0, function* () {
           m.mediaUrl,
           (select count(*) from tweetLike where tweetId=t.tweetId) as likeCount,
           (select count(*) from tweetLike where tweetId=t.tweetId and userId=? ) as likeMe,
-          (select count(*) from tweets where tweetType='RETWEET') as reTweet
-          
+          (select count(*) from tweets where  parentTweetId=t.tweetId) as reTweet
                from tweets as t
                join users as u
                on t.userId=u.userId	
@@ -43,8 +44,9 @@ const getAll = (userId) => __awaiter(void 0, void 0, void 0, function* () {
                on up.userId=u.userId
                left join tweetMedia as m 
                on m.tweetId=t.tweetId
+               where u.userName like ?
                order by t.created_at desc
-          `, [userId]);
+          `, [userId, search]);
     return result;
 });
 exports.getAll = getAll;
@@ -58,7 +60,7 @@ const findByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () 
           m.mediaUrl,
           (select count(*) from tweetLike where tweetId=t.tweetId) as likeCount,
           (select count(*) from tweetLike where tweetId=t.tweetId and userId=? ) as likeMe,
-          (select count(*) from tweets where tweetType='RETWEET') as reTweet
+          (select count(*) from tweets where  parentTweetId=t.tweetId) as reTweet
                from tweets as t
                join users as u
                on t.userId=u.userId	
@@ -137,4 +139,10 @@ const isLikeExist = (userId, tweetId) => __awaiter(void 0, void 0, void 0, funct
     return result;
 });
 exports.isLikeExist = isLikeExist;
+function isRetweetByUser(userId, tweetId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield (yield db_1.default).query(`select tweetId , count(*) as count from tweets where userId=? and parentTweetId=? and tweetType='RETWEET'`, [userId, tweetId]);
+        return result;
+    });
+}
 //# sourceMappingURL=tweet.repository.js.map

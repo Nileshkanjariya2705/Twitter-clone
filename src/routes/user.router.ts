@@ -32,6 +32,11 @@ userRouter.post("/updateProfile",userController.userProfile)
 
 userRouter.get('/getUserProfile',userController.findUserProfileByUserId)
 
+userRouter.get('/reTweet/:tweetId',tweetController.reTweet)
+
 userRouter.post('/saveUserProfile',upload.array('photos', 2),userController.saveUserProfile)
 
+
+
+userRouter.get('/logout',userController.logout)
 export default userRouter;

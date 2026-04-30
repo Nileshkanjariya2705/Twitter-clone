@@ -44,6 +44,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
 exports.googleCallBack = googleCallBack;
+exports.sendOtpToUi = sendOtpToUi;
+exports.updatePassword = updatePassword;
+exports.forgotPassword = forgotPassword;
 const userService = __importStar(require("../services/user.service"));
 const helper = __importStar(require("../common/helper.common"));
 const authService = __importStar(require("../services/auth.service"));
@@ -60,17 +63,20 @@ const sendOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // genrate otp
         const otp = helper.createOtp();
         // create hash
-        const otpHash = yield helper.genrateHash(otp.toString());
-        console.log(otpHash);
-        optBody.otp_hash = otpHash;
-        console.log(optBody);
+        // const otpHash:string=await helper.genrateHash(otp.toString() )
+        // console.log(otpHash);
+        // optBody.otp_hash=otpHash;
+        // console.log(optBody);
         // save otp in database
-        const result = yield authService.addOtpTODatabase(optBody);
+        const result = yield authService.addOtpTODatabase({
+            identifier: optBody.userEmail,
+            otp_hash: otp.toString()
+        });
         // last inserted id
         const otpId = result.insertId;
         console.log("otp is:", otp, "otpId:", otpId);
         // otp send to user 
-        helper.sendOptViaMail(otp, otp);
+        helper.sendOptViaMail(otpId, otp);
         res.status(201).json({
             msg: "otp sent success fully",
             otpId: otpId
@@ -99,8 +105,8 @@ const optVerification = (req, res) => __awaiter(void 0, void 0, void 0, function
             res.status(404).json("otp is expire");
             return;
         }
-        const isOtpValid = yield helper.compareHash(otpBody.otp_hash, (_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp);
-        if (isOtpValid) {
+        if (otpBody.otp_hash == ((_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp)) {
+            console.log("otp is correct");
             res.status(200).json("otp is valid");
         }
         else {
@@ -263,6 +269,72 @@ function googleCallBack(req, res) {
         catch (error) {
             console.log("google callback", error);
             res.status(500).json("can not redirect in dashboard");
+        }
+    });
+}
+function sendOtpToUi(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("get otp=");
+        const otpId = parseInt(req.query.otpId);
+        console.log(otpId);
+        const otp = yield authService.findOtpById(otpId);
+        res.status(200).json(otp[0].otp);
+    });
+}
+function updatePassword(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("updating password");
+        try {
+            const body = req.body;
+            console.log(body);
+            const token = req.cookies.resetToken;
+            const payload = helper.decodeToken(token);
+            console.log(payload);
+            const password_hash = yield helper.genrateHash(body.newPassword);
+            yield userService.updatePassword(payload.userId, password_hash);
+            res.status(200).json(" passsword updated successfully");
+        }
+        catch (error) {
+            console.log("errro during update password", error);
+            res.status(500).json('password not updated');
+        }
+    });
+}
+function forgotPassword(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b, _c;
+        console.log("fotgot password");
+        try {
+            const body = req.body;
+            const userEmail = body.userEmail;
+            const user = yield userService.findUserEmail(userEmail);
+            if (user && user.length > 0) {
+                const otp = helper.createOtp();
+                const otp_hash = yield helper.genrateHash(otp.toString());
+                const result = yield authService.addOtpTODatabase({
+                    identifier: (_a = user[0]) === null || _a === void 0 ? void 0 : _a.userEmail,
+                    otp_hash: otp_hash,
+                });
+                helper.sendOptViaMail(otp, result.insertId);
+                const { accessToken, refereshToken } = helper.genrateJwtToken({
+                    userId: (_b = user[0]) === null || _b === void 0 ? void 0 : _b.userId,
+                    identifier: (_c = user[0]) === null || _c === void 0 ? void 0 : _c.userEmail
+                });
+                console.log(result.insertId);
+                res.cookie('resetToken', accessToken, {
+                    httpOnly: true,
+                    secure: true,
+                    maxAge: 60 * 1000 * 15
+                });
+                res.status(200).json(result.insertId);
+            }
+            else {
+                res.status(404).json("email not found");
+            }
+        }
+        catch (error) {
+            console.log("error to forgot password");
+            res.status(500).json("some thing went worong");
         }
     });
 }

@@ -4,105 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>profile</title>
-    <style>
-        /* 1. Base Styles & Variables */
-        .userProfile{
-            margin-left: auto;
-            margin-right: auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 60%;
-            border: 1px solid black;
+   <style>
+    :root {
+        --twitter-blue: #1d9bf0;
+        --border-color: #eff3f4;
+    }
+    body { font-family: sans-serif; background: #fff; margin: 0; }
 
-        }
-        .form-group
-        {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        input{
-            width: 100%;
-        }
-    </style>
+    .userProfile {
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid var(--border-color);
+        position: relative;
+    }
+
+    /* Header / Cover Area */
+    .cover-container {
+        width: 100%;
+        height: 200px;
+        background: #cfd9de;
+        position: relative;
+        overflow: hidden;
+    }
+    #cover-preview { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Profile Pic Overlap */
+    .avatar-container {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        background: #eee;
+        position: absolute;
+        top: 140px;
+        left: 20px;
+        overflow: hidden;
+    }
+    #profile-preview { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Hidden Inputs but clickable via labels */
+    .file-label {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        opacity: 0;
+        transition: 0.2s;
+    }
+    .cover-container:hover .file-label, .avatar-container:hover .file-label { opacity: 1; }
+    input[type="file"] { display: none; }
+
+    /* Form Fields */
+    .form-content { padding: 80px 20px 20px; }
+    .form-group {
+        margin-bottom: 25px;
+        border: 1px solid #cfd9de;
+        border-radius: 4px;
+        padding: 8px;
+    }
+    .form-group:focus-within { border-color: var(--twitter-blue); outline: 1px solid var(--twitter-blue); }
+    
+    label { display: block; font-size: 13px; color: #536471; }
+    input[type="text"] {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 17px;
+        margin-top: 4px;
+    }
+
+    .submit-btn {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 9999px;
+        font-weight: bold;
+        float: right;
+        cursor: pointer;
+    }
+</style>
 </head>
 <body>
-  <div class="userProfile">
-            <!-- Profile Picture
-            Cover Image
-            Full Name
-            Unique Username
-            Bio
-            Email
-            Joined Date -->
 
-    <form  id="myForm">
-        <div class="form-group">
-            <label for="">userCoverImage</label>
-            <input type="file" name="photos">
+
+<div class="userProfile">
+    <form id="myForm">
+        <!-- Cover Section -->
+        <div class="cover-container">
+            <img id="cover-preview" src="">
+            <label class="file-label">📷<input type="file" name="photos" id="userCoverImage" onchange="preview(this, 'cover-preview')"></label>
         </div>
 
-        <div class="form-group">
-            <label for="">userProfilePic</label>
-            <input type="file" name="photos">
+        <!-- Avatar Section -->
+        <div class="avatar-container">
+            <img id="profile-preview" src="">
+            <label class="file-label">📷<input type="file" name="photos" id="userProfilePic" onchange="preview(this, 'profile-preview')"></label>
         </div>
 
-         <div class="form-group">
-            <label for="">userFullName</label>
-            <input type="text" name="userFullName">
-        </div>
-
-         <div class="form-group">
-            <label for="">userName</label>
-            <input type="text" name="userName">
-        </div>
-
-
-         <div class="form-group">
-            <label for="">Bio</label>
-            <input type="text" name="userBio">
-        </div>
-
-
-         <div class="form-group">
-            <label for="">userEmail</label>
-            <input type="text" name="userEmail">
-        </div>
-
-
-         <div class="form-group">
-            <label for="">joinde date</label>
-            <input type="text" readonly disabled  name="joinDate">
-        </div>
-
-
-         <div class="form-group">
-          
-            <input type="submit" value="submit">
+        <div class="form-content">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="userFullName">
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="userName">
+            </div>
+            <div class="form-group">
+                <label>Bio</label>
+                <input type="text" name="userBio">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" name="userEmail">
+            </div>
+            <button type="submit" class="submit-btn">Save</button>
         </div>
     </form>
-  </div>
-
+</div>
   <script>
-         async function getData() {
-        try {
-            const res=await fetch("http://localhost:8080/user/getUserProfile");
-            // if(!res.ok){
-            //     throw new Error("can not find data")
-            // }
-            const data=await res.json();
-
-            document.getElementsByName('userFullName')[0].value=data.user[0].userFullName
-            document.getElementsByName('userName')[0].value=data.user[0].userName
-            document.getElementsByName('userBio')[0].value=data.userProfile[0]?.userBio ||''
-            document.getElementsByName('userEmail')[0].value=data.user[0].userEmail
-            document.getElementsByName('joinDate')[0].value=data.user[0].created_at
-        } catch (error) {
-            throw new Error("can not data");
-            
-        }
+       
+       // Function to show image preview instantly when user selects a file
+function preview(input, targetId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => document.getElementById(targetId).src = e.target.result;
+        reader.readAsDataURL(input.files[0]);
     }
-    getData()
+}
+
+async function getData() {
+    try {
+        const res = await fetch("http://localhost:8080/user/getUserProfile");
+        const data = await res.json();
+        const profile = data.userProfile[0];
+        const user = data.user[0];
+
+        // Set Text values
+        document.getElementsByName('userFullName')[0].value = user.userFullName;
+        document.getElementsByName('userName')[0].value = user.userName;
+        document.getElementsByName('userBio')[0].value = profile?.userBio || '';
+        document.getElementsByName('userEmail')[0].value = user.userEmail;
+
+        // Set Image Src (Using the display IDs now)
+        if(profile.userCoverImageUrl) document.getElementById('cover-preview').src = profile.userCoverImageUrl;
+        if(profile.userProfilePicUrl) document.getElementById('profile-preview').src = profile.userProfilePicUrl;
+        
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+getData();
+
 
 
     const form =document.getElementById('myForm');
