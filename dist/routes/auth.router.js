@@ -43,6 +43,7 @@ const authRouter = (0, express_1.Router)();
 authRouter.use(passport_middleware_1.default.initialize());
 authRouter.post("/sendOtp", authController.sendOtp);
 authRouter.post("/otpVerification", authController.optVerification);
+authRouter.post("/checkOtp", authController.checkOpt);
 authRouter.post("/isUserNameExist", authController.isUserNameExist);
 authRouter.post("/addUser", authController.saveUser);
 authRouter.post("/login", authController.login);

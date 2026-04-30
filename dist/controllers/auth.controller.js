@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
+exports.checkOpt = exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
 exports.googleCallBack = googleCallBack;
 exports.sendOtpToUi = sendOtpToUi;
 exports.updatePassword = updatePassword;
@@ -63,14 +63,14 @@ const sendOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // genrate otp
         const otp = helper.createOtp();
         // create hash
-        // const otpHash:string=await helper.genrateHash(otp.toString() )
-        // console.log(otpHash);
-        // optBody.otp_hash=otpHash;
-        // console.log(optBody);
+        const otpHash = yield helper.genrateHash(otp.toString());
+        console.log(otpHash);
+        optBody.otp_hash = otpHash;
+        console.log(optBody);
         // save otp in database
         const result = yield authService.addOtpTODatabase({
-            identifier: optBody.userEmail,
-            otp_hash: otp.toString()
+            identifier: optBody.identifier,
+            otp_hash: otpHash
         });
         // last inserted id
         const otpId = result.insertId;
@@ -105,7 +105,8 @@ const optVerification = (req, res) => __awaiter(void 0, void 0, void 0, function
             res.status(404).json("otp is expire");
             return;
         }
-        if (otpBody.otp_hash == ((_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp)) {
+        const isValid = yield helper.compareHash(otpBody.otp_hash, (_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp);
+        if (isValid) {
             console.log("otp is correct");
             res.status(200).json("otp is valid");
         }
@@ -310,16 +311,16 @@ function forgotPassword(req, res) {
             const user = yield userService.findUserEmail(userEmail);
             if (user && user.length > 0) {
                 const otp = helper.createOtp();
-                const otp_hash = yield helper.genrateHash(otp.toString());
                 const result = yield authService.addOtpTODatabase({
                     identifier: (_a = user[0]) === null || _a === void 0 ? void 0 : _a.userEmail,
-                    otp_hash: otp_hash,
+                    otp_hash: otp.toString(),
                 });
                 helper.sendOptViaMail(otp, result.insertId);
                 const { accessToken, refereshToken } = helper.genrateJwtToken({
                     userId: (_b = user[0]) === null || _b === void 0 ? void 0 : _b.userId,
                     identifier: (_c = user[0]) === null || _c === void 0 ? void 0 : _c.userEmail
                 });
+                console.log(accessToken);
                 console.log(result.insertId);
                 res.cookie('resetToken', accessToken, {
                     httpOnly: true,
@@ -338,4 +339,35 @@ function forgotPassword(req, res) {
         }
     });
 }
+const checkOpt = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    console.log("opt verification start");
+    //     {
+    //     "otpId":"2",
+    //     "otp_hash":"809782"
+    //        }
+    try {
+        const otpBody = req.body;
+        console.log(otpBody);
+        const databaseOtp = yield authService.findOtpById(otpBody.otpId);
+        console.log(databaseOtp);
+        const isOtpExpire = helper.checkValidity((_a = databaseOtp[0]) === null || _a === void 0 ? void 0 : _a.genrateTime);
+        if (!isOtpExpire) {
+            res.status(404).json("otp is expire");
+            return;
+        }
+        if (otpBody.otp_hash === ((_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp)) {
+            console.log("otp is correct");
+            res.status(200).json("otp is valid");
+        }
+        else {
+            res.status(404).json("invalid otp");
+        }
+    }
+    catch (error) {
+        console.log("error during otp check otp", error);
+        res.status(500).json("error to compare otp");
+    }
+});
+exports.checkOpt = checkOpt;
 //# sourceMappingURL=auth.controller.js.map

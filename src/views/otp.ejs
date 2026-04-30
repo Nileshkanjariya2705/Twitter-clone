@@ -200,7 +200,7 @@
                 return;
             }
 
-            const res=await fetch('http://localhost:8080/auth/otpVerification',{
+            const res=await fetch('http://localhost:8080/auth/checkOtp',{
                 method:'post',
                 body:new URLSearchParams({otpId:otpId,otp_hash:userInput})
                 })

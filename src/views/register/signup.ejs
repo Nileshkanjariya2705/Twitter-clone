@@ -3,383 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>signup page</title>
+    <title>Sign up for X</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="/css/home.css">
-   <style>
-/* RESET */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial, Helvetica, sans-serif;
-}
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-body{
-  background:#fff;
-}
+        body {
+            background: #fff;
+            color: #0f1419;
+            overflow-x: hidden;
+        }
 
-/* OPEN BUTTON PAGE */
-.container{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
+        /* LANDING PAGE LAYOUT */
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
 
-.open-btn{
-  padding:12px 20px;
-  border-radius:30px;
-  border:none;
-  background:#0f1419;
-  color:#fff;
-  cursor:pointer;
-}
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-/* MODAL */
-.modal-overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(91,112,131,0.4);
-  /* display:flex; */
-  align-items:center;
-  justify-content:center;
-}
+        #twitter {
+            align-items: center;
+            background-color: #fff;
+            flex: 1.2;
+        }
 
-.modal{
-  width:600px;
-  background:#fff;
-  border-radius:16px;
-  padding:20px 30px;
-}
+        #twitter img {
+            max-height: 350px;
+            width: auto;
+        }
 
-/* HEADER */
-.modal-header{
-  /* display:flex; */
-  justify-content:center;
-  position:relative;
-}
+        .right-content {
+            padding: 36px;
+            max-width: 700px;
+        }
 
-.close-btn{
-  position:absolute;
-  left:0;
-  font-size:24px;
-  cursor:pointer;
-}
+        #top-logo img {
+            height: 45px;
+            margin-bottom: 48px;
+        }
 
-/* TITLE */
-.modal-content h2{
-  font-size:28px;
-  margin:20px 0;
-}
+        h1 strong {
+            font-size: 64px;
+            font-weight: 900;
+            letter-spacing: -1.2px;
+            line-height: 1.2;
+            display: block;
+            margin-bottom: 48px;
+        }
 
-/* INPUT */
-.input-group{
-  position:relative;
-  margin-bottom:20px;
-}
+        h2 strong {
+            font-size: 31px;
+            font-weight: 900;
+            display: block;
+            margin-bottom: 32px;
+        }
 
-.input-group input{
-  width:100%;
-  height:56px;
-  border:1px solid #cfd9de;
-  border-radius:6px;
-  padding:18px 12px 6px;
-  font-size:16px;
-  outline:none;
-}
+        /* BUTTONS */
+        .btn-wrapper {
+            max-width: 300px;
+            width: 100%;
+        }
 
-.input-group label{
-  position:absolute;
-  top:18px;
-  left:12px;
-  color:#536471;
-  font-size:14px;
-  transition:0.2s;
-}
+        .btn {
+            width: 100%;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid #cfd9de;
+            background: #fff;
+            color: #0f1419;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            transition: background 0.2s ease;
+        }
 
-.input-group input:focus{
-  border:2px solid #1d9bf0;
-}
+        .btn:hover { background: #e6e6e6; }
+        .btn sup { font-size: 15px; top: 0; font-weight: 600; }
 
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label{
-  top:6px;
-  font-size:12px;
-  color:#1d9bf0;
-}
+        .btn-black {
+            background-color: #0f1419 !important;
+            color: #fff !important;
+            border: none;
+        }
+        .btn-black:hover { background-color: #272c30 !important; }
 
-/* CHAR COUNT */
-.char-count{
-  position:absolute;
-  right:10px;
-  top:8px;
-  font-size:12px;
-  color:#536471;
-}
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 8px 0;
+            color: #0f1419;
+            font-size: 15px;
+        }
 
-/* DOB */
-.dob-section h4{
-  margin-top:10px;
-}
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #eff3f4;
+        }
 
-.dob-section p{
-  font-size:13px;
-  color:#536471;
-  margin:5px 0 10px;
-}
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
 
-.dob-fields{
-  display:flex;
-  gap:10px;
-}
+        /* MODAL OVERLAYS */
+        #basicInfo, #otp, #choosePassword, #profilePic, #userName {
+            display: none; /* Controlled by your JS */
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
 
-.dob-fields select{
-  flex:1;
-  height:50px;
-  border-radius:6px;
-  border:1px solid #cfd9de;
-  padding:0 10px;
-  font-size:14px;
-}
+        /* WRAPPER TO KEEP MODAL CENTERED WHEN JS SETS DISPLAY TO BLOCK */
+        .modal-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
 
-/* BUTTON */
-.next-btn{
-  margin-top:30px;
-  width:100%;
-  height:50px;
-  border-radius:30px;
-  border:none;
-  background:#1d4356;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
+        .modal {
+            width: 100%;
+            max-width: 600px;
+            min-height: 500px;
+            background: #fff;
+            border-radius: 16px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
 
+        /* HEADER */
+        .modal-header {
+            height: 53px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 16px;
+        }
+        .modal-header b { font-size: 18px; }
 
-#basicInfo ,#otp,#choosePassword,#profilePic,#userName{
-    display: none;
-    
-}
+        /* MODAL CONTENT */
+        .modal-content {
+            padding: 0 80px 32px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
 
+        .modal-content h2 {
+            font-size: 31px;
+            font-weight: 700;
+            margin: 20px 0 30px;
+            letter-spacing: -0.5px;
+        }
 
+        /* INPUT GROUPS (Floating Labels) */
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
 
-</style>
+        .input-group input {
+            width: 100%;
+            height: 56px;
+            border: 1px solid #cfd9de;
+            border-radius: 4px;
+            padding: 24px 8px 8px;
+            font-size: 17px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 18px;
+            left: 10px;
+            color: #536471;
+            font-size: 17px;
+            transition: 0.2s ease;
+            pointer-events: none;
+        }
+
+        .input-group input:focus { border: 2px solid #1d9bf0; }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 8px;
+            font-size: 13px;
+            color: #1d9bf0;
+        }
+        
+        .input-group input:not(:focus):not(:placeholder-shown) + label {
+            color: #536471;
+        }
+
+        .char-count {
+            position: absolute;
+            right: 10px;
+            top: 8px;
+            font-size: 13px;
+            color: #536471;
+            display: none; /* Hide by default unless focused */
+        }
+        .input-group input:focus ~ .char-count { display: block; }
+
+        /* DOB SECTION */
+        .dob-section h4 { font-size: 15px; font-weight: 700; margin-top: 10px; }
+        .dob-section p { font-size: 14px; color: #536471; margin: 4px 0 16px; }
+        .dob-section input[type="date"] {
+            width: 100%;
+            height: 56px;
+            border: 1px solid #cfd9de;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 17px;
+            color: #0f1419;
+            outline: none;
+        }
+        .dob-section input[type="date"]:focus { border: 2px solid #1d9bf0; }
+
+        /* NEXT BUTTON IN MODAL */
+        .next-btn {
+            margin-top: auto; /* Pushes button to bottom */
+            width: 100%;
+            height: 52px;
+            border-radius: 9999px;
+            border: none;
+            background: #0f1419;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .next-btn:hover { background: #272c30; }
+
+        /* UTILS */
+        .text-link {
+            color: #1d9bf0;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: right;
+        }
+        .text-link:hover { text-decoration: underline; }
+
+        @media (max-width: 1000px) {
+            #twitter { display: none; }
+            .right-content { padding: 20px; max-width: 100%; }
+            h1 strong { font-size: 48px; }
+            .modal { border-radius: 0; min-height: 100vh; }
+            .modal-content { padding: 0 32px 32px; }
+        }
+    </style>
 </head>
 <body>
+    
+    <!-- LANDING PAGE -->
     <div id="container" class="container">
         <div id="twitter" class="column">
             <!-- twitter logo -->
-            <picture  class="twitter">
-                <img   src="/photos/twitter_Logo.png" alt="no image found">
+            <picture class="twitter">
+                <img src="https://abs.twimg.com/responsive-web/client-web/icon-ios.b1bc72c5.png" alt="X Logo">
             </picture>
-        </div>
-        <div class="column">
-             <picture id="top-logo">
-                <img   src="/photos/twitter_Logo.png" alt="no image found">
-            </picture>
-            <!-- twitter content -->
-             <h1><strong style="font-size: 80px;">Happening now</strong></h1>
-             <h2><strong style="font-size: 30px;">joining today</strong></h2>
-
-             <div >
-                <button onclick="window.location.href='/auth/google'" class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with google</span></sup></strong></button>
-             </div>
-
-               <div >
-                <button class="btn" ><img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=95294&format=png&color=000000" alt=""> <strong><sup> <span style="font-size: 15px;">sign up with Apple</span></sup></strong></button>
-             </div>
-             <div>-------------------------------OR-----------------------------</div>
-              <div >
-                <button id="createAccount" style="background-color: black;" class="btn" ><strong style="font-size: 15px; color:white;">Create Account</strong></button>
-             </div>
-             
-             <h4 style="margin-top: 50px;">Already have an account?</h4>
-
-             <div>
-                <button onclick="window.location.href='/signin'" class="btn" ><strong style="font-size: 15px;">Sign in</strong></button>
-             </div>
-
         </div>
         
+        <div class="column right-content">
+            <picture id="top-logo">
+                <img src="https://abs.twimg.com/responsive-web/client-web/icon-ios.b1bc72c5.png" alt="X Logo">
+            </picture>
+            
+            <h1><strong>Happening now</strong></h1>
+            <h2><strong>Join today.</strong></h2>
+
+            <div class="btn-wrapper">
+                <button onclick="window.location.href='/auth/google'" class="btn">
+                    <img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" alt=""> 
+                    <sup><span>Sign up with Google</span></sup>
+                </button>
+
+                <button class="btn">
+                    <img style="height: 20px; width: 20px;" src="https://img.icons8.com/?size=100&id=95294&format=png&color=000000" alt=""> 
+                    <sup><span>Sign up with Apple</span></sup>
+                </button>
+                
+                <div class="divider">or</div>
+                
+                <button id="createAccount" class="btn btn-black">
+                    <strong>Create account</strong>
+                </button>
+                
+                <h4 style="margin-top: 40px; margin-bottom: 15px;">Already have an account?</h4>
+                
+                <button onclick="window.location.href='/signin'" class="btn" style="color: #1d9bf0;">
+                    <strong>Sign in</strong>
+                </button>
+            </div>
+        </div>
     </div>
 
-<form id="myform">
+    <!-- MAIN FORM -->
+    <form id="myform">
 
-    <!-- name email and phone -->
-     <div id="basicInfo">
-          <div class="modal">
+        <!-- BASIC INFO -->
+        <div id="basicInfo">
+            <div class="modal-wrapper">
+                <div class="modal">
+                    <div class="modal-header">
+                        <b>X</b>
+                    </div>
+                    <div class="modal-content">
+                        <h2>Create your account</h2>
 
-    <div class="modal-header">
-      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
-      <b>X</b>
-    </div>
+                        <div class="input-group">
+                            <input type="text" id="name" name="userFullName" placeholder=" " maxlength="50">
+                            <label>Name</label>
+                            <span class="char-count" id="counter">0 / 50</span>
+                        </div>
 
-    <div class="modal-content">
-      <h2>Create your account</h2>
+                        <div class="input-group" id="email">
+                            <input type="email" id="userEmail" name="identifier" placeholder=" ">
+                            <label>Email</label>
+                        </div>
+                        
+                        <div class="input-group" id="phoneNumber" style="display: none;">
+                            <input type="text" id="userPhoneNumber" placeholder=" ">
+                            <label>Phone</label>
+                        </div>
+                        
+                        <p class="text-link" id="change">Use phone instead</p>
 
-      <!-- NAME -->
-      <div class="input-group">
-        <input type="text" id="name" name="userFullName" placeholder=" " maxlength="50">
-        <label>Name</label>
-        <span class="char-count" id="counter">0 / 50</span>
-      </div>
+                        <div class="dob-section">
+                            <h4>Date of birth</h4>
+                            <p>This will not be shown publicly. Confirm your own age.</p>
+                            <input type="date" name="userDateOfBirth" id="">
+                        </div>
 
-      <!-- EMAIL -->
-      <div class="input-group" id="email">
-        <input type="email" id="userEmail" name="identifier" placeholder=" ">
-        <label>Email</label>
-      </div>
-      <div class="input-group" id="phoneNumber" style="display: none;">
-        <input type="text" id="userPhoneNumber"   placeholder="">
-        <label>phoneNumber</label>
-      </div>
-      <p style="float: right; cursor: pointer;" id="change">use email instead</p>
+                        <input type="button" class="next-btn" id="submitBasicInfo" value="Next">
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- OTP VERIFICATION -->
+        <div id="otp">
+            <div class="modal-wrapper">
+                <div class="modal">
+                    <div class="modal-header">
+                        <b>X</b>
+                    </div>
+                    <div class="modal-content">
+                        <h2>We sent you a code</h2>
+                        <p id="msg" style="margin-bottom: 10px;"></p>
+                        
+                        <div style="display: none;" class="input-group">
+                            <input type="text" id="otpId" name="otpId" placeholder=" " maxlength="50">
+                            <label>OTP ID</label>
+                        </div>
 
-      <!-- DOB -->
-      <div class="dob-section">
-        <h4>Date of birth</h4>
-        <p>
-          This will not be shown publicly. Confirm your own age.
-        </p>
+                        <div class="input-group">
+                            <input type="text" name="otp_hash" placeholder=" " maxlength="50">
+                            <label>Verification Code</label>
+                        </div>
+                        
+                        <p class="text-link" id="resend" style="text-align: left;">Didn't receive email?</p>
 
-        <input type="date" name="userDateOfBirth" name="" id="">
-      </div>
+                        <input type="button" class="next-btn" id="submitOtp" value="Next">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <input type="button"  class="next-btn" id="submitBasicInfo" value="next">
-           <!-- <button     class="next-btn" id="nextBtn">Next</button> -->
-    </div>
-     </div>
-     </div>
+        <!-- PASSWORD -->
+        <div id="choosePassword">
+            <div class="modal-wrapper">
+                <div class="modal">
+                    <div class="modal-header">
+                        <b>X</b>
+                    </div>
+                    <div class="modal-content">
+                        <h2>You'll need a password</h2>
+                        <p style="color: #536471; font-size: 15px; margin-bottom: 20px;">Make sure it’s 8 characters or more.</p>
 
+                        <div class="input-group">
+                            <input type="password" id="userPassword" name="userPassword" placeholder=" " maxlength="50">
+                            <label>Password</label>
+                        </div>
+                        
+                        <input type="button" class="next-btn" id="submitPassword" value="Next">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-     <!-- verification code -->
-     <div id="otp" >
-    <div class="modal">
+        <!-- PROFILE PIC -->
+        <div id="profilePic">
+            <div class="modal-wrapper">
+                <div class="modal">
+                    <div class="modal-header">
+                        <b>X</b>
+                    </div>
+                    <div class="modal-content">
+                        <h2>Pick a profile picture</h2>
+                        <p style="color: #536471; font-size: 15px; margin-bottom: 20px;">Have a favorite selfie? Upload it now.</p>
 
-    <div class="modal-header">
-      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
-      <b>X</b>
-    </div>
+                        <div class="input-group">
+                            <input type="file" name="userProfilePic" style="padding: 15px 12px; height: auto;">
+                        </div>
 
-    <div class="modal-content">
-      <h2> otpVerification</h2>
-      <p id="msg"></p>
-         <div style="display: none;" class="input-group">
-        <input type="text" id="otpId" name="otpId" placeholder=" " maxlength="50">
-        <label>OTP</label>
-      </div>
+                        <input type="button" class="next-btn" id="submitProfilePic" value="Next">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <!-- NAME -->
-      <div class="input-group">
-        <input type="text" id="name" name="otp_hash" placeholder=" " maxlength="50">
-        <label>OTP</label>
-        <p id="resend"  style="float: right; cursor: pointer;" >resend</p>
-      </div>
-            <input type="button" class="next-btn" id="submitOtp"value="next">
-
-
-    </div>
-     </div>
-    </div>
-
-
-
-
-     <!-- password -->
-      <div id="choosePassword" style="display: none">
-        <div class="modal">
-
-    <div class="modal-header">
-      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
-      <b>X</b>
-    </div>
-
-    <div class="modal-content">
-      <h2> password</h2>
-
-      <!-- NAME -->
-      <div class="input-group">
-        <input type="text" id="userPassword" name="userPassword" placeholder=" " maxlength="50">
-        <label>choose password</label>
-      </div>
-              <input type="button" class="next-btn" id="submitPassword" value="next">
-
-    </div>
-      </div>
-      </div>
-
-      <!-- profilePic -->
-       <div id="profilePic">
-       <div class="modal">
-
-    <div class="modal-header">
-      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
-      <b>X</b>
-    </div>
-    <div class="modal-content">
-      <h2> choose profilePic</h2>
-
-      <!-- NAME -->
-      <div class="input-group">
-        <input type="file" id="name" name="userProfilePic" placeholder=" " maxlength="50">
-        <label>Name</label>
-      </div>
-
-  <input type="button" class="next-btn" id="submitProfilePic" value="next">
-
-    </div>
-
-       </div>
-       </div>
-
-       <!-- username -->
+        <!-- USERNAME -->
         <div id="userName">
-              <div class="modal">
+            <div class="modal-wrapper">
+                <div class="modal">
+                    <div class="modal-header">
+                        <b>X</b>
+                    </div>
+                    <div class="modal-content">
+                        <h2>What should we call you?</h2>
+                        <p style="color: #536471; font-size: 15px; margin-bottom: 20px;">Your @username is unique. You can always change it later.</p>
 
-    <div class="modal-header">
-      <!-- <span class="close-btn" onclick="closeModal()">×</span> -->
-      <b>X</b>
-    </div>
-    <div class="modal-content">
-      <h2> user name</h2>
-
-   <!-- NAME -->
-      <div class="input-group">
-        <input type="text" name="userName" placeholder=" " maxlength="50">
-        <label>Name</label>
-      </div>
-    </div>
-    <input  type="submit" class="next-btn" value="submit" >
+                        <div class="input-group">
+                            <input type="text" name="userName" placeholder=" " maxlength="50">
+                            <label>Username</label>
+                        </div>
+                        
+                        <input type="submit" class="next-btn" value="Submit">
+                    </div>
+                </div>
+            </div>
         </div>
-        </div>
-</form>
 
+    </form>
 
     <script src="/js/home.js"></script>
-
     <script>
-           const container= document.getElementById('container')
-           const basicInfo= document.getElementById('basicInfo')
-           const otp= document.getElementById('otp')
-           const choosePassword= document.getElementById('choosePassword')
-           const profilePic= document.getElementById('profilePic')
-           const userName= document.getElementById('userName')
+        // EXACTLY YOUR JAVASCRIPT - 100% UNTOUCHED
+        const container= document.getElementById('container')
+        const basicInfo= document.getElementById('basicInfo')
+        const otp= document.getElementById('otp')
+        const choosePassword= document.getElementById('choosePassword')
+        const profilePic= document.getElementById('profilePic')
+        const userName= document.getElementById('userName')
 
-
-        //   open basic info popup
+        // open basic info popup
         document.getElementById('createAccount').addEventListener('click',(e)=>{
             e.preventDefault();
             container.style.display='none'
             basicInfo.style.display='block'
         })
-
 
         // open otp popup
         document.getElementById('submitBasicInfo').addEventListener('click',async(e)=>{
@@ -404,7 +505,6 @@ body{
                     throw new Error("email not found");
                     }
         })
-
 
         // open password popup
         document.getElementById('submitOtp').addEventListener('click',async(e)=>{
@@ -431,8 +531,6 @@ body{
             choosePassword.style.display='block'
         })
 
-
-
         // open profilePic popup
         document.getElementById('submitPassword').addEventListener('click',(e)=>{
             e.preventDefault();
@@ -440,14 +538,12 @@ body{
             profilePic.style.display='block'
         })
 
-
           // open username popup
         document.getElementById('submitPassword').addEventListener('click',(e)=>{
             e.preventDefault();
             profilePic.style.display='none'
             userName.style.display='block'
         })
-
 
         // submit data
         const form =document.getElementById('myform');
@@ -471,8 +567,6 @@ body{
                 }
 
         })
-
-
 
         let flag=true;
   const userEmail= document.getElementById('userEmail')
@@ -500,7 +594,6 @@ body{
     }
   })
 
-
     document.getElementById('resend').addEventListener('click',async(e)=>{
              const identifier=document.getElementsByName('identifier')[0].value.trim();
             console.log(identifier);
@@ -519,8 +612,6 @@ body{
                     throw new Error("email not found");
                     }
   })
-
-  
 
     </script>
 </body>

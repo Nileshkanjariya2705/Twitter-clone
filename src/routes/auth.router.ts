@@ -9,6 +9,7 @@ const authRouter=Router();
 authRouter.use(passport.initialize())
 authRouter.post("/sendOtp",authController.sendOtp);
 authRouter.post("/otpVerification",authController.optVerification);
+authRouter.post("/checkOtp",authController.checkOpt);
 authRouter.post("/isUserNameExist",authController.isUserNameExist);
 authRouter.post("/addUser",authController.saveUser);
 

@@ -30,16 +30,16 @@ export const sendOtp=async(req:Request,res:Response)=>{
         const otp:number=helper.createOtp();
 
         // create hash
-        // const otpHash:string=await helper.genrateHash(otp.toString() )
+        const otpHash:string=await helper.genrateHash(otp.toString() )
 
-        // console.log(otpHash);
-        // optBody.otp_hash=otpHash;
-        // console.log(optBody);
+        console.log(otpHash);
+        optBody.otp_hash=otpHash;
+        console.log(optBody);
 
         // save otp in database
         const result:ResultSetHeader = await  authService.addOtpTODatabase({
-            identifier:optBody.userEmail,
-            otp_hash:otp.toString()
+            identifier:optBody.identifier,
+            otp_hash:otpHash
         } as IOtp);
 
         // last inserted id
@@ -85,9 +85,9 @@ export const optVerification=async(req:Request,res:Response)=>{
             return;
         }
         
-     
+       const isValid =await helper.compareHash(otpBody.otp_hash,databaseOtp[0]?.otp as string )
        
-        if(otpBody.otp_hash==databaseOtp[0]?.otp ){
+        if(isValid ){
             console.log("otp is correct");
             
             res.status(200).json("otp is valid")
@@ -336,10 +336,10 @@ export async function forgotPassword(req:Request,res:Response) {
 
         if(user && user.length>0){
             const otp= helper.createOtp();
-            const otp_hash=await helper.genrateHash(otp.toString())
+            
             const result= await authService.addOtpTODatabase({
                 identifier:user[0]?.userEmail,
-                otp_hash:otp_hash ,
+                otp_hash:otp.toString() ,
             } as IOtp)
           helper.sendOptViaMail(otp,result.insertId)  
 
@@ -348,6 +348,8 @@ export async function forgotPassword(req:Request,res:Response) {
               identifier: user[0]?.userEmail as string
           } as any)
 
+          console.log(accessToken);
+          
 
           console.log(result.insertId);
           
@@ -356,6 +358,7 @@ export async function forgotPassword(req:Request,res:Response) {
             secure:true,
             maxAge:60*1000*15
           })
+          
           res.status(200).json(result.insertId)
             
         }else{
@@ -367,6 +370,44 @@ export async function forgotPassword(req:Request,res:Response) {
         console.log("error to forgot password");
         res.status(500).json("some thing went worong");
         
+    }
+    
+}
+
+
+
+export const checkOpt=async(req:Request,res:Response)=>{
+    console.log("opt verification start");
+//     {
+//     "otpId":"2",
+//     "otp_hash":"809782"
+//        }
+    try {
+        const otpBody:IOtp=req.body;
+        console.log(otpBody);
+        const databaseOtp:IOtp[]=await authService.findOtpById(otpBody.otpId);
+        
+        console.log(databaseOtp);
+        
+        const isOtpExpire :boolean = helper.checkValidity(databaseOtp[0]?.genrateTime as string)
+
+        if(!isOtpExpire){
+            res.status(404).json("otp is expire");
+            return;
+        }
+        
+     
+        if(otpBody.otp_hash===databaseOtp[0]?.otp ){
+            console.log("otp is correct");
+            
+            res.status(200).json("otp is valid")
+        }else{
+            res.status(404).json("invalid otp")
+        }
+        
+    } catch (error) {
+        console.log("error during otp check otp",error);
+        res.status(500).json("error to compare otp")
     }
     
 }
