@@ -22,11 +22,13 @@ const findByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () 
     return resultSet;
 });
 exports.findByUserId = findByUserId;
-const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
+const getAllUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const [resultSet] = yield (yield db_1.default).query(`
-        select u.*,up.userProfilePicUrl from users as u 
+        select u.*,up.userProfilePicUrl,
+        (select count(*) from userFollows where followerId=? and followingId=u.userId) as isFollowByMe
+        from users as u 
         join userProfile as up on up.userId=u.userId
-        `);
+        `, [userId]);
     return resultSet;
 });
 exports.getAllUser = getAllUser;

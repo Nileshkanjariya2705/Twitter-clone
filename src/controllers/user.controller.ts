@@ -63,9 +63,10 @@ export const unFollow=async(req:Request,res:Response)=>{
 
 export const getAllUser=async(req:Request,res:Response)=>{
     console.log("get all user");
+    const userId=(req.user as IUser).userId
     try {
-        const users:IUser[]=await userService.getAllUser();
-        
+        const users:IUser[]=await userService.getAllUser(userId as number);
+
         res.status(200).json(users)
         
     } catch (error) {

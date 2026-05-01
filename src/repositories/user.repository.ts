@@ -9,11 +9,13 @@ export const findByUserId=async(userId:number):Promise<IUser[]>=>{
 }
 
 
-export const getAllUser=async():Promise<IUser[]>=>{
+export const getAllUser=async(userId:number):Promise<IUser[]>=>{
     const [resultSet]=await (await connection).query<IUser[] & RowDataPacket[][]>(`
-        select u.*,up.userProfilePicUrl from users as u 
+        select u.*,up.userProfilePicUrl,
+        (select count(*) from userFollows where followerId=? and followingId=u.userId) as isFollowByMe
+        from users as u 
         join userProfile as up on up.userId=u.userId
-        `)
+        `,[userId])
     return resultSet;
 }
 

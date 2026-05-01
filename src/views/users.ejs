@@ -91,6 +91,43 @@
     border-color: #f4212e;
 }
 
+/* Base Follow Button (Black) */
+.follow-btn {
+    background-color: #0f1419;
+    color: white;
+    border: 1px solid transparent;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 100px;
+    transition: all 0.2s;
+}
+
+/* Following State (White/Outline) */
+.following-state {
+    background-color: white;
+    color: #0f1419;
+    border: 1px solid #cfd9de;
+}
+
+/* Hover effect for 'Following' button -> turns to 'Unfollow' */
+.following-state:hover {
+    background-color: rgba(244, 33, 46, 0.1); /* Light red tint */
+    color: #f4212e; /* Red text */
+    border-color: #f4212e;
+}
+
+.following-state:hover span {
+    display: none; /* Hide 'Following' text */
+}
+
+.following-state:hover::after {
+    content: "Unfollow"; /* Show 'Unfollow' text */
+}
+
+
     </style>
 </head>
 <body>
@@ -107,17 +144,18 @@
     try {
         const res = await fetch("http://localhost:8080/user/getAllUsers");
         const users = await res.json();
+        console.log(users);
         
         const list = document.getElementById('users-list');
         list.innerHTML = "";
 
         users.forEach(user => {
-            // Check if user is followed (you'll need to update this logic later with real DB data)
-            const isFollowed = false; 
+            // isFollowByMe will be 1 if you follow them, 0 otherwise
+            const isFollowing = user.isFollowByMe > 0; 
 
             const userCard = `
                 <div class="user-card" onclick="window.location.href='/user/profile?userId=${user.userId}'">
-                    <img src="${user.userProfilePicUrl || 'https://twimg.com'}" class="user-avatar">
+                    <img src="${user.userProfilePicUrl || '/photos/default.png'}" class="user-avatar">
                     
                     <div class="user-info">
                         <div class="user-name-row">
@@ -127,9 +165,9 @@
                             </div>
                             
                             <button 
-                                class="follow-btn ${isFollowed ? 'unfollow-btn' : ''}" 
+                                class="follow-btn ${isFollowing ? 'following-state' : ''}" 
                                 onclick="toggleFollow(event, ${user.userId}, this)">
-                                ${isFollowed ? 'Following' : 'Follow'}
+                                <span>${user.isFollowByMe ? 'Following' : 'Follow'}</span>
                             </button>
                         </div>
                     </div>
@@ -142,9 +180,10 @@
     }
 }
 
+
 async function toggleFollow(event, targetUserId, btn) {
     event.stopPropagation(); // Prevents clicking the card
-    
+    follow(targetUserId)
     // Toggle UI immediately for better feel
     if (btn.innerText === 'Follow') {
         btn.innerText = 'Following';
@@ -155,6 +194,16 @@ async function toggleFollow(event, targetUserId, btn) {
         btn.classList.remove('unfollow-btn');
         // Call your unfollow API here
     }
+}
+
+
+async function follow(userId) {
+    const res=await fetch(`http://localhost:8080/user/follow/${userId}`);
+    
+    if(res.ok){
+        location.reload();
+    }
+    
 }
 
 getAllUsers();

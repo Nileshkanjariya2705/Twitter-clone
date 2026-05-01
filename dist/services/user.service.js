@@ -59,8 +59,8 @@ const findByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () 
     return yield userRepository.findByUserId(userId);
 });
 exports.findByUserId = findByUserId;
-const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield userRepository.getAllUser();
+const getAllUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield userRepository.getAllUser(userId);
 });
 exports.getAllUser = getAllUser;
 const findUserName = (userName) => __awaiter(void 0, void 0, void 0, function* () {

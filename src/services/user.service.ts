@@ -17,8 +17,8 @@ export const findByUserId=async(userId:number)=>{
     return await userRepository.findByUserId(userId);
 }
 
-export const getAllUser=async()=>{
-    return await userRepository.getAllUser();
+export const getAllUser=async(userId:number)=>{
+    return await userRepository.getAllUser(userId);
 }
 
 

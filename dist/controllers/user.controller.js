@@ -96,8 +96,9 @@ const unFollow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.unFollow = unFollow;
 const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("get all user");
+    const userId = req.user.userId;
     try {
-        const users = yield userService.getAllUser();
+        const users = yield userService.getAllUser(userId);
         res.status(200).json(users);
     }
     catch (error) {

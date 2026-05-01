@@ -3,7 +3,7 @@ import { IFollow, IUser, IUserProfile } from '../models/user.mode';
 export declare const createUser: (user: IUser) => Promise<ResultSetHeader>;
 export declare const updateUser: (user: IUser) => Promise<ResultSetHeader>;
 export declare const findByUserId: (userId: number) => Promise<IUser[]>;
-export declare const getAllUser: () => Promise<IUser[]>;
+export declare const getAllUser: (userId: number) => Promise<IUser[]>;
 export declare const findUserName: (userName: string) => Promise<IUser[]>;
 export declare const findUserEmail: (userEmail: string) => Promise<IUser[]>;
 export declare const findUserPhoneNumber: (userPhoneNumber: string) => Promise<IUser[]>;

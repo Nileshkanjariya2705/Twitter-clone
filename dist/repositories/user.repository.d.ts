@@ -1,7 +1,7 @@
 import { ResultSetHeader } from "mysql2";
 import { IFollow, IUser, IUserProfile } from "../models/user.mode";
 export declare const findByUserId: (userId: number) => Promise<IUser[]>;
-export declare const getAllUser: () => Promise<IUser[]>;
+export declare const getAllUser: (userId: number) => Promise<IUser[]>;
 export declare const createUser: (user: IUser) => Promise<ResultSetHeader>;
 export declare const updateUser: (user: IUser) => Promise<ResultSetHeader>;
 export declare const findUserByUserName: (userName: string) => Promise<IUser[]>;
