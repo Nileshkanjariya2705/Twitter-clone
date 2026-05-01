@@ -42,6 +42,7 @@ export interface IPayload {
 export interface ILogin {
     identifier: string;
     userPassword: string;
+    rememberMe?: string;
 }
 export interface IMedia extends RowDataPacket {
     mediaId?: number;
@@ -63,14 +64,28 @@ export interface ILike {
     created_at?: string;
 }
 export interface IUserProfile {
-    userProfileId?: number;
-    userId?: number;
-    userBio?: string;
-    userCoverImageUrl?: string;
-    userProfilePicUrl?: string;
-    followerCount?: number;
-    followingCount?: number;
+    userProfileId?: number | undefined;
+    userId?: number | undefined;
+    userBio?: string | undefined;
+    userCoverImageUrl?: string | undefined;
+    userProfilePicUrl?: string | undefined;
+    followerCount?: number | undefined;
+    followingCount?: number | undefined;
+    created_at?: string | undefined;
+    updated_at?: string | undefined;
+}
+export interface IComment {
+    commentId?: number;
+    userId: number;
+    tweetId: number;
+    commentText: number;
+    create_at?: string;
+}
+export interface ICommentReplay {
+    commentReplayId?: number;
+    commentId: number;
+    userId: number;
+    commentText: string;
     created_at?: string;
-    updated_at?: string;
 }
 //# sourceMappingURL=user.mode.d.ts.map

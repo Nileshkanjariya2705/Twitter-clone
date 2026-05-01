@@ -74,3 +74,7 @@ export const forgotPassword=(req:Request,res:Response)=>{
 export const resetPassword=(req:Request,res:Response)=>{
     res.render('resetPassword')
 }
+
+export const users=(req:Request,res:Response)=>{
+    res.render('users')
+}

@@ -17,4 +17,5 @@ export declare const editProfile: (req: Request, res: Response) => void;
 export declare const postTweet: (req: Request, res: Response) => void;
 export declare const forgotPassword: (req: Request, res: Response) => void;
 export declare const resetPassword: (req: Request, res: Response) => void;
+export declare const users: (req: Request, res: Response) => void;
 //# sourceMappingURL=view.controller.d.ts.map

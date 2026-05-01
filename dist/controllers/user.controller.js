@@ -135,44 +135,43 @@ const findUserProfileByUserId = (req, res) => __awaiter(void 0, void 0, void 0, 
 });
 exports.findUserProfileByUserId = findUserProfileByUserId;
 const saveUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("save userProfile");
     try {
-        (yield db_1.default).beginTransaction();
+        const db = yield db_1.default;
+        yield db.beginTransaction();
         const body = req.body;
-        const userProfile = yield userService.findUserProfileByUserId(req.user.userId);
-        const files = req.files || [];
-        const userCoverImageUrl = (files && files[0])
-            ? `/upload/${files[0].filename}`
-            : userProfile[0].userCoverImageUrl;
-        const userProfilePicUrl = (files && files[1])
-            ? `/upload/${files[1].filename}`
-            : userProfile[0].userProfilePicUrl;
+        const userId = req.user.userId;
+        // 1. Fetch current profile for fallbacks
+        const userProfileRows = yield userService.findUserProfileByUserId(userId);
+        const currentProfile = userProfileRows[0];
+        // 2. Handle files using field names
+        // req.files will now be an object: { userCoverImage: [...], userProfilePic: [...] }
+        const files = req.files;
+        const userCoverImageUrl = (files && files['userCoverImage'])
+            ? `/upload/${files['userCoverImage'][0].filename}`
+            : currentProfile.userCoverImageUrl;
+        const userProfilePicUrl = (files && files['userProfilePic'])
+            ? `/upload/${files['userProfilePic'][0].filename}`
+            : currentProfile.userProfilePicUrl;
         const newUserProfile = {
-            userId: req.user.userId,
+            userId: userId,
             userCoverImageUrl: userCoverImageUrl,
             userProfilePicUrl: userProfilePicUrl,
             userBio: body.userBio
         };
-        console.log("-----------------------------------------");
-        console.log(userCoverImageUrl);
-        console.log(userProfilePicUrl);
         const user = {
             userFullName: body.userFullName,
             userName: body.userName,
             userEmail: body.userEmail,
-            userId: req.user.userId
+            userId: userId
         };
         yield userService.updateUser(user);
         yield userService.updateUserProfile(newUserProfile);
-        //    const userProfile:IUserProfile={
-        //      userProfilePicUrl :
-        //    }
-        (yield db_1.default).commit();
-        res.status(200).json("profile udate success fully");
+        yield db.commit();
+        res.status(200).json("profile update successfully");
     }
     catch (error) {
-        console.log("error during save userProfile", error);
         (yield db_1.default).rollback();
+        console.log("error during save userProfile", error);
         res.status(500).json("profile not updated");
     }
 });

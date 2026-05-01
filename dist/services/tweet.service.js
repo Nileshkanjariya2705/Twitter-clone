@@ -42,9 +42,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLike = exports.getTweetLikeByTweetLike = exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
+exports.getMediaByTweetId = exports.getCommentByTweetId = exports.isLike = exports.getTweetLikeByTweetLike = exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
 exports.unLikeTweet = unLikeTweet;
 exports.isRetweetByUser = isRetweetByUser;
+exports.addComment = addComment;
+exports.commentReplay = commentReplay;
 const tweetRepository = __importStar(require("../repositories/tweet.repository"));
 const addTweet = (tweet) => __awaiter(void 0, void 0, void 0, function* () {
     return yield tweetRepository.save(tweet);
@@ -107,4 +109,22 @@ function isRetweetByUser(userId, tweetId) {
         return yield tweetRepository.isRetweetByUser(userId, tweetId);
     });
 }
+function addComment(comment) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield tweetRepository.addComment(comment);
+    });
+}
+function commentReplay(commentReplay) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield tweetRepository.commentReplay(commentReplay);
+    });
+}
+const getCommentByTweetId = (tweetId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield tweetRepository.findCommentByTweetId(tweetId);
+});
+exports.getCommentByTweetId = getCommentByTweetId;
+const getMediaByTweetId = (tweetId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield tweetRepository.findMediaByTweetId(tweetId);
+});
+exports.getMediaByTweetId = getMediaByTweetId;
 //# sourceMappingURL=tweet.service.js.map

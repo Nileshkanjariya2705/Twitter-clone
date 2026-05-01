@@ -9,6 +9,7 @@ const viewRouter=Router();
 // viewRouter.get("/",viewController.home)
 // viewRouter.get("/login",viewController.login)
 viewRouter.get("/otp",viewController.otpPage)
+viewRouter.get("/user/allUsers",viewController.users)
 viewRouter.get("/resetPassword",viewController.resetPassword)
 // viewRouter.get("/register/basicInfo",viewController.basicInfo)
 // viewRouter.get("/register/otpVerification",viewController.otpVerification)

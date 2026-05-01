@@ -1,5 +1,5 @@
 import { ResultSetHeader } from 'mysql2';
-import { ILike, IMedia, ITweet } from '../models/user.mode';
+import { IComment, ICommentReplay, ILike, IMedia, ITweet } from '../models/user.mode';
 import * as tweetRepository from '../repositories/tweet.repository'
 import { runInThisContext } from 'node:vm';
 
@@ -67,4 +67,26 @@ export  const isLike=async(userId:number,tweetId:number)=>{
 export async function isRetweetByUser(userId:number,tweetId:number) {
     return await tweetRepository.isRetweetByUser(userId,tweetId)
     
+}
+
+
+export async function addComment(comment:IComment) {
+    return await tweetRepository.addComment(comment)
+    
+}
+
+
+export async function commentReplay(commentReplay:ICommentReplay) {
+    return await tweetRepository.commentReplay(commentReplay)
+    
+}
+
+
+export const getCommentByTweetId=async(tweetId:number)=>{
+    return await tweetRepository.findCommentByTweetId(tweetId)
+}
+
+
+export const getMediaByTweetId=async(tweetId:number)=>{
+    return await tweetRepository.findMediaByTweetId(tweetId)
 }

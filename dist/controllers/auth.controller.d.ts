@@ -10,4 +10,5 @@ export declare function sendOtpToUi(req: Request, res: Response): Promise<void>;
 export declare function updatePassword(req: Request, res: Response): Promise<void>;
 export declare function forgotPassword(req: Request, res: Response): Promise<void>;
 export declare const checkOpt: (req: Request, res: Response) => Promise<void>;
+export declare const isEmailExists: (req: Request, res: Response) => Promise<void>;
 //# sourceMappingURL=auth.controller.d.ts.map

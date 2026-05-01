@@ -10,7 +10,10 @@ export const findByUserId=async(userId:number):Promise<IUser[]>=>{
 
 
 export const getAllUser=async():Promise<IUser[]>=>{
-    const [resultSet]=await (await connection).query<IUser[] & RowDataPacket[][]>('select * from users ')
+    const [resultSet]=await (await connection).query<IUser[] & RowDataPacket[][]>(`
+        select u.*,up.userProfilePicUrl from users as u 
+        join userProfile as up on up.userId=u.userId
+        `)
     return resultSet;
 }
 
@@ -100,3 +103,6 @@ export const updatePassword=async(userId:number,password:string)=>{
         `,[password,userId])
     return result
 }
+
+
+

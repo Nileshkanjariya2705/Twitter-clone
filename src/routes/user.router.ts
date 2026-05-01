@@ -34,7 +34,22 @@ userRouter.get('/getUserProfile',userController.findUserProfileByUserId)
 
 userRouter.get('/reTweet/:tweetId',tweetController.reTweet)
 
-userRouter.post('/saveUserProfile',upload.array('photos', 2),userController.saveUserProfile)
+userRouter.post('/saveUserProfile', upload.fields([
+    { name: 'userCoverImage', maxCount: 1 },
+    { name: 'userProfilePic', maxCount: 1 }
+]), userController.saveUserProfile);
+
+
+
+
+userRouter.post("/addComment",tweetController.postCommetn)
+
+userRouter.post("/addCommentReplay",tweetController.postCommentReplay)
+
+userRouter.get("/getComments/:tweetId",tweetController.getAllCommentOfTweet)
+
+
+
 
 
 

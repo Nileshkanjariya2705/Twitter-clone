@@ -1,1 +1,1 @@
-{"version":3,"file":"auth.router.d.ts","sourceRoot":"","sources":["../../src/routes/auth.router.ts"],"names":[],"mappings":"AAOA,QAAA,MAAM,UAAU,4CAAS,CAAC;AAqB1B,eAAe,UAAU,CAAC"}
+{"version":3,"file":"auth.router.d.ts","sourceRoot":"","sources":["../../src/routes/auth.router.ts"],"names":[],"mappings":"AAOA,QAAA,MAAM,UAAU,4CAAS,CAAC;AAuB1B,eAAe,UAAU,CAAC"}

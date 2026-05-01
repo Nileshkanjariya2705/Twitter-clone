@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .users-container {
+    max-width: 600px;
+    margin: 0 auto;
+    border-right: 1px solid #eff3f4;
+    border-left: 1px solid #eff3f4;
+}
+
+.users-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.user-card {
+    display: flex;
+    padding: 12px 16px;
+    transition: background 0.2s;
+    cursor: pointer;
+    align-items: flex-start;
+}
+
+.user-card:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #cfd9de; /* Default grey if no image */
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.full-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #0f1419;
+}
+
+.user-handle {
+    color: #536471;
+    font-size: 15px;
+}
+
+/* Button Styling */
+.follow-btn {
+    background-color: #0f1419;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.follow-btn:hover {
+    background-color: #272c30;
+}
+
+/* Unfollow state */
+.unfollow-btn {
+    background-color: white;
+    color: #0f1419;
+    border: 1px solid #cfd9de;
+}
+
+.unfollow-btn:hover {
+    background-color: #ffe9e9;
+    color: #f4212e;
+    border-color: #f4212e;
+}
+
+    </style>
+</head>
+<body>
+    <div class="users-container">
+    <header class="users-header">
+        <h3>Connect with people</h3>
+    </header>
+    <div id="users-list">
+        <!-- Users will be injected here -->
+    </div>
+</div>
+<script>
+    async function getAllUsers() {
+    try {
+        const res = await fetch("http://localhost:8080/user/getAllUsers");
+        const users = await res.json();
+        
+        const list = document.getElementById('users-list');
+        list.innerHTML = "";
+
+        users.forEach(user => {
+            // Check if user is followed (you'll need to update this logic later with real DB data)
+            const isFollowed = false; 
+
+            const userCard = `
+                <div class="user-card" onclick="window.location.href='/user/profile?userId=${user.userId}'">
+                    <img src="${user.userProfilePicUrl || 'https://twimg.com'}" class="user-avatar">
+                    
+                    <div class="user-info">
+                        <div class="user-name-row">
+                            <div class="names">
+                                <div class="full-name">${user.userFullName}</div>
+                                <div class="user-handle">@${user.userName}</div>
+                            </div>
+                            
+                            <button 
+                                class="follow-btn ${isFollowed ? 'unfollow-btn' : ''}" 
+                                onclick="toggleFollow(event, ${user.userId}, this)">
+                                ${isFollowed ? 'Following' : 'Follow'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            list.innerHTML += userCard;
+        });
+    } catch (error) {
+        console.error("Error loading users:", error);
+    }
+}
+
+async function toggleFollow(event, targetUserId, btn) {
+    event.stopPropagation(); // Prevents clicking the card
+    
+    // Toggle UI immediately for better feel
+    if (btn.innerText === 'Follow') {
+        btn.innerText = 'Following';
+        btn.classList.add('unfollow-btn');
+        // Call your follow API here
+    } else {
+        btn.innerText = 'Follow';
+        btn.classList.remove('unfollow-btn');
+        // Call your unfollow API here
+    }
+}
+
+getAllUsers();
+
+</script>
+</body>
+</html>

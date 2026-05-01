@@ -46,6 +46,7 @@ authRouter.post("/otpVerification", authController.optVerification);
 authRouter.post("/checkOtp", authController.checkOpt);
 authRouter.post("/isUserNameExist", authController.isUserNameExist);
 authRouter.post("/addUser", authController.saveUser);
+authRouter.post("/isEmailExist", authController.isEmailExists);
 authRouter.post("/login", authController.login);
 authRouter.get("/upload", authController.uploadImage);
 authRouter.post("/forgotPassword", authController.forgotPassword);

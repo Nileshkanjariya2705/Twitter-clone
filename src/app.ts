@@ -37,5 +37,6 @@ app.set("view engine","ejs")
 app.use("/",viewRouter)
 app.use("/auth",authRouter);
 app.use("/user",passport.authenticate('jwt',{session:false}),userRouter)
+// app.use("/user",passport.authenticate('jwt',{session:false}),userRouter)
 
 export default app;

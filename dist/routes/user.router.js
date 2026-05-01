@@ -55,7 +55,13 @@ userRouter.get("/getAllUsers", userController.getAllUser);
 userRouter.post("/updateProfile", userController.userProfile);
 userRouter.get('/getUserProfile', userController.findUserProfileByUserId);
 userRouter.get('/reTweet/:tweetId', tweetController.reTweet);
-userRouter.post('/saveUserProfile', multer_1.default.array('photos', 2), userController.saveUserProfile);
+userRouter.post('/saveUserProfile', multer_1.default.fields([
+    { name: 'userCoverImage', maxCount: 1 },
+    { name: 'userProfilePic', maxCount: 1 }
+]), userController.saveUserProfile);
+userRouter.post("/addComment", tweetController.postCommetn);
+userRouter.post("/addCommentReplay", tweetController.postCommentReplay);
+userRouter.get("/getComments/:tweetId", tweetController.getAllCommentOfTweet);
 userRouter.get('/logout', userController.logout);
 exports.default = userRouter;
 //# sourceMappingURL=user.router.js.map

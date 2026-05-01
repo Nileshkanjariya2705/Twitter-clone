@@ -344,6 +344,259 @@
     opacity: 0.5;
 }
 
+.comment-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex; justify-content: center; align-items: flex-start;
+    padding-top: 50px; z-index: 1000;
+}
+.comment-modal.hidden { display: none; }
+
+.modal-content {
+    background: white; width: 500px; max-height: 80vh;
+    border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+}
+.modal-header { padding: 12px 16px; border-bottom: 1px solid #eff3f4; display: flex; align-items: center; }
+.close-modal { cursor: pointer; font-size: 24px; margin-right: 20px; }
+
+.comment-composer { padding: 16px; border-bottom: 1px solid #eff3f4; display: flex; gap: 10px; }
+.comment-composer input { flex: 1; border: none; outline: none; font-size: 18px; }
+
+#commentsList { overflow-y: auto; flex: 1; padding: 10px; }
+.comment-item { padding: 12px; border-bottom: 1px solid #f7f9f9; display: flex; gap: 10px; }
+.comment-item strong { font-size: 14px; }
+.comment-item p { margin: 4px 0 0 0; font-size: 15px; }
+
+
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eff3f4;
+    transition: background 0.2s;
+}
+
+.comment-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-meta {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.handle {
+    color: #536471;
+    margin-left: 4px;
+}
+
+.comment-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: #0f1419;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #536471;
+}
+
+.comment-actions span {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.comment-actions span:hover {
+    color: #1d9bf0;
+}
+
+/* Specific styling for the @mention in text */
+.comment-text:first-letter {
+    text-transform: capitalize;
+}
+
+.reply-status {
+    background: #f7f9f9;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #536471;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.reply-status.hidden { display: none; }
+#replyingToName { color: #1d9bf0; font-weight: bold; }
+.cancel-reply { cursor: pointer; font-size: 18px; font-weight: bold; }
+
+.comment-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #536471;
+}
+.comment-actions span { cursor: pointer; }
+.comment-actions span:hover { color: #1d9bf0; text-decoration: underline; }
+
+
+/* Standard comment style */
+.comment-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eff3f4;
+}
+
+/* Style specifically for replies */
+.reply-item {
+    margin-left: 40px; /* Indent the reply */
+    border-left: 2px solid #cfd9de; /* Add a vertical thread line */
+    background-color: #fcfcfc; /* Slightly different background */
+    padding-left: 20px;
+}
+
+.reply-badge {
+    font-size: 11px;
+    background: #eff3f4;
+    color: #536471;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+/* Make avatars smaller for replies */
+.reply-item .comment-avatar {
+    width: 28px;
+    height: 28px;
+}
+
+/* Dashboard specific composer container */
+    .composer {
+        padding: 16px;
+        border-bottom: 1px solid #eff3f4;
+        background-color: #fff;
+    }
+
+    .composer form {
+        display: flex;
+        align-items: flex-start; /* Keeps avatar at the top */
+    }
+
+    .mini-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin-right: 12px;
+        object-fit: cover;
+    }
+
+    .composer-input {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Modern text input styling */
+    .composer-input input[type="text"] {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 20px;
+        padding: 12px 0;
+        background: transparent;
+        color: #0f1419;
+    }
+
+    .composer-input input[type="text"]::placeholder {
+        color: #536471;
+        opacity: 1;
+    }
+
+    /* Actions area at the bottom of the composer */
+    .composer-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid #eff3f4;
+        margin-top: 4px;
+    }
+
+    /* Hide default file input and style as an icon */
+    .icons {
+        display: flex;
+        align-items: center;
+        color: #1d9bf0;
+    }
+
+    .file-upload-wrapper {
+        position: relative;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: background 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .file-upload-wrapper:hover {
+        background-color: rgba(29, 155, 240, 0.1);
+    }
+
+    .file-upload-wrapper input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .icon-symbol {
+        font-size: 18px;
+    }
+
+    /* Match your dashboard's post button style */
+    .small-post-btn {
+        background-color: #1d9bf0;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .small-post-btn:hover {
+        background-color: #1a8cd8;
+    }
+
 
     </style>
 </head>
@@ -357,11 +610,11 @@
         <div class="logo">𝕏</div>
         <nav>
             <a href="#" class="nav-item active"> Home</a>
-            <a href="#" class="nav-item"> Explore</a>
+            <a href="/user/allUsers" class="nav-item"> Explore</a>
             <a href="#" class="nav-item"> Notifications</a>
             <a href="#" class="nav-item">Messages</a>
             <a href="/user/profile" class="nav-item"> Profile</a>
-            <button  class="post-btn">Post</button>
+            <button  class="post-btn" onclick="window.location.href='/user/logout'">logout</button>
         </nav>
     </aside>
 
@@ -376,18 +629,33 @@
         </header>
 
         <!-- Tweet Composer -->
-        <div class="composer">
-            <form action="/user/addTweet" enctype="multipart/form-data" method="post">
-            <img src="avatar.jpg" class="mini-avatar">
-            <div class="composer-input">
-                <input type="text" name="tweetText"  placeholder="What is happening?!">
-                <div class="composer-actions">
-                    <div class="icons"><input name="photos" type="file"></div>
-                    <button class="small-post-btn" >Post</button>
+       <div class="composer">
+    <form action="/user/addTweet" enctype="multipart/form-data" method="post">
+        <!-- User Avatar -->
+        <img src="avatar.jpg" class="mini-avatar" id="userProfilePic"  alt="You">
+        
+        <div class="composer-input">
+            <!-- Tweet Text Field -->
+            <input type="text" name="tweetText" placeholder="What is happening?!" required>
+            
+            <div class="composer-actions">
+                <div class="icons">
+                    <!-- Styled File Input -->
+                    <div class="file-upload-wrapper" title="Media">
+                        <span class="icon-symbol">🖼️</span>
+                        <input name="photos" type="file" accept="image/*">
+                    </div>
+                    <!-- Optional: Add more icons here to match X UI -->
+                    <div class="file-upload-wrapper" title="GIF"><span class="icon-symbol">📊</span></div>
+                    <div class="file-upload-wrapper" title="Emoji"><span class="icon-symbol">😀</span></div>
                 </div>
+                
+                <button type="submit" class="small-post-btn">Post</button>
             </div>
-            </form>
         </div>
+    </form>
+</div>
+
 
         <div id="tweets" style="cursor: pointer;">
               <!-- Sample Tweet -->
@@ -476,7 +744,34 @@ if (data.tweets && Array.isArray(data.tweets)) {
         ` : ''}
 
         <div class="tweet-actions">
-            <div class="action">💬 <span>12</span></div>
+           
+        <div class="action" onclick="openComments(${t.tweetId})">💬 <span>${t.commentCount||0}</span></div>
+
+        <!-- Comment Modal -->
+<!-- Inside the comment-modal in your dashboard -->
+<div id="commentModal" class="comment-modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close-modal" onclick="closeComments()">&times;</span>
+            <h4>Comments</h4>
+        </div>
+        
+        <!-- Reply Indicator (Hidden by default) -->
+        <div id="replyIndicator" class="reply-status hidden">
+            Replying to <span id="replyingToName"></span>
+            <span class="cancel-reply" onclick="cancelReplyMode()">×</span>
+        </div>
+
+        <div class="comment-composer">
+            <input type="text" id="newCommentText" placeholder="Post your reply">
+            <button class="small-post-btn" id="submitCommentBtn" onclick="postComment()">Reply</button>
+        </div>
+
+        <div id="commentsList"></div>
+    </div>
+</div>
+
+
             <div class="action"  onclick='retweet(${t.tweetId})' >🔁 <span>${t.reTweet}</span></div>
             <div class="action"  onclick='like(${t.tweetId})'>${t.likeMe===1?'❤️':'🤍'}  <span>${t.likeCount}</span></div>
   
@@ -544,6 +839,133 @@ if (data.tweets && Array.isArray(data.tweets)) {
         getTweets(input)
 
     })
+
+
+let activeTweetId = null;
+let activeParentCommentId = null; // To track if we are replying to a comment
+
+function replyToComment(commentId, userName) {
+    activeParentCommentId = commentId;
+    document.getElementById('replyIndicator').classList.remove('hidden');
+    document.getElementById('replyingToName').innerText = `@${userName}`;
+    document.getElementById('newCommentText').placeholder = "Post your reply";
+    document.getElementById('newCommentText').focus();
+}
+
+function cancelReplyMode() {
+    activeParentCommentId = null;
+    document.getElementById('replyIndicator').classList.add('hidden');
+    document.getElementById('newCommentText').placeholder = "Post your reply";
+}
+
+async function openComments(tweetId) {
+    activeTweetId = tweetId;
+    const modal = document.getElementById('commentModal');
+    modal.classList.remove('hidden');
+    
+    const list = document.getElementById('commentsList');
+    list.innerHTML = "Loading...";
+    
+    try {
+        const res = await fetch(`http://localhost:8080/user/getComments/${tweetId}`);
+        const data = await res.json(); // This is the array from the UNION query
+        console.log(data);
+        
+        list.innerHTML = "";
+        
+        if (data && data.length > 0) {
+            data.forEach(c => {
+    const isReply = c.type === 'reply';
+    
+    // Create the "Replying to @username" label if it's a reply
+    const replyLabel = isReply ? 
+        `<div class="replying-to-label">Replying to <span class="mention">@${c.replyingTo}</span></div>` : '';
+
+    list.innerHTML += `
+        <div class="comment-item ${isReply ? 'reply-item' : ''}">
+            <img onclick='window.location.href="/user/profile?userId=${c.userId}"' 
+                 src="${c.userProfilePicUrl || '/photos/default.png'}" class="comment-avatar">
+            <div class="comment-content">
+                <div class="comment-meta">
+                    <strong>${c.userFullName}</strong> 
+                    <span class="handle">@${c.userName} · ${Math.floor((new Date()-new Date(c.created_at))/(1000*60*60))}h ago</span>
+                </div>
+                
+                ${replyLabel} <!-- This maps the reply to the parent user -->
+
+                <p class="comment-text">${c.commentText}</p>
+                
+                <div class="comment-actions">
+                    ${!isReply ? `<span class="action-link" onclick="replyToComment(${c.commentId}, '${c.userName}')">Reply</span>` : ''}
+                    <span class="action-link"></span>
+                </div>
+            </div>
+        </div>`;
+});
+
+        } else {
+            list.innerHTML = "<p style='text-align:center; color:gray;'>No conversations yet.</p>";
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
+function closeComments() {
+    document.getElementById('commentModal').classList.add('hidden');
+}
+
+ const postComment= async () => {
+    console.log("---------------------------");
+     const text = document.getElementById('newCommentText').value;
+    if (!text) return;
+
+    // DECIDE WHICH API TO CALL
+    const url = activeParentCommentId 
+        ? `http://localhost:8080/user/addCommentReplay`   // Your separate API
+        : `http://localhost:8080/user/addComment`; // Standard Comment API
+
+    const payload = activeParentCommentId 
+        ? { commentId: activeParentCommentId, commentText: text } // Payload for reply
+        : { tweetId: activeTweetId, commentText: text };              // Payload for comment
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        if (res.ok) {
+            document.getElementById('newCommentText').value = "";
+            cancelReplyMode();
+            openComments(activeTweetId); // Refresh the list
+        }
+    } catch (err) {
+        console.error("Error submitting:", err);
+    }
+}
+
+
+async function getUserProfile() {
+    try {
+        const res=await fetch("http://localhost:8080/user/getUserProfile")
+        const data=await res.json();
+        if(!res.ok){
+            console.log(data);
+            
+        }
+        
+
+        document.getElementById('userProfilePic').src=data.userProfile[0].userProfilePicUrl
+        } catch (error) {
+        throw new Error(error);
+        
+    }
+}
+getUserProfile()
+
 </script>
 
 </body>

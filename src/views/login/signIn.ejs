@@ -190,7 +190,7 @@ a:hover {
         <div class="divider">or</div>
 
         <input type="text" id="identifier" name="identifier" placeholder="Phone, email, or username">
-        
+        <p style="color: red;" id="eIdentifier"></p>
         <button type="button" id="next" class="btn btn-black">Next</button>
         <button type="button" onclick="window.location.href='/forgotPassword'" class="btn">Forgot password?</button>
 
@@ -204,7 +204,7 @@ a:hover {
 
         <input disabled type="text" id="userInput">
         <input type="password" name="userPassword" placeholder="Password" autofocus>
-
+        <input type="checkbox" style="width: 20px; height: 20px;" name="rememberMe"><label for="">rememberMe?</label>
         <button type="submit" class="btn btn-black" style="margin-top: 24px;">Log in</button>
         
         <p style="margin-top: 24px;">Don’t have an account? <a href="/">Sign up</a></p>
@@ -214,9 +214,13 @@ a:hover {
 <script>
     document.getElementById('next').addEventListener('click',(e)=>{
         e.preventDefault();
+        const identifier=document.getElementById('identifier').value.trim();
+        if(!identifier){
+            document.getElementById('eIdentifier').innerHTML='please entere username or email'
+            return;
+        }
         document.getElementById('c1').style.display='none'
         document.getElementById('c2').style.display='block'
-        const identifier=document.getElementById('identifier').value.trim();
         document.getElementById('userInput').value=identifier
     })
 

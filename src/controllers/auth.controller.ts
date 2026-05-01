@@ -1,6 +1,6 @@
 import e, { Request, Response } from 'express'
 import * as userService from '../services/user.service'
-import { IMedia, IOtp, IPayload, ITweet, IUser } from '../models/user.mode';
+import { ILogin, IMedia, IOtp, IPayload, ITweet, IUser } from '../models/user.mode';
 import * as helper from '../common/helper.common';
 import { ResultSetHeader } from 'mysql2';
 import { use } from 'passport';
@@ -30,16 +30,16 @@ export const sendOtp=async(req:Request,res:Response)=>{
         const otp:number=helper.createOtp();
 
         // create hash
-        const otpHash:string=await helper.genrateHash(otp.toString() )
+        // const otpHash:string=await helper.genrateHash(otp.toString() )
 
-        console.log(otpHash);
-        optBody.otp_hash=otpHash;
-        console.log(optBody);
+        // console.log(otpHash);
+        // optBody.otp_hash=otpHash;
+        // console.log(optBody);
 
         // save otp in database
         const result:ResultSetHeader = await  authService.addOtpTODatabase({
             identifier:optBody.identifier,
-            otp_hash:otpHash
+            otp_hash:otp.toString()
         } as IOtp);
 
         // last inserted id
@@ -85,9 +85,9 @@ export const optVerification=async(req:Request,res:Response)=>{
             return;
         }
         
-       const isValid =await helper.compareHash(otpBody.otp_hash,databaseOtp[0]?.otp as string )
+    //    const isValid =await helper.compareHash(otpBody.otp_hash,databaseOtp[0]?.otp as string )
        
-        if(isValid ){
+        if(otpBody.otp_hash===databaseOtp[0]?.otp ){
             console.log("otp is correct");
             
             res.status(200).json("otp is valid")
@@ -179,7 +179,7 @@ export const saveUser=async(req:Request,res:Response)=>{
 export const login=async(req:Request,res:Response)=>{
     console.log("login check");
     try {
-        const body=req.body;
+        const body:ILogin=req.body;
         console.log(body);
         
         const inputValue=body.identifier;
@@ -221,6 +221,7 @@ export const login=async(req:Request,res:Response)=>{
              userId:databaseResponse[0]?.userId as number,
              userName:databaseResponse[0]?.userName as string
             }
+         
 
             const {accessToken,refereshToken}=helper.genrateJwtToken(payload);
             res.cookie("accessToken",accessToken,{
@@ -408,6 +409,28 @@ export const checkOpt=async(req:Request,res:Response)=>{
     } catch (error) {
         console.log("error during otp check otp",error);
         res.status(500).json("error to compare otp")
+    }
+    
+}
+
+
+
+export const isEmailExists=async(req:Request,res:Response)=>{
+    console.log("check user email in database");
+    try {
+        const body=req.body;
+        const user= await userService.findUserEmail(body.userEmail);
+        if(user.length>0){
+            console.log("true");
+            
+            res.status(200).json(true)
+        }else{
+            res.status(404).json(false)
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("server error")
+        
     }
     
 }

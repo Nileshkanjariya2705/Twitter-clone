@@ -23,7 +23,10 @@ const findByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.findByUserId = findByUserId;
 const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
-    const [resultSet] = yield (yield db_1.default).query('select * from users ');
+    const [resultSet] = yield (yield db_1.default).query(`
+        select u.*,up.userProfilePicUrl from users as u 
+        join userProfile as up on up.userId=u.userId
+        `);
     return resultSet;
 });
 exports.getAllUser = getAllUser;

@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reTweet = exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTweetByTweetId = exports.getTweetByTweetId = exports.getAllOfUser = exports.getAllTweets = exports.addTweet = void 0;
+exports.getAllCommentOfTweet = exports.postCommentReplay = exports.postCommetn = exports.reTweet = exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTweetByTweetId = exports.getTweetByTweetId = exports.getAllOfUser = exports.getAllTweets = exports.addTweet = void 0;
 const db_1 = __importDefault(require("../config/db"));
 const tweetService = __importStar(require("../services/tweet.service"));
 const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -101,6 +101,7 @@ const getAllTweets = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
     try {
         const tweets = yield tweetService.getAllTweets(userId, search);
+        console.log(tweets);
         res.status(200).json({
             tweets: tweets
         });
@@ -209,7 +210,7 @@ const unLikeTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.unLikeTweet = unLikeTweet;
 const reTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     console.log("retweet post");
     try {
         const tweetId = parseInt(req.params.tweetId);
@@ -229,9 +230,13 @@ const reTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: req.user.userId,
                 tweetText: (_c = tweet[0]) === null || _c === void 0 ? void 0 : _c.tweetText,
                 tweetType: 'RETWEET',
-                parentTweetId: (_d = tweet[0]) === null || _d === void 0 ? void 0 : _d.tweetId
+                parentTweetId: (_d = tweet[0]) === null || _d === void 0 ? void 0 : _d.tweetId,
             };
-            yield tweetService.addTweet(newTweet);
+            const media = yield tweetService.getMediaByTweetId((_e = tweet[0]) === null || _e === void 0 ? void 0 : _e.tweetId);
+            const result = yield tweetService.addTweet(newTweet);
+            const newMedia = media[0];
+            newMedia.tweetId = result.insertId;
+            yield tweetService.addMedia(newMedia);
             console.log("retweet suceess---------------------");
             res.status(200).json("retweet success fully");
         }
@@ -242,4 +247,54 @@ const reTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.reTweet = reTweet;
+const postCommetn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("post comment on tweet");
+    const body = req.body;
+    try {
+        const comment = {
+            tweetId: body.tweetId,
+            userId: req.user.userId,
+            commentText: body.commentText
+        };
+        yield tweetService.addComment(comment);
+        res.status(200).json("post comment success  fully");
+    }
+    catch (error) {
+        console.log("error during post comment:", error);
+        res.status(500).json("internal server error");
+    }
+});
+exports.postCommetn = postCommetn;
+const postCommentReplay = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("post replay on comment  ");
+    const body = req.body;
+    try {
+        const commentReplay = {
+            commentId: body.commentId,
+            commentText: body.commentText,
+            userId: req.user.userId,
+        };
+        yield tweetService.commentReplay(commentReplay);
+        res.status(200).json("replay successfully");
+    }
+    catch (error) {
+        console.log("error during replay on comment:", error);
+        res.status(500).json("internal server error");
+    }
+});
+exports.postCommentReplay = postCommentReplay;
+const getAllCommentOfTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("get all comments of tweets");
+    try {
+        const tweetId = parseInt(req.params.tweetId);
+        const comment = yield tweetService.getCommentByTweetId(tweetId);
+        console.log(comment);
+        res.status(200).json(comment);
+    }
+    catch (error) {
+        console.log("error during geiing tweets", error);
+        res.status(500).json("server error");
+    }
+});
+exports.getAllCommentOfTweet = getAllCommentOfTweet;
 //# sourceMappingURL=tweet.controller.js.map

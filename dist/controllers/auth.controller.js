@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkOpt = exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
+exports.isEmailExists = exports.checkOpt = exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
 exports.googleCallBack = googleCallBack;
 exports.sendOtpToUi = sendOtpToUi;
 exports.updatePassword = updatePassword;
@@ -63,14 +63,14 @@ const sendOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // genrate otp
         const otp = helper.createOtp();
         // create hash
-        const otpHash = yield helper.genrateHash(otp.toString());
-        console.log(otpHash);
-        optBody.otp_hash = otpHash;
-        console.log(optBody);
+        // const otpHash:string=await helper.genrateHash(otp.toString() )
+        // console.log(otpHash);
+        // optBody.otp_hash=otpHash;
+        // console.log(optBody);
         // save otp in database
         const result = yield authService.addOtpTODatabase({
             identifier: optBody.identifier,
-            otp_hash: otpHash
+            otp_hash: otp.toString()
         });
         // last inserted id
         const otpId = result.insertId;
@@ -105,8 +105,8 @@ const optVerification = (req, res) => __awaiter(void 0, void 0, void 0, function
             res.status(404).json("otp is expire");
             return;
         }
-        const isValid = yield helper.compareHash(otpBody.otp_hash, (_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp);
-        if (isValid) {
+        //    const isValid =await helper.compareHash(otpBody.otp_hash,databaseOtp[0]?.otp as string )
+        if (otpBody.otp_hash === ((_b = databaseOtp[0]) === null || _b === void 0 ? void 0 : _b.otp)) {
             console.log("otp is correct");
             res.status(200).json("otp is valid");
         }
@@ -370,4 +370,23 @@ const checkOpt = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.checkOpt = checkOpt;
+const isEmailExists = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("check user email in database");
+    try {
+        const body = req.body;
+        const user = yield userService.findUserEmail(body.userEmail);
+        if (user.length > 0) {
+            console.log("true");
+            res.status(200).json(true);
+        }
+        else {
+            res.status(404).json(false);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json("server error");
+    }
+});
+exports.isEmailExists = isEmailExists;
 //# sourceMappingURL=auth.controller.js.map

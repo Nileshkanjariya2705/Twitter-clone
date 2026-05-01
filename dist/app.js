@@ -29,5 +29,6 @@ app.set("view engine", "ejs");
 app.use("/", view_router_1.default);
 app.use("/auth", auth_router_1.default);
 app.use("/user", passport_middleware_1.default.authenticate('jwt', { session: false }), user_router_1.default);
+// app.use("/user",passport.authenticate('jwt',{session:false}),userRouter)
 exports.default = app;
 //# sourceMappingURL=app.js.map

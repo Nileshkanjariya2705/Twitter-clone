@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import connection from "../config/db";
-import { ILike, IMedia, ITweet, IUser } from "../models/user.mode";
+import { IComment, ICommentReplay, ILike, IMedia, ITweet, IUser } from "../models/user.mode";
 import * as  tweetService from '../services/tweet.service'
 import * as  userService from '../services/user.service'
 
@@ -74,6 +74,8 @@ export const getAllTweets=async(req:Request,res:Response)=>{
     // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
     try {
         const tweets=await tweetService.getAllTweets(userId,search as string)
+        console.log(tweets);
+        
          res.status(200).json({
             tweets:tweets
         });
@@ -227,9 +229,20 @@ export const reTweet=async(req:Request,res:Response)=>{
                 userId:(req.user as IUser).userId as number,
                 tweetText:tweet[0]?.tweetText,
                 tweetType:'RETWEET',
-                parentTweetId:tweet[0]?.tweetId
+                parentTweetId:tweet[0]?.tweetId,
             }
-             await tweetService.addTweet(newTweet as ITweet);
+
+            const media:IMedia[]=await tweetService.getMediaByTweetId(tweet[0]?.tweetId as number)
+
+            const result= await tweetService.addTweet(newTweet as ITweet);
+
+            const newMedia:IMedia=media[0] as IMedia
+            newMedia.tweetId=result.insertId;
+
+            await tweetService.addMedia(newMedia);
+            
+
+
              console.log("retweet suceess---------------------");
              
             res.status(200).json("retweet success fully")
@@ -240,6 +253,74 @@ export const reTweet=async(req:Request,res:Response)=>{
         console.log("error to repost",error);
         res.status(500).json("tweet not found")
         
+        
+    }
+    
+}
+
+
+
+
+export const postCommetn=async(req:Request,res:Response)=>{
+    console.log("post comment on tweet");
+     const body=req.body;
+       try {
+        const comment:IComment={
+            tweetId:body.tweetId,
+            userId:(req.user as IUser).userId as number,
+            commentText:body.commentText
+        }
+        await tweetService.addComment(comment)
+
+        res.status(200).json("post comment success  fully")
+        
+     } catch (error) {
+        console.log("error during post comment:",error);
+        res.status(500).json("internal server error")
+        
+     }
+
+
+     
+}
+
+
+
+export const postCommentReplay=async(req:Request,res:Response)=>{
+    console.log("post replay on comment  ");
+    const body=req.body;
+     try {
+        const commentReplay:ICommentReplay={
+            commentId:body.commentId,
+            commentText:body.commentText,
+            userId:(req.user as IUser).userId as number,
+        }
+
+        await tweetService.commentReplay(commentReplay);
+
+        res.status(200).json("replay successfully")
+     } catch (error) {
+        console.log("error during replay on comment:",error);
+        res.status(500).json("internal server error")
+        
+     }
+
+    
+    
+}
+
+
+export const getAllCommentOfTweet=async(req:Request,res:Response)=>{
+    console.log("get all comments of tweets");
+    try {
+        const tweetId:number=parseInt(req.params.tweetId as string);
+       const comment=  await tweetService.getCommentByTweetId(tweetId )
+        console.log(comment);
+        
+        res.status(200).json(comment)
+    } catch (error) {
+        console.log("error during geiing tweets",error);
+        res.status(500).json("server error")
         
     }
     

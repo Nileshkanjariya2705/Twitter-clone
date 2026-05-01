@@ -8,7 +8,7 @@ import * as userService from '../services/user.service'
 import * as authService from '../services/auth.service'
 import { addTweet } from '../services/tweet.service';
 import * as helper from '../common/helper.common'
-import { response, Response } from "express";
+import { NextFunction, response, Response } from "express";
 
 
 passport.use(new GoogleStratergy({
@@ -69,6 +69,9 @@ const options = {
     jwtFromRequest: cookieExtractor,
     secretOrKey: process.env.ACCESS_TOKEN_SECRET as string
 };
+
+
+
 passport.use(new JWTStrategy(options,async function(payload:any,done:any){
     console.log("Passport middleware reached!");
     try {
@@ -80,12 +83,11 @@ passport.use(new JWTStrategy(options,async function(payload:any,done:any){
             return done(null,user[0]);
         }else{
             console.log("middleware fail");
-            // response.redirect('/signin')
             return done(null,false)
         }
     } catch (error) {
         console.log(error);
-        done(null,false)
+        done(error,false)
     }
        
 }))

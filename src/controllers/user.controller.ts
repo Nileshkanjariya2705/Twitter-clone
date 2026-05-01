@@ -65,7 +65,7 @@ export const getAllUser=async(req:Request,res:Response)=>{
     console.log("get all user");
     try {
         const users:IUser[]=await userService.getAllUser();
-
+        
         res.status(200).json(users)
         
     } catch (error) {
@@ -112,70 +112,56 @@ export const findUserProfileByUserId=async(req:Request,res:Response)=>{
     
 }
 
-
-export const saveUserProfile=async(req:Request,res:Response)=>{
-    console.log("save userProfile");
+export const saveUserProfile = async (req: Request, res: Response) => {
     try {
-        (await connection).beginTransaction();
-        const body=req.body;
+        const db = await connection;
+        await db.beginTransaction();
         
-        const userProfile:IUserProfile[]=await userService.findUserProfileByUserId((req.user as IUser).userId as number)
+        const body = req.body;
+        const userId = (req.user as IUser).userId as number;
         
+        // 1. Fetch current profile for fallbacks
+        const userProfileRows: IUserProfile[] = await userService.findUserProfileByUserId(userId);
+        const currentProfile :IUserProfile= userProfileRows[0] as IUserProfile;
 
-       const files = (req.files as Express.Multer.File[]) || [];
+        // 2. Handle files using field names
+        // req.files will now be an object: { userCoverImage: [...], userProfilePic: [...] }
+        const files:any = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-         const userCoverImageUrl = (files && files[0]) 
-            ? `/upload/${files[0].filename}` 
-            : (userProfile[0] as IUserProfile).userCoverImageUrl;
+        const userCoverImageUrl = (files && files['userCoverImage']) 
+            ? `/upload/${files['userCoverImage'][0].filename}` 
+            : currentProfile.userCoverImageUrl;
 
-        const userProfilePicUrl = (files && files[1]) 
-            ? `/upload/${files[1].filename}` 
-            : (userProfile[0] as IUserProfile).userProfilePicUrl;
+        const userProfilePicUrl = (files && files['userProfilePic']) 
+            ? `/upload/${files['userProfilePic'][0].filename}` 
+            : currentProfile.userProfilePicUrl;
 
-        const newUserProfile={
-            userId:(req.user as IUser).userId as number,
+        const newUserProfile: IUserProfile = {
+            userId: userId,
             userCoverImageUrl: userCoverImageUrl,
-            userProfilePicUrl:userProfilePicUrl,
-            userBio:body.userBio
-        }
+            userProfilePicUrl: userProfilePicUrl,
+            userBio: body.userBio
+        };
 
+        const user: IUser = {
+            userFullName: body.userFullName,
+            userName: body.userName,
+            userEmail: body.userEmail,
+            userId: userId
+        };
 
-console.log("-----------------------------------------");
+        await userService.updateUser(user);
+        await userService.updateUserProfile(newUserProfile);
 
-        console.log(userCoverImageUrl);
-        console.log(userProfilePicUrl);
-        
-                
-       const user:IUser={
-        userFullName:body.userFullName,
-        userName:body.userName,
-        userEmail:body.userEmail,
-        userId:(req.user as IUser).userId as number
-       }
-
-            await userService.updateUser(user);
-        await userService.updateUserProfile(newUserProfile as IUserProfile);
-        
-
-
-
-   
-
-       
-    //    const userProfile:IUserProfile={
-    //      userProfilePicUrl :
-    //    }
-    (await connection).commit()
-     res.status(200).json("profile udate success fully")   
+        await db.commit();
+        res.status(200).json("profile update successfully");
         
     } catch (error) {
-        console.log("error during save userProfile",error);
         (await connection).rollback();
-        res.status(500).json("profile not updated")
+        console.log("error during save userProfile", error);
+        res.status(500).json("profile not updated");
     }
-    
 }
-
 
 
 export const userProfile=async(req:Request,res:Response)=>{
