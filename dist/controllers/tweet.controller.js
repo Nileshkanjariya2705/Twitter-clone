@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllCommentOfTweet = exports.postCommentReplay = exports.postCommetn = exports.reTweet = exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTweetByTweetId = exports.getTweetByTweetId = exports.getAllOfUser = exports.getAllTweets = exports.addTweet = void 0;
+exports.getReTweetOfUser = exports.getAllCommentOfTweet = exports.postCommentReplay = exports.postCommetn = exports.reTweet = exports.unLikeTweet = exports.likeTweet = exports.updateTweet = exports.deleteTweetByTweetId = exports.getTweetByTweetId = exports.getAllOfUser = exports.getAllTweets = exports.addTweet = void 0;
 const db_1 = __importDefault(require("../config/db"));
 const tweetService = __importStar(require("../services/tweet.service"));
 const addTweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -97,11 +97,11 @@ const getAllTweets = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     if (value != '%') {
         search = `%${value}%`;
     }
-    console.log(search);
+    // console.log(search);
     // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
     try {
         const tweets = yield tweetService.getAllTweets(userId, search);
-        console.log(tweets);
+        // console.log(tweets);
         res.status(200).json({
             tweets: tweets
         });
@@ -297,4 +297,16 @@ const getAllCommentOfTweet = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getAllCommentOfTweet = getAllCommentOfTweet;
+const getReTweetOfUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("geting retweet of users");
+    try {
+        const reTweet = yield tweetService.getReTweetOfUser(req.user.userId);
+        res.status(200).json(reTweet);
+    }
+    catch (error) {
+        console.log("error during getting retweet of user");
+        res.status(500).json('data not found');
+    }
+});
+exports.getReTweetOfUser = getReTweetOfUser;
 //# sourceMappingURL=tweet.controller.js.map

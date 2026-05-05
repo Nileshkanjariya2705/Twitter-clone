@@ -347,10 +347,10 @@ body {
 
         <!-- Tabs -->
         <nav class="tabs">
-    <div class="tab active" onclick="showTab('posts')">Posts</div>
-    <div class="tab" onclick="showTab('replies')">Replies</div>
-    <div class="tab" onclick="showTab('media')">Media</div>
-    <div class="tab" onclick="showTab('likes')">Likes</div>
+    <div class="tab active" onclick="showTab('posts')" id="Post">Posts</div>
+    <div class="tab" onclick="showTab('replies')" id="Replies">Replies</div>
+    <!-- <div class="tab" onclick="showTab('media')">Media</div>
+    <div class="tab" onclick="showTab('likes')">Likes</div> -->
 </nav>
 
 <!-- This is where your tweets will appear -->
@@ -362,6 +362,35 @@ body {
 
 
     <script>
+
+function timeAgo(date) {
+    if (!date) return "long ago";
+
+    
+    const past = new Date(date).getTime();
+    const now = new Date().getTime();
+    
+    const seconds = Math.floor((now - past) / 1000);
+
+    if (seconds < 60) return "just now";
+
+    const intervals = {
+        yr: 31536000,
+        mth: 2592000,
+        day: 86400,
+        hr: 3600,
+        min: 60
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+        const counter = Math.floor(seconds / secondsInUnit);
+        if (counter >= 1) {
+            return `${counter}${unit} ago`;
+        }
+    }
+    return "just now";
+}
+
 
         const action= document.getElementById('action');
         const url=new URLSearchParams(window.location.search);
@@ -442,7 +471,7 @@ function renderTweets(tweets) {
                     <span class="display-name">${t.userFullName}</span>
                     <span class="username">@${t.userName}</span>
                     <span class="separator">·</span>
-                    <span class="timestamp">${Math.floor((new Date()-new Date(t.created_at))/(1000*60*60))} hr ago</span>
+                    <span class="timestamp">${timeAgo(t.created_at)} </span>
                 </div>
                 <!-- Cleaned up: only one more-options-container -->
                 <div class="more-options-container">
@@ -476,7 +505,7 @@ async function getTweet() {
     try {
         const res=await fetch(`http://localhost:8080/user/getAllTweetsOfUser?userId=${userId}`);
         const data=await res.json();
-      console.log(data);
+        console.log(data);
       
         
        renderTweets(data);
@@ -486,7 +515,7 @@ async function getTweet() {
         
     }
 } 
-getTweet()
+
 
 
 
@@ -536,7 +565,7 @@ async function deleteTweet(tweetId) {
             //         tweetElement.remove();
             //     }, 300);
             // }
-            location.reload()
+           getTweet()
         }
     } catch (err) {
         console.error("Delete failed:", err);
@@ -547,10 +576,36 @@ async function follow(userId) {
     const res=await fetch(`http://localhost:8080/user/follow/${userId}`);
     
     if(res.ok){
-        location.reload();
+       getUserProfile()
     }
     
 }
+    getTweet()
+
+document.getElementById('Replies').addEventListener('click',async(e)=>{
+    e.target.classList.add('active')
+    document.getElementById('Post').classList.remove('active')
+   
+    const res=await fetch("http://localhost:8080/user/getReTweet")
+
+    if(!res.ok){
+        console.log("data not found");
+        return
+        
+    }
+    const data=await res.json();
+    renderTweets(data)
+
+
+})
+
+
+document.getElementById('Post').addEventListener('click',async(e)=>{
+    e.target.classList.add('active')
+    document.getElementById('Replies').classList.remove('active')
+    getTweet()
+
+})
 
 
 

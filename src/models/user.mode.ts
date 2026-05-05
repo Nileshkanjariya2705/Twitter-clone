@@ -15,6 +15,7 @@ export interface IUser {
 
   provider?: 'EMAIL' | 'GOOGLE' | 'PHONE';
   providerId?: string;
+  refreshToken?:string
 
   userDateOfBirth?: string; // ISO format: YYYY-MM-DD
 
@@ -65,6 +66,7 @@ export interface ILogin{
     identifier:string
     userPassword:string
     rememberMe?:string
+    captchaInput?:string
 }
 
 export interface IMedia extends RowDataPacket{

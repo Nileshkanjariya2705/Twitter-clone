@@ -78,8 +78,6 @@ passport.use(new JWTStrategy(options,async function(payload:any,done:any){
         const user:IUser[]=await userService.findByUserId(payload.userId);
     
         if(user.length>0){
-            
-            
             return done(null,user[0]);
         }else{
             console.log("middleware fail");

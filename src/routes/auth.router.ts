@@ -22,10 +22,15 @@ authRouter.post("/forgotPassword",authController.forgotPassword)
 
 
 authRouter.get('/getOtp',authController.sendOtpToUi)
+authRouter.get('/createCaptcha',authController.getCaptch)
 
 authRouter.post('/updatePassword',authController.updatePassword)
 
 authRouter.get('/google',passport.authenticate('google'))
 authRouter.get('/google/callback',passport.authenticate('google',{session:false}),authController.googleCallBack)
+
+
+
+authRouter.get('/fail',authController.authenaticationFail)
 
 export default authRouter;

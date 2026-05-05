@@ -46,10 +46,12 @@ export const checkValidity=(time:string)=>{
 
 
 
-export const genrateJwtToken=(payload:IPayload)=>{
+export const genrateJwtToken=(payload:IPayload,age?:number)=>{
     
     console.log("genrating user jwt token");
-    const accessToken=  jwt.sign(payload,process.env.ACCESS_TOKEN_SECRET as string,{expiresIn:'1d'})
+    console.log("token age is :",age);
+    
+    const accessToken=  jwt.sign(payload,process.env.ACCESS_TOKEN_SECRET as string,{expiresIn:age||'1d'})
     
     const refereshToken=  jwt.sign(payload,process.env.REFRESH_TOKEN_SECRET as string,{expiresIn:'7d'})
     return {accessToken, refereshToken}

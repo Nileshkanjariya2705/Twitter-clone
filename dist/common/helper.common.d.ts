@@ -5,7 +5,7 @@ export declare const genrateHash: (plainText: string) => Promise<string>;
 export declare const compareHash: (plainText: string, hashText: string) => Promise<boolean>;
 export declare const sendOptViaMail: (otp: number, otpId: number) => Promise<void>;
 export declare const checkValidity: (time: string) => boolean;
-export declare const genrateJwtToken: (payload: IPayload) => {
+export declare const genrateJwtToken: (payload: IPayload, age?: number) => {
     accessToken: string;
     refereshToken: string;
 };

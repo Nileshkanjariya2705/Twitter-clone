@@ -1,4 +1,10 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
+import 'express-session';
+declare module 'express-session' {
+    interface SessionData {
+        captcha: string;
+    }
+}
 export declare const sendOtp: (req: Request, res: Response) => Promise<void>;
 export declare const optVerification: (req: Request, res: Response) => Promise<void>;
 export declare const isUserNameExist: (req: Request, res: Response) => Promise<void>;
@@ -11,4 +17,6 @@ export declare function updatePassword(req: Request, res: Response): Promise<voi
 export declare function forgotPassword(req: Request, res: Response): Promise<void>;
 export declare const checkOpt: (req: Request, res: Response) => Promise<void>;
 export declare const isEmailExists: (req: Request, res: Response) => Promise<void>;
+export declare const getCaptch: (req: Request, res: Response) => Promise<e.Response<any, Record<string, any>> | undefined>;
+export declare function authenaticationFail(req: Request, res: Response): Promise<void>;
 //# sourceMappingURL=auth.controller.d.ts.map

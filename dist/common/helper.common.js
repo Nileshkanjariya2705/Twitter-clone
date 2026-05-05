@@ -45,9 +45,10 @@ const checkValidity = (time) => {
     return (genrationTime + offset) > currentTime;
 };
 exports.checkValidity = checkValidity;
-const genrateJwtToken = (payload) => {
+const genrateJwtToken = (payload, age) => {
     console.log("genrating user jwt token");
-    const accessToken = jsonwebtoken_1.default.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+    console.log("token age is :", age);
+    const accessToken = jsonwebtoken_1.default.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: age || '1d' });
     const refereshToken = jsonwebtoken_1.default.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     return { accessToken, refereshToken };
 };

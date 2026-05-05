@@ -28,7 +28,8 @@ const getAllUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         (select count(*) from userFollows where followerId=? and followingId=u.userId) as isFollowByMe
         from users as u 
         join userProfile as up on up.userId=u.userId
-        `, [userId]);
+        where u.userId !=?
+        `, [userId, userId]);
     return resultSet;
 });
 exports.getAllUser = getAllUser;

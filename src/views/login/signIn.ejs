@@ -191,6 +191,8 @@ a:hover {
 
         <input type="text" id="identifier" name="identifier" placeholder="Phone, email, or username">
         <p style="color: red;" id="eIdentifier"></p>
+       
+
         <button type="button" id="next" class="btn btn-black">Next</button>
         <button type="button" onclick="window.location.href='/forgotPassword'" class="btn">Forgot password?</button>
 
@@ -204,6 +206,13 @@ a:hover {
 
         <input disabled type="text" id="userInput">
         <input type="password" name="userPassword" placeholder="Password" autofocus>
+         <img src="/auth/createCaptcha" id="captcha" style="background-color: red;">
+         <button type="button"
+         onclick="document.getElementById('captcha').src='/auth/createCaptcha?'+Date.now()"
+         >
+         ⟳
+         </button>
+        <input type="text" name="captchaInput">
         <input type="checkbox" style="width: 20px; height: 20px;" name="rememberMe"><label for="">rememberMe?</label>
         <button type="submit" class="btn btn-black" style="margin-top: 24px;">Log in</button>
         
@@ -211,7 +220,24 @@ a:hover {
     </div>
 </form>   
 
+
 <script>
+//     const captchImage=document.getElementById('captcha');
+//    async function loadCaptcha() {
+//     try {
+//         const response = await fetch('http://localhost:8080/auth/createCaptcha'); // Your backend endpoint
+//         const svgData = await response.text();   // Get raw SVG string
+        
+//         // Inject SVG directly into the container
+//         captchImage.src=`/${svgData}`
+//     } catch (error) {
+//         console.error('Error fetching captcha:', error);
+//     }
+// }
+
+
+
+
     document.getElementById('next').addEventListener('click',(e)=>{
         e.preventDefault();
         const identifier=document.getElementById('identifier').value.trim();
@@ -219,6 +245,8 @@ a:hover {
             document.getElementById('eIdentifier').innerHTML='please entere username or email'
             return;
         }
+        // Initial load
+        // loadCaptcha();
         document.getElementById('c1').style.display='none'
         document.getElementById('c2').style.display='block'
         document.getElementById('userInput').value=identifier
@@ -236,6 +264,7 @@ a:hover {
         })
         const data= await res.json()
         if(!res.ok){
+            document.getElementById('captcha').src='/auth/createCaptcha?'+Date.now()
             document.getElementById('msg').innerHTML=data;
         }else{
             window.location.href='/user/dashboard'

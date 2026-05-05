@@ -9,6 +9,7 @@ import passport from './middlewares/passport.middleware'
 import userRouter from './routes/user.router';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
+import session from 'express-session';
     import { fileURLToPath } from 'url';
 
 const app=express()
@@ -20,6 +21,12 @@ const rootDir = process.cwd();
 
 // Set views directory
 app.set('views', path.join(rootDir, 'src/views'));
+app.use(session({
+    secret: 'your_secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set true only if using HTTPS
+}));
 
 // Set static files directory
 app.use(express.static(path.join(rootDir, 'public')));

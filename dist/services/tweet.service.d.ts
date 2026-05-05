@@ -15,4 +15,5 @@ export declare function addComment(comment: IComment): Promise<void>;
 export declare function commentReplay(commentReplay: ICommentReplay): Promise<void>;
 export declare const getCommentByTweetId: (tweetId: number) => Promise<import("mysql2").QueryResult>;
 export declare const getMediaByTweetId: (tweetId: number) => Promise<IMedia[]>;
+export declare const getReTweetOfUser: (userId: number) => Promise<ITweet[]>;
 //# sourceMappingURL=tweet.service.d.ts.map

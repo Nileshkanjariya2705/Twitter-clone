@@ -9,6 +9,7 @@ export interface IUser {
     userPassword?: string;
     provider?: 'EMAIL' | 'GOOGLE' | 'PHONE';
     providerId?: string;
+    refreshToken?: string;
     userDateOfBirth?: string;
     userProfilePicUrl?: string;
     userCoverImageUrl?: string;
@@ -43,6 +44,7 @@ export interface ILogin {
     identifier: string;
     userPassword: string;
     rememberMe?: string;
+    captchaInput?: string;
 }
 export interface IMedia extends RowDataPacket {
     mediaId?: number;

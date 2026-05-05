@@ -51,8 +51,10 @@ authRouter.post("/login", authController.login);
 authRouter.get("/upload", authController.uploadImage);
 authRouter.post("/forgotPassword", authController.forgotPassword);
 authRouter.get('/getOtp', authController.sendOtpToUi);
+authRouter.get('/createCaptcha', authController.getCaptch);
 authRouter.post('/updatePassword', authController.updatePassword);
 authRouter.get('/google', passport_middleware_1.default.authenticate('google'));
 authRouter.get('/google/callback', passport_middleware_1.default.authenticate('google', { session: false }), authController.googleCallBack);
+authRouter.get('/fail', authController.authenaticationFail);
 exports.default = authRouter;
 //# sourceMappingURL=auth.router.js.map

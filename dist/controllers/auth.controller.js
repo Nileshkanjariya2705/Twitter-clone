@@ -41,15 +41,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmailExists = exports.checkOpt = exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
+exports.getCaptch = exports.isEmailExists = exports.checkOpt = exports.uploadImage = exports.login = exports.saveUser = exports.isUserNameExist = exports.optVerification = exports.sendOtp = void 0;
 exports.googleCallBack = googleCallBack;
 exports.sendOtpToUi = sendOtpToUi;
 exports.updatePassword = updatePassword;
 exports.forgotPassword = forgotPassword;
+exports.authenaticationFail = authenaticationFail;
 const userService = __importStar(require("../services/user.service"));
 const helper = __importStar(require("../common/helper.common"));
 const authService = __importStar(require("../services/auth.service"));
+const svg_captcha_1 = __importDefault(require("svg-captcha"));
+require("express-session");
 const sendOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("--------------genrate OPT--------------------");
     try {
@@ -185,6 +191,13 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
         console.log(body);
+        const userCaptch = body.captchaInput;
+        const actulaCaptch = (req.session).captcha;
+        console.log(actulaCaptch, "acutal captch");
+        if (userCaptch != actulaCaptch) {
+            res.status(404).json("invalid captch");
+            return;
+        }
         const inputValue = body.identifier;
         let databaseResponse;
         if (inputValue.includes('@')) {
@@ -214,11 +227,15 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: (_b = databaseResponse[0]) === null || _b === void 0 ? void 0 : _b.userId,
                 userName: (_c = databaseResponse[0]) === null || _c === void 0 ? void 0 : _c.userName
             };
-            const { accessToken, refereshToken } = helper.genrateJwtToken(payload);
+            let age = 24 * 60 * 60 * 1000;
+            if (body.rememberMe) {
+                age = 24 * 60 * 60 * 1000 * 30;
+            }
+            const { accessToken, refereshToken } = helper.genrateJwtToken(payload, age);
             res.cookie("accessToken", accessToken, {
                 httpOnly: true,
                 secure: true,
-                maxAge: 24 * 60 * 60 * 1000
+                maxAge: age
             });
             yield authService.saveRefreshTokenInDB((_d = databaseResponse[0]) === null || _d === void 0 ? void 0 : _d.userId, refereshToken);
             res.status(200).json("login success fully");
@@ -389,4 +406,42 @@ const isEmailExists = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.isEmailExists = isEmailExists;
+const getCaptch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const captcha = svg_captcha_1.default.create({
+            size: 4,
+            color: true,
+            background: '#cc9966',
+            noise: 2
+        });
+        (req.session).captcha = captcha.text;
+        res.type('svg'); // Sets 'Content-Type': 'image/svg+xml'
+        return res.status(200).send(captcha.data);
+    }
+    catch (error) {
+        res.status(500).send("Error");
+    }
+});
+exports.getCaptch = getCaptch;
+function authenaticationFail(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        console.log("authentication fail");
+        const token = req.cookies.accessToken;
+        const payload = helper.decodeToken(token);
+        const userId = payload.userId;
+        const user = yield userService.findByUserId(userId);
+        if (user && user.length > 0 && helper.verifyJwtToken(user[0].refreshToken)) {
+            const { accessToken, refereshToken } = helper.genrateJwtToken({ userId: userId, userName: (_a = user[0]) === null || _a === void 0 ? void 0 : _a.userName });
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: true,
+                maxAge: 100 * 60 * 60 * 24
+            });
+            console.log("new access token gernarate success fgully6k;jhkj");
+            res.status(200).json("new acess token genrate");
+        }
+        res.status(401).json("anauthorize");
+    });
+}
 //# sourceMappingURL=auth.controller.js.map

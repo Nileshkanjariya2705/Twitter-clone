@@ -11,6 +11,17 @@ import path from 'path';
 import  {getOtp}  from '../common/otpManage';
 import { identifier } from './view.controller';
 
+import  svg  from "svg-captcha";
+
+import 'express-session';
+import { log } from 'console';
+
+declare module 'express-session' {
+  interface SessionData {
+    captcha: string; // Define the type for your captcha value
+  }
+}
+
 
 
 export const sendOtp=async(req:Request,res:Response)=>{
@@ -181,6 +192,15 @@ export const login=async(req:Request,res:Response)=>{
     try {
         const body:ILogin=req.body;
         console.log(body);
+
+        const userCaptch=body.captchaInput;
+        const actulaCaptch=(req.session).captcha 
+        console.log(actulaCaptch,"acutal captch");
+        
+        if(userCaptch!=actulaCaptch){
+            res.status(404).json("invalid captch")
+            return;
+        }
         
         const inputValue=body.identifier;
 
@@ -221,13 +241,16 @@ export const login=async(req:Request,res:Response)=>{
              userId:databaseResponse[0]?.userId as number,
              userName:databaseResponse[0]?.userName as string
             }
-         
+            let age=24*60*60*1000;
+            if(body.rememberMe){
+                age=24*60*60*1000*30
+            }
 
-            const {accessToken,refereshToken}=helper.genrateJwtToken(payload);
+            const {accessToken,refereshToken}=helper.genrateJwtToken(payload,age);
             res.cookie("accessToken",accessToken,{
                 httpOnly:true,
                 secure:true,
-                maxAge:24*60*60*1000
+                maxAge:age
             })
             await authService.saveRefreshTokenInDB(databaseResponse[0]?.userId as number,refereshToken)
             res.status(200).json("login success fully")
@@ -434,3 +457,44 @@ export const isEmailExists=async(req:Request,res:Response)=>{
     }
     
 }
+
+
+export const getCaptch = async (req: Request, res: Response) => {
+    try {
+        const captcha = svg.create({
+            size: 4,
+            color: true,
+            background: '#cc9966',
+            noise: 2
+        });
+        (req.session).captcha=captcha.text
+        res.type('svg'); // Sets 'Content-Type': 'image/svg+xml'
+        return res.status(200).send(captcha.data); 
+    } catch (error) {
+        res.status(500).send("Error");
+    }
+}
+export async function authenaticationFail(req:Request,res:Response) {
+    console.log("authentication fail");
+    
+    const token=req.cookies.accessToken;
+    const payload:any= helper.decodeToken(token)
+    
+    const userId=payload.userId;
+    const user:IUser[]=await userService.findByUserId(userId);
+    if(user &&user.length >0 && helper.verifyJwtToken((user[0] as IUser).refreshToken as string)){
+        
+      const {accessToken,refereshToken} =  helper.genrateJwtToken({userId:userId,userName:user[0]?.userName}as IPayload)
+      res.cookie('accessToken',accessToken,{
+        httpOnly:true,
+        secure:true,
+        maxAge:100*60*60*24
+      })
+      console.log("new access token gernarate success fgully6k;jhkj");
+      
+      res.status(200).json("new acess token genrate")
+    }
+    
+    res.status(401).json("anauthorize")
+}
+

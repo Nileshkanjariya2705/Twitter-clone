@@ -11,4 +11,5 @@ export declare const reTweet: (req: Request, res: Response) => Promise<void>;
 export declare const postCommetn: (req: Request, res: Response) => Promise<void>;
 export declare const postCommentReplay: (req: Request, res: Response) => Promise<void>;
 export declare const getAllCommentOfTweet: (req: Request, res: Response) => Promise<void>;
+export declare const getReTweetOfUser: (req: Request, res: Response) => Promise<void>;
 //# sourceMappingURL=tweet.controller.d.ts.map

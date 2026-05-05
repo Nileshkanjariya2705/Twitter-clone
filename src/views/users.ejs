@@ -188,6 +188,7 @@ async function toggleFollow(event, targetUserId, btn) {
     if (btn.innerText === 'Follow') {
         btn.innerText = 'Following';
         btn.classList.add('unfollow-btn');
+        
         // Call your follow API here
     } else {
         btn.innerText = 'Follow';
@@ -201,7 +202,7 @@ async function follow(userId) {
     const res=await fetch(`http://localhost:8080/user/follow/${userId}`);
     
     if(res.ok){
-        location.reload();
+        getAllUsers()
     }
     
 }

@@ -4,6 +4,7 @@ import { IComment, ICommentReplay, ILike, IMedia, ITweet, IUser } from "../model
 import * as  tweetService from '../services/tweet.service'
 import * as  userService from '../services/user.service'
 
+
 export const addTweet=async(req:Request,res:Response)=>{
     console.log("add tweet");
     try {
@@ -69,12 +70,12 @@ export const getAllTweets=async(req:Request,res:Response)=>{
     if(value!='%'){
         search=`%${value}%`
     }
-    console.log(search);
+    // console.log(search);
     
     // 1.user 2.userprofile 3.tweet,4 tweetLike, 5.
     try {
         const tweets=await tweetService.getAllTweets(userId,search as string)
-        console.log(tweets);
+        // console.log(tweets);
         
          res.status(200).json({
             tweets:tweets
@@ -315,12 +316,27 @@ export const getAllCommentOfTweet=async(req:Request,res:Response)=>{
     try {
         const tweetId:number=parseInt(req.params.tweetId as string);
        const comment=  await tweetService.getCommentByTweetId(tweetId )
-        console.log(comment);
+      console.log(comment);
         
         res.status(200).json(comment)
     } catch (error) {
         console.log("error during geiing tweets",error);
         res.status(500).json("server error")
+        
+    }
+    
+}
+
+
+export const getReTweetOfUser=async(req:Request,res:Response)=>{
+    console.log("geting retweet of users");
+    try {
+        const reTweet=await tweetService.getReTweetOfUser((req.user as IUser).userId as number)
+
+        res.status(200).json(reTweet);
+    } catch (error) {
+        console.log("error during getting retweet of user");
+        res.status(500).json('data not found')
         
     }
     

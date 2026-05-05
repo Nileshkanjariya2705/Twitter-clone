@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMediaByTweetId = exports.getCommentByTweetId = exports.isLike = exports.getTweetLikeByTweetLike = exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
+exports.getReTweetOfUser = exports.getMediaByTweetId = exports.getCommentByTweetId = exports.isLike = exports.getTweetLikeByTweetLike = exports.likeTweet = exports.addMedia = exports.deleteTweetByTweetId = exports.findTweetByTweetId = exports.findTweetByUserId = exports.getAllTweets = exports.addTweet = void 0;
 exports.unLikeTweet = unLikeTweet;
 exports.isRetweetByUser = isRetweetByUser;
 exports.addComment = addComment;
@@ -127,4 +127,8 @@ const getMediaByTweetId = (tweetId) => __awaiter(void 0, void 0, void 0, functio
     return yield tweetRepository.findMediaByTweetId(tweetId);
 });
 exports.getMediaByTweetId = getMediaByTweetId;
+const getReTweetOfUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield tweetRepository.findReTweetOfUser(userId);
+});
+exports.getReTweetOfUser = getReTweetOfUser;
 //# sourceMappingURL=tweet.service.js.map

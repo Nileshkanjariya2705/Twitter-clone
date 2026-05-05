@@ -48,6 +48,8 @@ userRouter.post("/addCommentReplay",tweetController.postCommentReplay)
 
 userRouter.get("/getComments/:tweetId",tweetController.getAllCommentOfTweet)
 
+userRouter.get("/getReTweet",tweetController.getReTweetOfUser)
+
 
 
 

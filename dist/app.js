@@ -12,11 +12,18 @@ const auth_router_1 = __importDefault(require("./routes/auth.router"));
 const passport_middleware_1 = __importDefault(require("./middlewares/passport.middleware"));
 const user_router_1 = __importDefault(require("./routes/user.router"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_session_1 = __importDefault(require("express-session"));
 const app = (0, express_1.default)();
 // process.cwd() returns the root folder where you run the 'node' command
 const rootDir = process.cwd();
 // Set views directory
 app.set('views', path_1.default.join(rootDir, 'src/views'));
+app.use((0, express_session_1.default)({
+    secret: 'your_secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set true only if using HTTPS
+}));
 // Set static files directory
 app.use(express_1.default.static(path_1.default.join(rootDir, 'public')));
 app.use((0, cookie_parser_1.default)());

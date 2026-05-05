@@ -90,3 +90,7 @@ export const getCommentByTweetId=async(tweetId:number)=>{
 export const getMediaByTweetId=async(tweetId:number)=>{
     return await tweetRepository.findMediaByTweetId(tweetId)
 }
+
+export const getReTweetOfUser=async(userId:number)=>{
+    return await tweetRepository.findReTweetOfUser(userId)
+}

@@ -62,6 +62,7 @@ userRouter.post('/saveUserProfile', multer_1.default.fields([
 userRouter.post("/addComment", tweetController.postCommetn);
 userRouter.post("/addCommentReplay", tweetController.postCommentReplay);
 userRouter.get("/getComments/:tweetId", tweetController.getAllCommentOfTweet);
+userRouter.get("/getReTweet", tweetController.getReTweetOfUser);
 userRouter.get('/logout', userController.logout);
 exports.default = userRouter;
 //# sourceMappingURL=user.router.js.map

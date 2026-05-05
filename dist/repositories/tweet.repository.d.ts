@@ -3,6 +3,7 @@ import { IComment, ILike, IMedia, ITweet, ICommentReplay } from "../models/user.
 export declare const save: (tweet: ITweet) => Promise<ResultSetHeader>;
 export declare const getAll: (userId: number, search: string) => Promise<ITweet[]>;
 export declare const findByUserId: (userId: number) => Promise<ITweet[]>;
+export declare const findReTweetOfUser: (userId: number) => Promise<ITweet[]>;
 export declare const deleteByTeetId: (tweetId: number) => Promise<ResultSetHeader>;
 export declare const findByTweetId: (tweetId: number) => Promise<ITweet[]>;
 export declare const updateTweet: (tweet: ITweet) => Promise<ResultSetHeader>;
