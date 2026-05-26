@@ -13,4 +13,6 @@ export declare const findUserProfile: (userId: number) => Promise<IUserProfile[]
 export declare function updateUserProfile(userProfile: IUserProfile): Promise<import("mysql2").QueryResult>;
 export declare function isFollow(follow: IFollow): Promise<import("mysql2").QueryResult>;
 export declare const updatePassword: (userId: number, password: string) => Promise<import("mysql2").QueryResult>;
+export declare const getUsersFollower: (userId: number) => Promise<import("mysql2").QueryResult>;
+export declare const getUsersFollowing: (userId: number) => Promise<import("mysql2").QueryResult>;
 //# sourceMappingURL=user.repository.d.ts.map

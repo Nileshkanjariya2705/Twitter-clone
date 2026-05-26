@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfile = exports.saveUserProfile = exports.findUserProfileByUserId = exports.getAllUser = exports.unFollow = exports.follow = void 0;
+exports.getUsersFollowingList = exports.getUserFollwersList = exports.userProfile = exports.saveUserProfile = exports.findUserProfileByUserId = exports.getAllUser = exports.unFollow = exports.follow = void 0;
 exports.logout = logout;
 const userService = __importStar(require("../services/user.service"));
 const db_1 = __importDefault(require("../config/db"));
@@ -205,4 +205,36 @@ function logout(req, res) {
         res.redirect('/signin');
     });
 }
+const getUserFollwersList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("getting users follower");
+    try {
+        let userId = parseInt(req.query.userId);
+        if (!userId) {
+            userId = req.user.userId;
+        }
+        const users = yield userService.getUserFollowers(userId);
+        res.status(200).json(users);
+    }
+    catch (error) {
+        console.log("error to get usert follower");
+        res.status(500).json('internal server error');
+    }
+});
+exports.getUserFollwersList = getUserFollwersList;
+const getUsersFollowingList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("getting users follwings");
+    try {
+        let userId = parseInt(req.query.userId);
+        if (!userId) {
+            userId = req.user.userId;
+        }
+        const users = yield userService.getUsersFollowings(userId);
+        res.status(200).json(users);
+    }
+    catch (error) {
+        console.log("error to get usert follwings", error);
+        res.status(500).json('internal server error');
+    }
+});
+exports.getUsersFollowingList = getUsersFollowingList;
 //# sourceMappingURL=user.controller.js.map

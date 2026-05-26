@@ -302,6 +302,110 @@ body {
 .delete-btn:hover {
     background-color: rgba(244, 33, 46, 0.1);
 }
+.twitter-user-row {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eff3f4;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.twitter-user-row:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.user-row-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.user-row-content {
+    flex: 1;
+}
+
+.user-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.user-row-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-row-fullname {
+    font-weight: 700;
+    color: #0f1419;
+    font-size: 15px;
+}
+
+.user-row-fullname:hover {
+    text-decoration: underline;
+}
+
+.user-row-username {
+    color: #536471;
+    font-size: 15px;
+}
+
+.user-row-bio {
+    margin-top: 4px;
+    margin-bottom: 0;
+    color: #0f1419;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+/* Twitter Follow / Following Button States */
+.twitter-follow-btn {
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 0 16px;
+    height: 32px;
+    border: 1px solid #cfd9de;
+    background-color: #0f1419;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.twitter-follow-btn:not(.following):hover {
+    background-color: #272c30;
+}
+
+.twitter-follow-btn.following {
+    background-color: transparent;
+    color: #0f1419;
+    border: 1px solid #cfd9de;
+}
+
+.twitter-follow-btn.following:hover {
+    background-color: rgba(244, 33, 46, 0.1);
+    color: #f4212e;
+    border-color: rgba(244, 33, 46, 0.3);
+}
+.twitter-follow-btn.following:hover::before {
+    content: "Unfollow";
+}
+.twitter-follow-btn.following:hover {
+    font-size: 0; /* Hides 'Following' text on hover */
+}
+.twitter-follow-btn.following:hover::before {
+    font-size: 14px; /* Displays 'Unfollow' text alternative */
+}
+
+.no-users {
+    text-align: center;
+    padding: 40px;
+    color: #536471;
+    font-size: 15px;
+}
 
 
 
@@ -349,8 +453,8 @@ body {
         <nav class="tabs">
     <div class="tab active" onclick="showTab('posts')" id="Post">Posts</div>
     <div class="tab" onclick="showTab('replies')" id="Replies">Replies</div>
-    <!-- <div class="tab" onclick="showTab('media')">Media</div>
-    <div class="tab" onclick="showTab('likes')">Likes</div> -->
+    <div class="tab" onclick="getFollowers()" >follower</div>
+    <div class="tab" onclick="getFollowings()" >following</div>
 </nav>
 
 <!-- This is where your tweets will appear -->
@@ -447,8 +551,8 @@ function timeAgo(date) {
         const container = document.getElementById('tweets-container');
 
 
-function renderTweets(tweets) {
-    const container = document.getElementById('tweets-container');
+        function renderTweets(tweets) {
+    // const container = document.getElementById('tweets-container');
     container.innerHTML = ''; 
 
     tweets.forEach(t => {
@@ -608,6 +712,63 @@ document.getElementById('Post').addEventListener('click',async(e)=>{
 })
 
 
+async function getFollowers() {
+    const res=await fetch(`http://localhost:8080/user/getFollowers?userId=${userId}`)
+    const data=await res.json();
+    console.log(data);
+    showUsers(data)
+    
+}
+
+async function getFollowings() {
+    const res=await fetch(`http://localhost:8080/user/getFollowings?userId=${userId}`)
+    const data=await res.json();
+    console.log(data);
+     showUsers(data)
+}
+
+function showUsers(users) {
+     const container = document.getElementById('tweets-container'); // Ensure this ID exists in your HTML
+    if (!container) return;
+    
+    
+    container.innerHTML = ''; 
+
+    if (!users || users.length === 0) {
+        container.innerHTML = '<div class="no-users">No followers found</div>';
+        return;
+    }
+
+    users.forEach(user => {
+        // Clean up profile picture paths securely
+        const profilePic = user.userProfilePicUrl 
+            ? user.userProfilePicUrl.replace(/^\/?public/, '') 
+            : 'https://twimg.com';
+
+        const userRow = document.createElement("div");
+        userRow.className = 'twitter-user-row';
+
+        userRow.innerHTML = `
+            <img src="${profilePic}" class="user-row-avatar" alt="${user.userFullName}">
+            <div onclick='window.location.href="/user/profile?userId=${user.userId}"' class="user-row-content">
+                <div class="user-row-header">
+                    <div class="user-row-meta">
+                        <span class="user-row-fullname">${user.userFullName}</span>
+                        <span class="user-row-username">@${user.userName}</span>
+                    </div>
+                   
+                </div>
+                <p class="user-row-bio">${user.userBio || 'No bio available.'}</p>
+            </div>
+        `;
+        container.appendChild(userRow);
+    });
+}
+
+
+//  <button class="twitter-follow-btn following" onclick="toggleFollow(event, ${user.userId}, this)">
+//                         Following
+//                     </button>
 
     </script>
 </body>

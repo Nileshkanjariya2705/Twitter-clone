@@ -52,6 +52,11 @@ userRouter.get("/getReTweet",tweetController.getReTweetOfUser)
 
 
 
+userRouter.get("/getFollowers",userController.getUserFollwersList)
+userRouter.get("/getFollowings",userController.getUsersFollowingList)
+
+
+
 
 
 

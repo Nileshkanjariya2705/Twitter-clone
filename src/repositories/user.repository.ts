@@ -109,3 +109,29 @@ export const updatePassword=async(userId:number,password:string)=>{
 
 
 
+export const getUsersFollower=async(userId:number)=>{
+    const [result]=await (await connection).query(`
+        select *
+        from userFollows as uf
+        join users as u
+        on u.userId=uf.followerId
+        join userProfile as up
+        on up.userId=u.userId
+        where followingId=?
+        `,[userId])
+     return result;   
+}
+
+
+export const getUsersFollowing=async(userId:number)=>{
+    const [result]=await (await connection).query(`
+        select *
+        from userFollows as uf
+        join users as u
+        on u.userId=uf.followingId
+        join userProfile as up
+        on up.userId=u.userId
+        where followerId=?
+        `,[userId])
+     return result;   
+}

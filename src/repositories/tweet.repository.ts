@@ -86,7 +86,7 @@ export const findReTweetOfUser = async (userId: number): Promise<ITweet[]> => {
                from tweets as t
                join users as u
                on t.userId=u.userId	
-                join userProfile as up
+               join userProfile as up
                on up.userId=u.userId
                left join tweetMedia as m 
                on m.tweetId=t.tweetId

@@ -74,3 +74,10 @@ export async function isFollow(follow:IFollow) {
 export const updatePassword=async(userId:number,password:string)=>{
     return await userRepository.updatePassword(userId,password);
 }
+
+
+export const getUserFollowers=async(userId:number)=>{
+    return await userRepository.getUsersFollower(userId)}
+export const getUsersFollowings=async(userId:number)=>{
+    return await userRepository.getUsersFollowing(userId);
+}

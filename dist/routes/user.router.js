@@ -63,6 +63,8 @@ userRouter.post("/addComment", tweetController.postCommetn);
 userRouter.post("/addCommentReplay", tweetController.postCommentReplay);
 userRouter.get("/getComments/:tweetId", tweetController.getAllCommentOfTweet);
 userRouter.get("/getReTweet", tweetController.getReTweetOfUser);
+userRouter.get("/getFollowers", userController.getUserFollwersList);
+userRouter.get("/getFollowings", userController.getUsersFollowingList);
 userRouter.get('/logout', userController.logout);
 exports.default = userRouter;
 //# sourceMappingURL=user.router.js.map

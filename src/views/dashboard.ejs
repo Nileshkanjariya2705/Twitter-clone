@@ -121,9 +121,12 @@
 /* 4. Right Sidebar */
 .trends-column {
     padding: 10px 20px;
+  
 }
 
 .trends-box {
+ 
+ /* overflow: scroll; */
     background: #f7f9f9;
     border-radius: 16px;
     padding: 15px;
@@ -717,11 +720,12 @@
                 <input id="search" type="text" placeholder="Search"><input type="submit">
             </form>
         </div>
- <!-- <section class="trends-box who-to-follow">
+        
+ <section class="trends-box who-to-follow">
     <h4>Who to follow</h4>
     
     
-    <div class="user-item">
+    <!-- <div class="user-item">
         <div class="user-details">
             <img src="avatar3.jpg" class="mini-avatar" alt="User">
             <div class="user-info">
@@ -741,8 +745,8 @@
             </div>
         </div>
         <button class="follow-btn following" data-user-id="456" onclick="handleFollow(this)">Following</button>
-    </div>
-</section> -->
+    </div> -->
+</section>
 
     </aside>
 </div>
@@ -1087,6 +1091,85 @@ async function getUserProfile() {
     }
 }
 getUserProfile()
+
+
+async function loadWhoToFollow() {
+    const container = document.querySelector('.who-to-follow');
+    
+    try {
+        const res = await fetch("http://localhost:8080/user/getAllUsers");
+        const users = await res.json();
+
+        // Keep the heading, but remove any old user items
+        container.innerHTML = '<h4>Who to follow</h4>';
+
+        // Loop through users and append the HTML
+        users.forEach(user => {
+            const userHtml = `
+                <div class="user-item">
+                    <div class="user-details">
+                        <img onclick="window.location.href='/user/profile?userId=${user.userId}'" src="${user.userProfilePicUrl || 'default-avatar.jpg'}" class="mini-avatar" alt="User">
+                        <div class="user-info">
+                            <strong>${user.userFullName}</strong>
+                            <small>@${user.userName}</small>
+                        </div>
+                    </div>
+                
+                    <button 
+                        class="follow-btn ${user.isFollowByMe ? 'unfollow-btn' : ''}" 
+                        onclick="toggleFollow(event, '${user.userId}', this)">
+                        ${user.isFollowByMe ? 'Following' : 'Follow'}
+                    </button>
+
+                </div>`;
+            container.insertAdjacentHTML('beforeend', userHtml);
+        });
+    } catch (err) {
+        console.error("Could not load users", err);
+    }
+}
+
+
+async function toggleFollow(event, targetUserId, btn) {
+    event.stopPropagation();
+    
+    const isFollowing = btn.innerText === 'Following';
+
+    // 1. Immediate UI Toggle (Optimistic Update)
+    if (!isFollowing) {
+        btn.innerText = 'Following';
+        btn.classList.add('unfollow-btn');
+    } else {
+        btn.innerText = 'Follow';
+        btn.classList.remove('unfollow-btn');
+    }
+
+    // 2. Call the API
+    try {
+        await toggleFollowApi(targetUserId);
+    } catch (error) {
+        // 3. Optional: Revert UI if the API fails
+        console.error("Action failed", error);
+        alert("Could not update follow status.");
+        loadWhoToFollow(); // Refresh list to correct state
+    }
+}
+
+async function toggleFollowApi(userId) {
+    // Note: Using a generic 'toggle' endpoint if your backend supports it, 
+    // otherwise you'd use a conditional here for follow vs unfollow paths.
+    const res = await fetch(`http://localhost:8080/user/follow/${userId}`, {
+        method: 'get' // Best practice for state-changing actions
+    });
+
+    if (!res.ok) throw new Error("API Error");
+    
+    // Refresh the list to ensure data stays in sync
+    loadWhoToFollow(); 
+}
+
+loadWhoToFollow();
+
 
 </script>
 

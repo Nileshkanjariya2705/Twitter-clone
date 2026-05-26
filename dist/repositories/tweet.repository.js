@@ -95,7 +95,7 @@ const findReTweetOfUser = (userId) => __awaiter(void 0, void 0, void 0, function
                from tweets as t
                join users as u
                on t.userId=u.userId	
-                join userProfile as up
+               join userProfile as up
                on up.userId=u.userId
                left join tweetMedia as m 
                on m.tweetId=t.tweetId

@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePassword = exports.findUserProfileByUserId = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserName = exports.getAllUser = exports.findByUserId = exports.updateUser = exports.createUser = void 0;
+exports.getUsersFollowings = exports.getUserFollowers = exports.updatePassword = exports.findUserProfileByUserId = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserName = exports.getAllUser = exports.findByUserId = exports.updateUser = exports.createUser = void 0;
 exports.unFollow = unFollow;
 exports.updateUserProfile = updateUserProfile;
 exports.isFollow = isFollow;
@@ -110,4 +110,12 @@ const updatePassword = (userId, password) => __awaiter(void 0, void 0, void 0, f
     return yield userRepository.updatePassword(userId, password);
 });
 exports.updatePassword = updatePassword;
+const getUserFollowers = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield userRepository.getUsersFollower(userId);
+});
+exports.getUserFollowers = getUserFollowers;
+const getUsersFollowings = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield userRepository.getUsersFollowing(userId);
+});
+exports.getUsersFollowings = getUsersFollowings;
 //# sourceMappingURL=user.service.js.map

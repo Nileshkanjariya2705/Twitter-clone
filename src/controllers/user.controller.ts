@@ -196,3 +196,39 @@ export async function logout(req:Request,res:Response) {
 
     res.redirect('/signin')
 }
+
+
+
+export const getUserFollwersList=async(req:Request,res:Response)=>{
+    console.log("getting users follower");
+    try {
+        let userId=parseInt(req.query.userId as string);
+        if(!userId){
+            userId=(req.user as IUser) .userId as number
+        }
+
+        const users=await userService.getUserFollowers(userId)
+        res.status(200).json(users)
+    } catch (error) {
+        console.log("error to get usert follower");
+        res.status(500).json('internal server error')
+    }
+    
+}
+
+
+export const getUsersFollowingList=async(req:Request,res:Response)=>{
+    console.log("getting users follwings");
+    try {
+        let userId=parseInt(req.query.userId as string);
+        if(!userId){
+            userId=(req.user as IUser) .userId as number
+        }
+        const users=await userService.getUsersFollowings(userId)
+        res.status(200).json(users)
+    } catch (error) {
+        console.log("error to get usert follwings",error);
+        res.status(500).json('internal server error')
+    }
+    
+}

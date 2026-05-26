@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePassword = exports.findUserProfile = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserByUserName = exports.updateUser = exports.createUser = exports.getAllUser = exports.findByUserId = void 0;
+exports.getUsersFollowing = exports.getUsersFollower = exports.updatePassword = exports.findUserProfile = exports.follow = exports.findUserPhoneNumber = exports.findUserEmail = exports.findUserByUserName = exports.updateUser = exports.createUser = exports.getAllUser = exports.findByUserId = void 0;
 exports.unFollow = unFollow;
 exports.updateUserProfile = updateUserProfile;
 exports.isFollow = isFollow;
@@ -110,4 +110,30 @@ const updatePassword = (userId, password) => __awaiter(void 0, void 0, void 0, f
     return result;
 });
 exports.updatePassword = updatePassword;
+const getUsersFollower = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const [result] = yield (yield db_1.default).query(`
+        select *
+        from userFollows as uf
+        join users as u
+        on u.userId=uf.followerId
+        join userProfile as up
+        on up.userId=u.userId
+        where followingId=?
+        `, [userId]);
+    return result;
+});
+exports.getUsersFollower = getUsersFollower;
+const getUsersFollowing = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const [result] = yield (yield db_1.default).query(`
+        select *
+        from userFollows as uf
+        join users as u
+        on u.userId=uf.followingId
+        join userProfile as up
+        on up.userId=u.userId
+        where followerId=?
+        `, [userId]);
+    return result;
+});
+exports.getUsersFollowing = getUsersFollowing;
 //# sourceMappingURL=user.repository.js.map

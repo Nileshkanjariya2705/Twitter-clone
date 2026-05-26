@@ -6,4 +6,6 @@ export declare const findUserProfileByUserId: (req: Request, res: Response) => P
 export declare const saveUserProfile: (req: Request, res: Response) => Promise<void>;
 export declare const userProfile: (req: Request, res: Response) => Promise<void>;
 export declare function logout(req: Request, res: Response): Promise<void>;
+export declare const getUserFollwersList: (req: Request, res: Response) => Promise<void>;
+export declare const getUsersFollowingList: (req: Request, res: Response) => Promise<void>;
 //# sourceMappingURL=user.controller.d.ts.map
